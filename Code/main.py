@@ -18,9 +18,9 @@ model_dict = {
 }
 
 planner_model = model_dict['qwen4k']
-vlm_model = model_dict['qwen2-vl']
+vlm_model = model_dict['qwen4k-vl']
 
-user_input = "Open the downloads folder"
+user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
 intent_name, intent_args = get_tool(planner_model, user_input)
     
 if intent_name == 'open_template':
@@ -29,9 +29,9 @@ if intent_name == 'open_template':
       
     initial_state = {
         "prompt": user_input,
-       "operation": intent_args.get('operation', 'open_folder'),
        "file_name": intent_args.get('file_name', ''),
        "app_name": intent_args.get('app_name', ''),
+       "path": intent_args.get('path', ''),
        "vlm_model": vlm_model,
        "planner_model": planner_model,
        "status": "start"
@@ -40,7 +40,7 @@ if intent_name == 'open_template':
     print("\nFlow Starting")
     file_explorer.invoke(initial_state)
 
-elif intent_name == 'write_text':
+elif intent_name == 'write_template':
     print(f"Intent: {intent_name}")
     print(f"Arguments: {intent_args}")
       

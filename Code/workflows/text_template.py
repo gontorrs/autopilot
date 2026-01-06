@@ -12,14 +12,15 @@ class Write_Agent(TypedDict):
     status: str
     vlm_model: str
     planner_model: str
+    attempts: int
 
 def node_launch_editor(state: Write_Agent):
     print(f"1. Launching text editor: {state['app_name']}")
-    item = check_item(state["vlm_model"], state['app_name'])
+    item = check_item(state["vlm_model"], state['app_name'], type='application')
     if not item:
         pyautogui.hotkey('win')
         time.sleep(1)
-        pyautogui.write(state['app_name'])
+        pyautogui.write(state['app_name'], interval=0.05)
         time.sleep(1)
         pyautogui.press('enter')
         print(f"Launched without coordinates")
@@ -57,6 +58,15 @@ workflow.add_node('verify', node_verify)
 workflow.set_entry_point("launch")
 workflow.add_edge("launch", "write")
 workflow.add_edge("write", "verify")
-workflow.add_edge("verify", END)
+
+#Si falla pues intentamos otra vez, un máximo de 2 intentos.
+def verify_edge(state, result):
+    state['attempts'] += 1
+    if result.get("status") == "verified" or state['attempts'] >= 2:
+        return END
+    else:
+        return "launch"
+
+workflow.add_conditional_edges("verify", verify_edge)
 
 write_text = workflow.compile()

@@ -34,10 +34,10 @@ def verify(model, user_query):
     print(f"VLM answer: {answer}")
     return "YES" in answer.upper()
 
-def check_item(model, item):
+def check_item(model, item, type='item'):
     print(f"Item to check: {item}")
     img_bytes = take_screenshot()
-    response = ollama.chat(model=model, messages=[{'role':'user', 'content': check_item_prompt(item), 'images': [img_bytes]}])
+    response = ollama.chat(model=model, messages=[{'role':'user', 'content': check_item_prompt(item, type), 'images': [img_bytes]}])
     answer = response['message']['content'].strip()
     print(f"VLM answer for item check: {answer}")
     return "YES" in answer.upper()
@@ -47,7 +47,7 @@ def parse_coordinates(coords):
     screen_w, screen_h = pyautogui.size()
     if coords:
         real_x = int((coords[0] / 1000) * screen_w)
-        real_y = int((coords[1] / 1000) * screen_h)  
+        real_y = int((coords[1] / 1000) * screen_h)
         return real_x, real_y
     print("No coordinates found.")
     return None

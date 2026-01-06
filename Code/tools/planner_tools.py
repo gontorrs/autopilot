@@ -7,18 +7,18 @@ explorer_tool = {
         'parameters': {
             'type': 'object',
             'properties': {
-                'operation': {
-                    'name': 'open',
-                    'type': 'string',
-                    'description': 'Action to perform: open a folder view or open a specific file.'
+                'path': {
+                    'type': 'array',
+                    'items': {'type': 'string'},
+                    'description': 'Optional ordered list of folders to navigate: ["downloads", "masters"]. Omit if path is unknown.'
                 },
                 'file_name': {
                     'type': 'string',
-                    'description': 'Name of the final file or folder to open if aplicable, state if it is a folder or a file.'
+                    'description': 'Name of the final file to search/open. Always required.'
                 },
                 'app_name': {
                     'type': 'string',
-                    'description': 'Name of the application to use to open the file or folder.'
+                    'description': 'Application to use (e.g., "Windows File Explorer").'
                 }
             },
             'required': ['operation', 'file_name']
@@ -29,7 +29,8 @@ explorer_tool = {
 tool_text = {
     "type": "function",
     "function": {
-        "name": "write_text",
+        'Operating System': 'Windows',
+        "name": "write_template",
         "description": "Open a text editor application and type specific content into it.",
         "parameters": {
             "type": "object",
