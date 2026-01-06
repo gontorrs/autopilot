@@ -1,0 +1,7 @@
+pywinauto
+comtypes
+ollama
+langgraph
+pyautogui
+pyscreeze
+pillow
