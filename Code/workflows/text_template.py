@@ -68,5 +68,4 @@ def verify_edge(state, result):
         return "launch"
 
 workflow.add_conditional_edges("verify", verify_edge)
-
 write_text = workflow.compile()
