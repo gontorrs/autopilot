@@ -6,10 +6,10 @@ import re
 import io
 import json
 
-def get_tool(model, user_query):
+def get_tool(model, user_query, system_context):
     print(f"Checking planner with {model}")
     
-    response = ollama.chat(model=model, messages=[{'role': 'user', 'content': user_query}], tools=planner_tools)
+    response = ollama.chat(model=model, messages=[{'role': 'user', 'content': user_query}, {'role': 'system', 'content': system_context}], tools=planner_tools)
     
     if response['message'].get('tool_calls'):
         tool_call = response['message']['tool_calls'][0]
@@ -67,7 +67,6 @@ def get_coord(model, user_query):
         arguments = tool_call['function']['arguments']
         
         bad_coords = arguments.get('coordinate')
-        action = arguments.get('action', 'left_click')
         
         if bad_coords:
             good_coords = parse_coordinates(bad_coords)
@@ -75,7 +74,6 @@ def get_coord(model, user_query):
             return {
                 "x": good_coords[0],
                 "y": good_coords[1],
-                "action": action
             }
     print("no tool used.")
     return None

@@ -1,6 +1,8 @@
 from router import get_tool
 from workflows.files_template import file_explorer
 from workflows.text_template import write_text
+from workflows.open_application import open_application
+from router import verify
 
 model_dict = {
     'gemma4k': 'gemma3:4b-it-qat',
@@ -21,74 +23,68 @@ planner_model = model_dict['qwen4k']
 vlm_model = model_dict['qwen4k-vl']
 
 user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-intent_name, intent_args = get_tool(planner_model, user_input)
+default_system_info = "History of actions: \n Step 0: No application is opened."
+over = False;
+i = 0
+while over != True:
+    #Paso número uno, abrimos la o las aplicaciones.
+    intent_name, intent_args = get_tool(planner_model, user_input, default_system_info)
     
-if intent_name == 'open_application':
-    print(f"Intent: {intent_name}")
-    print(f"Arguments: {intent_args}")
-      
-    initial_state = {
-        "prompt": user_input,
-       "file_name": intent_args.get('file_name', ''),
-       "app_name": intent_args.get('app_name', ''),
-       "path": intent_args.get('path', ''),
-       "vlm_model": vlm_model,
-       "planner_model": planner_model,
-       "status": "start"
-    }
-    print(initial_state)
-    print("\nFlow Starting")
-    file_explorer.invoke(initial_state)
+    if intent_name == 'open_application':
+        i+=1
+        print(f"Intent: {intent_name}")
+        print(f"Arguments: {intent_args}")
+        initial_state ={
+            "prompt": user_input, 
+            "app_name": intent_args.get('app_name', ''),
+            "vlm_model": vlm_model,
+            "planner_model": planner_model, 
+            "status": "start"
+        }
+        result = open_application.invoke(initial_state)
+        default_system_info += f"\n Step {i}: {result.get('status')}"
 
-elif intent_name == 'navigate_explorer':
-    print(f"Intent: {intent_name}")
-    print(f"Arguments: {intent_args}")
-      
-    initial_state = {
-        "prompt": user_input,
-       "app_name": intent_args.get('application', 'notepad'),
-       "content": intent_args.get('text', ''),
-       "vlm_model": vlm_model,
-       "planner_model": planner_model,
-       "status": "start"
-    }
-    print(initial_state)
-    print("\nFlow Starting")
-    write_text.invoke(initial_state)
+    elif intent_name == 'navigate_explorer':
+        i+=1
+        print(f"Intent: {intent_name}")
+        print(f"Arguments: {intent_args}")
+        initial_state ={
+            "prompt": user_input,
+            "file_name": intent_args.get('file_name', ''),
+            "path": intent_args.get('path', ''),
+            "vlm_model": vlm_model,
+            "planner_model": planner_model,
+            "status": "start"
+        }
+        result = file_explorer.invoke(initial_state)
+        default_system_info += f"\n Step {i}: {result.get('status')}"
+
+    elif intent_name == 'type_text':
+        i+=1
+        print(f"Intent: {intent_name}")
+        print(f"Arguments: {intent_args}")
+        initial_state ={
+            "prompt": user_input, 
+            "app_name": intent_args.get('app_name', ''),
+            "content": intent_args.get('text', ''),
+            "vlm_model": vlm_model,
+            "planner_model": planner_model, 
+            "status": "start"
+        }
+        result = write_text.invoke(initial_state)
+        default_system_info += f"\n Step {i}: {result.get('status')}"
+
+    elif intent_name == 'verify_screen':
+        i+=1
+        print(f"Intent: {intent_name}")
+        print(f"Arguments: {intent_args}")
+        result = verify(vlm_model, user_query=user_input)
+        default_system_info += f"\n Step {i}: The entire workflow was verified with a result of {result}"
+        over = True
     
-elif intent_name == 'type_text':
-    print(f"Intent: {intent_name}")
-    print(f"Arguments: {intent_args}")
-      
-    initial_state = {
-        "prompt": user_input,
-       "app_name": intent_args.get('application', 'notepad'),
-       "content": intent_args.get('text', ''),
-       "vlm_model": vlm_model,
-       "planner_model": planner_model,
-       "status": "start"
-    }
-    print(initial_state)
-    print("\nFlow Starting")
-    write_text.invoke(initial_state)
-
-elif intent_name == 'verify_screen':
-    print(f"Intent: {intent_name}")
-    print(f"Arguments: {intent_args}")
-      
-    initial_state = {
-        "prompt": user_input,
-       "app_name": intent_args.get('application', 'notepad'),
-       "content": intent_args.get('text', ''),
-       "vlm_model": vlm_model,
-       "planner_model": planner_model,
-       "status": "start"
-    }
-    print(initial_state)
-    print("\nFlow Starting")
-    write_text.invoke(initial_state)
-        
-elif intent_name:
-    print(f"Intent not classified.")
-else:
-    print("Fallo curioso.")
+    elif intent_name:
+        i+=1
+        print(f"Intent not classified.")
+    else:
+        i+=1
+        print("Fallo curioso.")

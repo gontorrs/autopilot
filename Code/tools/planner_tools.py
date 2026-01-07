@@ -2,6 +2,7 @@
 open_app = {
     'type': 'function',
     'function': {
+        'Operating System': 'Windows',
         'name': 'open_application',
         'description': (
             'Opens a desktop application. '
@@ -12,9 +13,9 @@ open_app = {
             'type': 'object',
             'properties': {
                 'app_name': {
-                    'type': 'string',
+                    'type': 'list',
                     'enum': ['notepad', 'word', 'powerpoint', 'file_explorer'],
-                    'description': 'The application to launch.'
+                    'description': 'The application to launch. e.g. ["notepad"], ["file_explorer", "notepad"]'
                 }
             },
             'required': ['app_name']
@@ -48,6 +49,7 @@ navigate = {
 
 type_text = {
     'type': 'function',
+    'Operating System': 'Windows',
     'function': {
         'name': 'type_text',
         'description': 'Types text into the currently active window. Use this ONLY after opening an application.',
@@ -66,6 +68,7 @@ type_text = {
 
 verify = {
     'type': 'function',
+    'Operating System': 'Windows',
     'function': {
         'name': 'verify_screen',
         'description': 'Looks at the screen to check if the final task is done.',
