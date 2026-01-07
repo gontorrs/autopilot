@@ -23,7 +23,7 @@ vlm_model = model_dict['qwen4k-vl']
 user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
 intent_name, intent_args = get_tool(planner_model, user_input)
     
-if intent_name == 'open_template':
+if intent_name == 'open_application':
     print(f"Intent: {intent_name}")
     print(f"Arguments: {intent_args}")
       
@@ -40,7 +40,39 @@ if intent_name == 'open_template':
     print("\nFlow Starting")
     file_explorer.invoke(initial_state)
 
-elif intent_name == 'write_template':
+elif intent_name == 'navigate_explorer':
+    print(f"Intent: {intent_name}")
+    print(f"Arguments: {intent_args}")
+      
+    initial_state = {
+        "prompt": user_input,
+       "app_name": intent_args.get('application', 'notepad'),
+       "content": intent_args.get('text', ''),
+       "vlm_model": vlm_model,
+       "planner_model": planner_model,
+       "status": "start"
+    }
+    print(initial_state)
+    print("\nFlow Starting")
+    write_text.invoke(initial_state)
+    
+elif intent_name == 'type_text':
+    print(f"Intent: {intent_name}")
+    print(f"Arguments: {intent_args}")
+      
+    initial_state = {
+        "prompt": user_input,
+       "app_name": intent_args.get('application', 'notepad'),
+       "content": intent_args.get('text', ''),
+       "vlm_model": vlm_model,
+       "planner_model": planner_model,
+       "status": "start"
+    }
+    print(initial_state)
+    print("\nFlow Starting")
+    write_text.invoke(initial_state)
+
+elif intent_name == 'verify_screen':
     print(f"Intent: {intent_name}")
     print(f"Arguments: {intent_args}")
       

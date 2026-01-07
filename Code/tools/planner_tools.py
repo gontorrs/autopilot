@@ -1,9 +1,33 @@
-explorer_tool = {
+# planner_tools.py
+open_app = {
+    'type': 'function',
+    'function': {
+        'name': 'open_application',
+        'description': (
+            'Opens a desktop application. '
+            'RULES: If user wants to write text and no app is named, select "notepad". '
+            'If user wants to find/open a file or folder and no app is named, select "file_explorer".'
+        ),
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'app_name': {
+                    'type': 'string',
+                    'enum': ['notepad', 'word', 'powerpoint', 'file_explorer'],
+                    'description': 'The application to launch.'
+                }
+            },
+            'required': ['app_name']
+        }
+    }
+}
+
+navigate = {
     'type': 'function',
     'function': {
         'Operating System': 'Windows',
-        'name': 'open_template',
-        'description': 'Open Windows File Explorer and navigate to a specific file or folder.',
+        'name': 'navigate_explorer',
+        'description': 'Navigate to a specific file or folder in Windows File Explorer. Use this ONLY after opening Windows File Explorer.',
         'parameters': {
             'type': 'object',
             'properties': {
@@ -14,38 +38,40 @@ explorer_tool = {
                 },
                 'file_name': {
                     'type': 'string',
-                    'description': 'Name of the final file to search/open. Always required.'
-                },
-                'app_name': {
-                    'type': 'string',
-                    'description': 'Application to use (e.g., "Windows File Explorer").'
+                    'description': 'Name of the final file or folder to search/open. Always required.'
                 }
             },
-            'required': ['operation', 'file_name']
+            'required': ['file_name']
         }
     }
 }
 
-tool_text = {
-    "type": "function",
-    "function": {
-        'Operating System': 'Windows',
-        "name": "write_template",
-        "description": "Open a text editor application and type specific content into it.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "application": {
-                    "type": "string",
-                    "enum": ["notepad", "word", "power point"],
-                    "description": "The name of the Windows application to open (e.g., 'notepad' or 'word'). If application is not stated, default to notepad."
-                },
-                "text": {
-                    "type": "string",
-                    "description": "The content text that needs to be written inside the application."
+type_text = {
+    'type': 'function',
+    'function': {
+        'name': 'type_text',
+        'description': 'Types text into the currently active window. Use this ONLY after opening an application.',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'text': {
+                    'type': 'string',
+                    'description': 'The text content to type.'
                 }
             },
-            "required": ["application", "text"]
+            'required': ['text']
+        }
+    }
+}
+
+verify = {
+    'type': 'function',
+    'function': {
+        'name': 'verify_screen',
+        'description': 'Looks at the screen to check if the final task is done.',
+        'parameters': {
+            'type': 'object',
+            'properties': {},
         }
     }
 }
