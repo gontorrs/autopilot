@@ -1,0 +1,62 @@
+\chapter{Technical Development}
+\setcounter{section}{0}
+
+\lipsum[1-4]
+
+\section{System design}
+
+Figure~\ref{fig:class_diagram} shows the class diagram.
+
+\image{class_diagram_example.png}{0.75}{Class diagram example}{fig:class_diagram}
+
+\subsection{Description of functional features}
+
+\lipsum[1-2]
+
+\subsection{Operational Environment}
+
+\lipsum[1-2]
+
+\section{Requirements}
+\subsection{Description of requirement attributes}
+
+For the textual description of the different identified requirements, a set of attributes has been selected to describe each requirement. Below is a description of the meaning of each attribute used:
+
+\begin{itemize}
+    \item \textbf{Code}: A unique abbreviated identifier for the requirement. It is constructed using the requirement type code followed by a hyphen and three digits. Requirements are divided into functional and non-functional requirements. The codes used are \textbf{FR} for Functional Requirements and \textbf{NFR} for Non-Functional Requirements. For example: \texttt{FR-001}.
+    
+    \item \textbf{Name}: Extended identification of the requirement.
+    
+    \item \textbf{Description}: A basic description of the identified requirement.
+    
+    \item \textbf{Source}: Indicates the source through which the requirement was identified. This value usually corresponds to one or more use case codes.
+    
+    \item \textbf{Necessity}: Determines the degree of implementation required for the requirement. The possible values are:
+    \begin{itemize}
+        \item \textbf{Essential}: The requirement must be implemented.
+        \item \textbf{Desirable}: It is preferable to implement the requirement, but it is not mandatory.
+        \item \textbf{Optional}: The requirement may be implemented, but it is neither important nor mandatory.
+    \end{itemize}
+    
+    \item \textbf{Priority}: Defines the importance of the requirement, allowing the order in which requirements are included in the design and implementation process to be established. The possible values are:
+    \begin{itemize}
+        \item \textbf{High}: The requirement must be implemented in the early stages of development.
+        \item \textbf{Medium}: The requirement should be implemented once high-priority requirements have been completed.
+        \item \textbf{Low}: The requirement should be implemented in the final stages of development. These requirements do not affect the correct functioning of the system.
+    \end{itemize}
+    
+    \item \textbf{Stability}: Defines the stability of the requirement throughout the software life cycle. This indicates whether the requirement may be modified during the life cycle. The possible values are:
+    \begin{itemize}
+        \item \textbf{Stable}: The requirement will not change during the system life cycle.
+        \item \textbf{Unstable}: The requirement may change during the system life cycle.
+    \end{itemize}
+    
+    \item \textbf{Verifiability}: Defines the degree to which a requirement can be verified, that is, the extent to which it is possible to confirm that the requirement has been implemented in the developed system. The possible values are:
+    \begin{itemize}
+        \item \textbf{High}: It is possible to verify that the requirement has been implemented. These requirements usually correspond to core system functionalities.
+        \item \textbf{Medium}: It is possible to verify that the requirement has been implemented, but it requires complex testing or inspection of the source code.
+        \item \textbf{Low}: It is difficult, or in some cases impossible, to verify whether the requirement has been implemented.
+    \end{itemize}
+\end{itemize}
+
+\requirement{./tables/requirement_1}{Functional requirement 1}{tab:system_requirement_1}
