@@ -1,9 +1,9 @@
-import pyautogui
+import pyautogui as py
 import time
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
 from router import verify, get_coord, check_item
-from tools.vlm_tools import click, ctrl_find, scroll_back
+from tools.vlm_tools import ctrl_find, scroll_back
 
 class Explore_Agent(TypedDict):
     prompt: str
@@ -20,15 +20,15 @@ def node_launch_explorer(state: Explore_Agent):
     #item = check_item(state["vlm_model"], state['app_name'], type='application')
     item = 1
     if not item:
-        pyautogui.hotkey('win', 'e')
+        py.hotkey('win', 'e')
         print(f"Launched without coordinates")
         return {"status": "launched without coordinates"}
     else:
         coord = get_coord(state["vlm_model"], state['app_name'])
         x, y = coord['x'], coord['y']
         print(f"Moving mouse: {x}, {y}")
-        pyautogui.moveTo(x, y, duration=1)
-        click(coord)
+        py.moveTo(x, y, duration=1)
+        py.click()
         return {"status": "launched with coordinates"}
 
 
@@ -48,9 +48,8 @@ def node_navigate(state: Explore_Agent):
                 if coord:
                     x, y = coord['x'], coord['y']
                     print(f"Opening folder '{folder}' at {x}, {y}")
-                    pyautogui.moveTo(x, y, duration=1)
-                    coord['action'] = 'double_click'
-                    click(coord)
+                    py.moveTo(x, y, duration=1)
+                    py.doubleClick()
                     time.sleep(0.7)
                     #scroll_back(-150)
                 #En caso de que este vlm diga que no hay coords, pues hacemos ctrl + f.
@@ -73,9 +72,8 @@ def node_navigate(state: Explore_Agent):
             if coord:
                 x, y = coord['x'], coord['y']
                 print(f"Opening file '{state['file_name']}' at {x}, {y}")
-                pyautogui.moveTo(x, y, duration=1)
-                coord['action'] = 'double_click'
-                click(coord)
+                py.moveTo(x, y, duration=1)
+                py.doubleClick()
                 return {"status": "opened_with_coordinates"}
     
     #útlimo fallback total en caso de que todo falle.
@@ -86,13 +84,15 @@ def node_navigate(state: Explore_Agent):
 
 def node_verify(state: Explore_Agent):
     print(f"4. Verifying action...")
+    attempts = state["attempts"]
     time.sleep(0.7)
     if verify(state["vlm_model"], state['prompt']):
         print("Action verified successfully.")
         return {"status": "verified"}
     else:
         print("Action verification failed.")
-        return {"status": "failed"}
+        return {"status": "failed",
+                "attempts": attempts + 1}
     
 
 #Compilamos el workflow.
@@ -106,9 +106,8 @@ workflow.add_edge("launch", "navigate")
 workflow.add_edge("navigate", "verify")
 
 #Si falla pues intentamos otra vez, un máximo de 2 intentos.
-def verify_edge(state, result):
-    state['attempts'] += 1
-    if result.get("status") == "verified" or state['attempts'] >= 2:
+def verify_edge(state):
+    if state["status"] == "verified" or state['attempts'] >= 2:
         return END
     else:
         return "launch"

@@ -2,7 +2,7 @@ explorer_tool = {
     'type': 'function',
     'function': {
         'Operating System': 'Windows',
-        'name': 'open_template',
+        'name': 'navigate_template',
         'description': 'Open Windows File Explorer and navigate to a specific file or folder.',
         'parameters': {
             'type': 'object',

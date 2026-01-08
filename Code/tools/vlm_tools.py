@@ -11,11 +11,6 @@ tool_click = {
         'parameters': {
             'type': 'object',
             'properties': {
-                'action': {
-                    'type': 'string',
-                    'enum': ['left_click', 'double_click', 'right_click', 'wait'],
-                    'description': 'The action to perform on the screen. left_click to open applications, double_click to open files or folders, right_click to open context menus, wait means the objective is not present.'
-                },
                 'coordinate': {
                     'type': 'array',
                     'items': {'type': 'integer'},
@@ -59,17 +54,6 @@ def check_item_prompt(item, type='item'):
         f"Observe the screenshot. Is the {type} '{item}' present on the screen?"
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
-
-def click(coord: dict):
-    if(coord['action'] == 'double_click'):
-        pyautogui.doubleClick()
-        return f"Double click: ({coord['x']}, {coord['y']})."
-    elif(coord['action'] == 'right_click'):
-        pyautogui.rightClick()
-        return f"Right click: ({coord['x']}, {coord['y']})."
-    else:
-        pyautogui.click()
-        return f"Left click: ({coord['x']}, {coord['y']})."
     
 def ctrl_find(state: dict):
     pyautogui.press('win')

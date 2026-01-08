@@ -67,15 +67,13 @@ def get_coord(model, user_query):
         arguments = tool_call['function']['arguments']
         
         bad_coords = arguments.get('coordinate')
-        action = arguments.get('action', 'left_click')
         
         if bad_coords:
             good_coords = parse_coordinates(bad_coords)
             
             return {
                 "x": good_coords[0],
-                "y": good_coords[1],
-                "action": action
+                "y": good_coords[1]
             }
     print("no tool used.")
     return None

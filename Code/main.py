@@ -20,10 +20,11 @@ model_dict = {
 planner_model = model_dict['qwen4k']
 vlm_model = model_dict['qwen4k-vl']
 
-user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
+user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
+#user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
 intent_name, intent_args = get_tool(planner_model, user_input)
     
-if intent_name == 'open_template':
+if intent_name == 'navigate_template':
     print(f"Intent: {intent_name}")
     print(f"Arguments: {intent_args}")
       
@@ -34,7 +35,8 @@ if intent_name == 'open_template':
        "path": intent_args.get('path', ''),
        "vlm_model": vlm_model,
        "planner_model": planner_model,
-       "status": "start"
+       "status": "start",
+       "attempts": 0
     }
     print(initial_state)
     print("\nFlow Starting")
@@ -50,7 +52,8 @@ elif intent_name == 'write_template':
        "content": intent_args.get('text', ''),
        "vlm_model": vlm_model,
        "planner_model": planner_model,
-       "status": "start"
+       "status": "start",
+       "attempts": 0
     }
     print(initial_state)
     print("\nFlow Starting")
