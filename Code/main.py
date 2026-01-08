@@ -23,12 +23,13 @@ planner_model = model_dict['qwen4k']
 vlm_model = model_dict['qwen4k-vl']
 
 user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
+refined_prompt = f"Original Goal: {user_input}. Based on the history of actions provided in the system context, what is the NEXT step? Do not repeat completed steps."
 default_system_info = "History of actions: \n Step 0: No application is opened."
 over = False;
 i = 0
 while over != True:
     #Paso número uno, abrimos la o las aplicaciones.
-    intent_name, intent_args = get_tool(planner_model, user_input, default_system_info)
+    intent_name, intent_args = get_tool(planner_model, refined_prompt, default_system_info)
     
     if intent_name == 'open_application':
         i+=1
@@ -88,3 +89,4 @@ while over != True:
     else:
         i+=1
         print("Fallo curioso.")
+    print(default_system_info)

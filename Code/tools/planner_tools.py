@@ -71,7 +71,7 @@ verify = {
     'Operating System': 'Windows',
     'function': {
         'name': 'verify_screen',
-        'description': 'Looks at the screen to check if the final task is done.',
+        'description': 'Looks at the screen to check if the entire user goal is done. This is the last tool to be used in the entire flow.',
         'parameters': {
             'type': 'object',
             'properties': {},

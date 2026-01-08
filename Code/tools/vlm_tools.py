@@ -22,6 +22,21 @@ tool_click = {
     }
 }
 
+icons = {
+    "notepad": "It's the Windows 11 Notepad a small blue and white notepad icon with horizontal lines.",
+    "word": "Dark blue square icon with a large white 'W'.",
+    "powerpoint": "Orange square icon with a large white 'P'.",
+    "outlook": "Blue icon with a white 'O' sitting on top of an envelope image.",
+    "file_explorer": "Yellow folder icon, looks like a physical file cabinet folder."
+}
+
+applications = {
+    "notepad": "It's a simple and modern text editor with File/Edit/View menu toolbar. It has a .txt files opened or an 'Untitled' tab",
+    "word": "Blue-themed interface. Look for a large 'W' icon. Includes a 'Ribbon' toolbar at the top with many formatting options. Displays a white rectangular area resembling a physical sheet of paper.",
+    "powerpoint": "Orange or reddish-brown themed interface. Look for a 'P' icon. Features a sidebar on the left with small slide thumbnails and a large central area for the current slide.",
+    "outlook": "Professional blue interface with an 'O' or envelope icon. Divided into three main sections: a narrow navigation rail on the far left, a folder/inbox list, and a large reading pane for emails.",
+    "file_explorer": "Yellow folder icons, navigation pane on the left, search bar top right."
+}
 
 def get_coordinates_prompt(goal):
     return (
@@ -36,12 +51,22 @@ def verification_prompt_file(goal):
     )
 
 def check_item_prompt(item, type='item'):
-    if type == 'application':
+    if type == 'open':
         print('app')
+        description = applications.get(item.lower(), "")
         return (
+            f"You are looking for {item} which has this description {icons}"
             f"Is the application '{item}' present "
             "either as an open window OR as its icon in the taskbar? "
             "If you see its icon in the taskbar opened, minimised or closed with only the icon, answer 'YES'. "
+            "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
+        )
+    elif type == 'application':
+        description = applications.get(item.lower(), "")
+        print('app')
+        return (
+            f"You are looking for an application with this description: {description}"
+            f"Is the application present as an open window? "
             "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
         )
     elif type == 'file':

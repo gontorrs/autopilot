@@ -13,11 +13,11 @@ class open_app(TypedDict):
     attempts: 0
 
 def node_launch(state: open_app):
-    print(f"Launching {state['app_name']}")
     app_name = state['app_name']
     if isinstance(app_name, list):
         app_name = app_name[0]
-    item = check_item(state['vlm_model'], state['app_name'], type='application')
+    print(f"Launching {app_name}")
+    item = check_item(state['vlm_model'], app_name, type='open')
     if not item:
         print("Automated application opening.")
         py.hotkey('win')
@@ -25,7 +25,7 @@ def node_launch(state: open_app):
         py.write(app_name, interval=0.05)
         time.sleep(0.7)
         py.press('enter')
-        time.sleep(0.7)
+        time.sleep(2)
         return {"status": "App launched without coordinates"}
     else:
         coord = get_coord(state["vlm_model"], app_name)
@@ -33,6 +33,7 @@ def node_launch(state: open_app):
         print(f"Moving mouse: {x}, {y}")
         py.moveTo(x, y, duration=1)
         py.click()
+        time.sleep(2)
         return {"status": "App launched with coordinates"}
     
 def node_verify(state: dict):
@@ -41,8 +42,7 @@ def node_verify(state: dict):
     app_name = state['app_name']
     if isinstance(app_name, list):
         app_name = app_name[0]
-    verify_prompt = f"Is the application {app_name} visible or open on the screen?"
-    if verify(state["vlm_model"], verify_prompt):
+    if check_item(state['vlm_model'], app_name, type='application'):
         print("Action verified successfully.")
         return {"status": f"Application {app_name} opened correctly."}
     else:

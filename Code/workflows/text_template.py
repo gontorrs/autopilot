@@ -14,6 +14,7 @@ class Write_Agent(TypedDict):
     attempts: 0
 
 def node_write_content(state: Write_Agent):
+    print("Entering node_write_content")
     app_name = state['app_name']
     if isinstance(app_name, list):
         app_name = app_name[0]
@@ -26,6 +27,7 @@ def node_write_content(state: Write_Agent):
     if isinstance(content, list):
         content = content[0]
     py.write(content, interval=0.05)
+    print(f"written content {content}")
     return {"status": "Content written."}
 
 def node_verify(state: Write_Agent):
@@ -38,7 +40,7 @@ def node_verify(state: Write_Agent):
     verify_prompt = f"Is the text '{content}' visible in the {app_name} window?"
     if verify(state["vlm_model"], verify_prompt):
         print("Action verified successfully.")
-        return {"status": "Verified that the text was written."}
+        return {"status": f"Text written correctly in {app_name}."}
     else:
         print("Action verification failed.")
         return {"status": f"The text was not written correctly in {app_name}.",
