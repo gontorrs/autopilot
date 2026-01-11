@@ -18,3 +18,5 @@ __pycache__/
 *.bcf
 *.run.xml
 *.bbl
+test.py
+Code/test/
