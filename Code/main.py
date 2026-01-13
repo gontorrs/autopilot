@@ -1,6 +1,7 @@
 from router import get_tool
 from workflows.files_template import file_explorer
 from workflows.text_template import write_text
+from workflows.change_text_template import change_text
 
 model_dict = {
     'gemma4k': 'gemma3:4b-it-qat',
@@ -20,11 +21,12 @@ model_dict = {
 planner_model = model_dict['qwen4k']
 vlm_model = model_dict['qwen4k-vl']
 
-user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
+#user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
+user_input = "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold."
 intent_name, intent_args = get_tool(planner_model, user_input)
     
-if intent_name == 'navigate_template':
+if intent_name == 'navigate_tool':
     print(f"Intent: {intent_name}")
     print(f"Arguments: {intent_args}")
       
@@ -42,7 +44,7 @@ if intent_name == 'navigate_template':
     print("\nFlow Starting")
     file_explorer.invoke(initial_state)
 
-elif intent_name == 'write_template':
+elif intent_name == 'write_tool':
     print(f"Intent: {intent_name}")
     print(f"Arguments: {intent_args}")
       
@@ -58,6 +60,25 @@ elif intent_name == 'write_template':
     print(initial_state)
     print("\nFlow Starting")
     write_text.invoke(initial_state)
+
+elif intent_name == 'change_tool':
+    print(f"Intent: {intent_name}")
+    print(f"Arguments: {intent_args}")
+      
+    initial_state = {
+        "prompt": user_input,
+        "app_name": intent_args.get('application', 'word'),
+        "file_name": intent_args.get('file_name', ''),
+        "content": intent_args.get('content', ''),
+        "style": intent_args.get('style', ''),
+        "vlm_model": vlm_model,
+        "planner_model": planner_model,
+        "status": "start",
+        "attempts": 0
+    }
+    print(initial_state)
+    print("\nFlow Starting")
+    change_text.invoke(initial_state)
         
 elif intent_name:
     print(f"Intent not classified.")

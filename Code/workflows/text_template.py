@@ -22,7 +22,7 @@ def node_launch_editor(state: Write_Agent):
         py.write(state['app_name'], interval=0.05)
         time.sleep(1)
         py.press('enter')
-        print(f"Launched without coordinates")
+        return {"status": "launched without coordinates"}
     else:
         coord = get_coord(state["vlm_model"], state['app_name'])
         x, y = coord['x'], coord['y']

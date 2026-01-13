@@ -2,7 +2,7 @@ explorer_tool = {
     'type': 'function',
     'function': {
         'Operating System': 'Windows',
-        'name': 'navigate_template',
+        'name': 'navigate_tool',
         'description': 'Open Windows File Explorer and navigate to a specific file or folder.',
         'parameters': {
             'type': 'object',
@@ -30,7 +30,7 @@ tool_text = {
     "type": "function",
     "function": {
         'Operating System': 'Windows',
-        "name": "write_template",
+        "name": "write_tool",
         "description": "Open a text editor application and type specific content into it.",
         "parameters": {
             "type": "object",
@@ -49,6 +49,41 @@ tool_text = {
         }
     }
 }
+
+change_text_tool = {
+    "type": "function",
+    "function": {
+        "Operating System": "Windows",
+        "name": "change_tool",
+        "description": "Open a specific file in a text editor application and apply formatting (bold, italic, underlined) to a specific text segment.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "application": {
+                    "type": "string",
+                    "enum": ["notepad", "Microsoft Word", "Microsoft Power Point"],
+                    "description": "The name of the Windows application to open. If the user does not specify an application, this must default to 'word'."
+                },
+                "file_name": {
+                    "type": "string",
+                    "description": "The name of the file to open where the text is located."
+                },
+                "content": {
+                    "type": "string",
+                    "description": "The specific text content inside the document that needs to be formatted."
+                },
+                "style": {
+                    "type": "string",
+                    "enum": ["bold", "italic", "underlined"],
+                    "description": "The style to apply to the text content."
+                }
+            },
+            "required": ["application", "file_name", "content", "style"]
+        }
+    }
+}
+
+
 
 def _collect_tools():
     tools = []

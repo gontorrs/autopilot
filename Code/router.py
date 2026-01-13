@@ -1,6 +1,6 @@
 import ollama
 from tools.planner_tools import planner_tools
-from tools.vlm_tools import verification_prompt_file, get_coordinates_prompt, vlm_tools, check_item_prompt
+from tools.vlm_tools import verification_prompt_file, get_coordinates_prompt, vlm_tools, check_item_prompt, verification_prompt_formatting
 import pyautogui
 import re
 import io
@@ -10,7 +10,8 @@ def get_tool(model, user_query):
     print(f"Checking planner with {model}")
     
     response = ollama.chat(model=model, messages=[{'role': 'user', 'content': user_query}], tools=planner_tools)
-    
+    answer = response['message']['content'].strip()
+    print(f"LLM answer for item check: {answer}")
     if response['message'].get('tool_calls'):
         tool_call = response['message']['tool_calls'][0]
         func_name = tool_call['function']['name']
@@ -25,6 +26,14 @@ def take_screenshot():
     screenshot.save(buffer, format='PNG')
     img_bytes = buffer.getvalue()
     return img_bytes
+
+def verify_formatting(model, text, style):
+    print(f"Verifying: '{text}' should be {style}")
+    img_bytes = take_screenshot()
+    response = ollama.chat(model=model, messages=[{'role':'user', 'content': verification_prompt_formatting(text, style), 'images': [img_bytes]}])
+    answer = response['message']['content'].strip()
+    print(f"VLM answer: {answer}")
+    return "YES" in answer.upper()
 
 def verify(model, user_query):
     print(f"Checking VLM with {model}")

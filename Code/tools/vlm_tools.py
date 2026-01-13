@@ -1,6 +1,5 @@
 import pyautogui
 import time
-# vlm_tools.py
 
 
 tool_click = {
@@ -14,10 +13,10 @@ tool_click = {
                 'coordinate': {
                     'type': 'array',
                     'items': {'type': 'integer'},
-                    'description': 'Coordinate [x, y] in 0-1000 scale. If action is wait, return [-1, -1].'
+                    'description': 'Coordinate [x, y] in 0-1000 scale.'
                 }
             },
-            'required': ['action', 'coordinate']
+            'required': ['coordinate']
         }
     }
 }
@@ -25,7 +24,7 @@ tool_click = {
 
 def get_coordinates_prompt(goal):
     return (
-        f"Observe the screenshot and identify where to click to: '{goal}' folder, file or application. "
+        f"Observe the screenshot and identify where to click to: '{goal}' folder, file, application, butto or area. "
         "Use the tool_click tool to specify the action and normalized coordinates (0-1000 scale)."
         )
 
@@ -50,8 +49,33 @@ def check_item_prompt(item, type='item'):
         f"Note: Ignore file extensions. If you see '{item}.pdf', or just '{item}', or any other extension counts as YES."
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
+    elif type == 'text_content':
+        return (
+        f"Observe the screenshot. Look ONLY at the content inside the open document window (not file names, not taskbar, not folder names). "
+        f"Is the text '{item}' visible as content WITHIN the open document? "
+        f"IMPORTANT: Only answer YES if you can see this exact text as part of the document content that is currently displayed and readable. "
+        "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
+    )
     return (
         f"Observe the screenshot. Is the {type} '{item}' present on the screen?"
+        "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
+    )
+def verification_prompt_formatting(text, style):
+    style_description = {
+        'bold': 'in bold/thick font weight',
+        'italic': 'in italic/slanted style', 
+        'underlined': 'with an underline'
+    }
+    
+    style_key = style.lower()
+    if style_key not in style_description:
+        style_key = 'bold'
+    
+    return (
+        f"Observe the screenshot. Look at the document content and find the text '{text}'. "
+        f"Is this text formatted {style_description[style_key]}? "
+        f"IMPORTANT: Ignore any selection highlights (grey/blue backgrounds) - focus ONLY on the actual text formatting. "
+        f"Look at the font weight/style of the letters themselves. "
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
     

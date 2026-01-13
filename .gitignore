@@ -5,7 +5,6 @@ __pycache__/
 **/images/
 *.env
 **/OLD/
-# LaTeX temporales
 *.aux
 *.log
 *.out
