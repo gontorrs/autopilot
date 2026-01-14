@@ -2,7 +2,7 @@ import pyautogui
 import time
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
-from router import verify, get_coord, check_item
+from utils.router import verify, get_coord, check_item
 from tools.vlm_tools import click
 
 class Explore_Agent(TypedDict):

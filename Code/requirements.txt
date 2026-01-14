@@ -5,3 +5,5 @@ langgraph
 pyautogui
 pyscreeze
 pillow
+psutil
+GPUtil
