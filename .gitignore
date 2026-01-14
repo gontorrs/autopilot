@@ -17,6 +17,7 @@ __pycache__/
 *.bcf
 *.run.xml
 *.bbl
-test.py
+test_gui_actor.py
+test_paligemma2.py
 Code/test/
 Code/metrics.py
