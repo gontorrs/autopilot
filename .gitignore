@@ -19,4 +19,3 @@ __pycache__/
 *.bbl
 test.py
 Code/test/
-Code/metrics.py

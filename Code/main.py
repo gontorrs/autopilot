@@ -3,23 +3,31 @@ from workflows.files_template import file_explorer
 from workflows.text_template import write_text
 from workflows.change_text_template import change_text
 
-model_dict = {
+planner_models = {
+    'gemma3n': 'gemma3n:e2b',
     'gemma4k': 'gemma3:4b-it-qat',
     'functiongemma': 'functiongemma:latest',
-    'qwen2k-vl': 'qwen3-vl:2b-instruct-q4_K_M',
-    'qwen4k-vl': 'qwen3-vl:4b-instruct-q4_K_M',
     'llama3k': 'llama3.2:3b-instruct-q4_K_M',
     'llama3': 'llama3.2:3b',
     'ministral3': 'ministral-3:3b',
     'ministral3k': 'ministral-3:3b-instruct-2512-q4_K_M',
     'qwen4k': 'qwen3:4b-instruct-2507-q4_K_M',
-    'qwen4instruct': 'qwen3:4b-instruct',
-    'qwen4-vl': 'qwen3-vl:4b',
-    'qwen2-vl': 'qwen3-vl:2b-instruct'
+    'qwen4instruct': 'qwen3:4b-instruct'
 }
 
-planner_model = model_dict['qwen4k']
-vlm_model = model_dict['qwen4k-vl']
+vlm_models = {
+    'qwen2k-vl': 'qwen3-vl:2b-instruct-q4_K_M',
+    'gemma4k': 'gemma3:4b-it-qat',
+    'ministral3': 'ministral-3:3b',
+    'ministral3k': 'ministral-3:3b-instruct-2512-q4_K_M',
+    'qwen4k-vl': 'qwen3-vl:4b-instruct-q4_K_M',
+    'qwen4-vl': 'qwen3-vl:4b',
+    'qwen2-vl': 'qwen3-vl:2b-instruct',
+    'phi3': 'llava-phi3:3.8b'
+}
+
+planner_model = planner_models['qwen4k']
+vlm_model = vlm_models['qwen4k-vl']
 
 #user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."

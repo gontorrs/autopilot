@@ -2,23 +2,66 @@ import ollama
 from tools.planner_tools import planner_tools
 from tools.vlm_tools import verification_prompt_file, get_coordinates_prompt, vlm_tools, check_item_prompt, verification_prompt_formatting
 import pyautogui
-import re
 import io
+import time
 import json
 
 def get_tool(model, user_query):
-    print(f"Checking planner with {model}")
+    if "gemma" in model and "function" not in model:
+        gemma_prompt = f"""You are a function calling assistant. Analyze the user query and determine which function to call with the appropriate parameters.
+
+Available functions:
+{json.dumps(planner_tools, indent=2)}
+
+User query: {user_query}
+
+Respond ONLY with a JSON object in this exact format:
+{{
+  "function_name": "navigate_tool" or "write_tool" or "change_tool",
+  "arguments": {{
+    "param1": "value1",
+    "param2": "value2"
+  }}
+}}
+
+Do not include any explanation, only the JSON object."""
+        start_time = time.time()
+
+        response = ollama.chat(model=model, messages=[{'role': 'user', 'content': gemma_prompt}])
+
+        end_time = time.time() - start_time
+        
+        answer = response['message']['content'].strip()
+        print(f"LLM answer: {answer}")
+        
+        if '```json' in answer:
+            answer = answer.split('```json')[1].split('```')[0].strip()
+        elif '```' in answer:
+            answer = answer.split('```')[1].split('```')[0].strip()
+
+        parsed = json.loads(answer)
+        func_name = parsed.get('function_name')
+        arguments = parsed.get('arguments', {})
+        return func_name, arguments, end_time
     
-    response = ollama.chat(model=model, messages=[{'role': 'user', 'content': user_query}], tools=planner_tools)
-    answer = response['message']['content'].strip()
-    print(f"LLM answer for item check: {answer}")
-    if response['message'].get('tool_calls'):
-        tool_call = response['message']['tool_calls'][0]
-        func_name = tool_call['function']['name']
-        arguments = tool_call['function']['arguments']
-        return func_name, arguments
     else:
-        print("no tool")
+        print(f"Checking planner with {model}")
+        start_time = time.time()
+
+        response = ollama.chat(model=model, messages=[{'role': 'user', 'content': user_query}], tools=planner_tools)
+
+        end_time = time.time() - start_time
+        answer = response['message']['content'].strip()
+
+        print(f"LLM answer for item check: {answer}")
+        if response['message'].get('tool_calls'):
+            tool_call = response['message']['tool_calls'][0]
+            func_name = tool_call['function']['name']
+            arguments = tool_call['function']['arguments']
+            return func_name, arguments, end_time
+        else:
+            print("no tool")
+            return None, None, end_time
 
 def take_screenshot():
     screenshot = pyautogui.screenshot()

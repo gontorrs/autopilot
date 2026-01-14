@@ -83,8 +83,6 @@ change_text_tool = {
     }
 }
 
-
-
 def _collect_tools():
     tools = []
     g = globals()
