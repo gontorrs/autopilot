@@ -1,0 +1,3 @@
+(open word)
+(change_text word hola_me_llamo_gonzalo bold)
+; cost = 2 (unit cost)

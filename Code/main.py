@@ -21,9 +21,9 @@ model_dict = {
 planner_model = model_dict['qwen4k']
 vlm_model = model_dict['qwen4k-vl']
 
-#user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
+user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-user_input = "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold."
+#3user_input = "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold."
 intent_name, intent_args = get_tool(planner_model, user_input)
     
 if intent_name == 'navigate_tool':
