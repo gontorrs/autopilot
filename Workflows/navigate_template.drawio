@@ -36,33 +36,6 @@
                 <mxCell id="dgOjKsuumcO5vC2E-GCq-10" value="START" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
                     <mxGeometry x="444.98999999999995" y="340" width="90.01" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="dgOjKsuumcO5vC2E-GCq-11" value="" style="group" parent="1" connectable="0" vertex="1">
-                    <mxGeometry x="320" y="480" width="360" height="110" as="geometry"/>
-                </mxCell>
-                <mxCell id="dgOjKsuumcO5vC2E-GCq-13" value="" style="swimlane;startSize=0;" parent="dgOjKsuumcO5vC2E-GCq-11" vertex="1">
-                    <mxGeometry y="-60" width="340" height="170" as="geometry"/>
-                </mxCell>
-                <mxCell id="dgOjKsuumcO5vC2E-GCq-14" value="" style="group" parent="dgOjKsuumcO5vC2E-GCq-13" connectable="0" vertex="1">
-                    <mxGeometry x="210" y="20" width="118.14" height="120" as="geometry"/>
-                </mxCell>
-                <mxCell id="dgOjKsuumcO5vC2E-GCq-15" value="Tools" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-14" vertex="1">
-                    <mxGeometry x="7.876" y="6.9230769230769225" width="102.388" height="20.769230769230766" as="geometry"/>
-                </mxCell>
-                <mxCell id="dgOjKsuumcO5vC2E-GCq-16" value="navigate_template" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-14" vertex="1">
-                    <mxGeometry x="7.876" y="34.61538461538462" width="102.388" height="20.769230769230766" as="geometry"/>
-                </mxCell>
-                <mxCell id="dgOjKsuumcO5vC2E-GCq-17" value="write_template" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-14" vertex="1">
-                    <mxGeometry x="7.876" y="62.30769230769231" width="102.388" height="20.769230769230766" as="geometry"/>
-                </mxCell>
-                <mxCell id="dgOjKsuumcO5vC2E-GCq-18" value="" style="swimlane;startSize=0;" parent="dgOjKsuumcO5vC2E-GCq-14" vertex="1">
-                    <mxGeometry width="118.14" height="120" as="geometry"/>
-                </mxCell>
-                <mxCell id="7" value="change_template" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-18" vertex="1">
-                    <mxGeometry x="7.875999999999976" y="89.99769230769243" width="102.388" height="20.769230769230766" as="geometry"/>
-                </mxCell>
-                <mxCell id="dgOjKsuumcO5vC2E-GCq-12" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); --darkreader-inline-color: var(--darkreader-text-ffffff, #e8e6e3);&quot; data-darkreader-inline-color=&quot;&quot;&gt;&lt;b&gt;Prompt&lt;/b&gt;: Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-13" vertex="1">
-                    <mxGeometry x="10" y="50" width="170" height="70" as="geometry"/>
-                </mxCell>
                 <mxCell id="dgOjKsuumcO5vC2E-GCq-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="dgOjKsuumcO5vC2E-GCq-13" target="dgOjKsuumcO5vC2E-GCq-4" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
@@ -327,6 +300,30 @@
                 </mxCell>
                 <mxCell id="9" value="Node" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
                     <mxGeometry x="830" y="340" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="dgOjKsuumcO5vC2E-GCq-13" value="" style="swimlane;startSize=0;" parent="1" vertex="1">
+                    <mxGeometry x="320.91" y="420" width="340" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="dgOjKsuumcO5vC2E-GCq-14" value="" style="group" parent="dgOjKsuumcO5vC2E-GCq-13" connectable="0" vertex="1">
+                    <mxGeometry x="210" y="20" width="118.14" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="dgOjKsuumcO5vC2E-GCq-15" value="Tools" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-14" vertex="1">
+                    <mxGeometry x="7.876" y="6.9230769230769225" width="102.388" height="20.769230769230766" as="geometry"/>
+                </mxCell>
+                <mxCell id="dgOjKsuumcO5vC2E-GCq-16" value="navigate_template" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-14" vertex="1">
+                    <mxGeometry x="7.876" y="34.61538461538462" width="102.388" height="20.769230769230766" as="geometry"/>
+                </mxCell>
+                <mxCell id="dgOjKsuumcO5vC2E-GCq-17" value="write_template" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-14" vertex="1">
+                    <mxGeometry x="7.876" y="62.30769230769231" width="102.388" height="20.769230769230766" as="geometry"/>
+                </mxCell>
+                <mxCell id="dgOjKsuumcO5vC2E-GCq-18" value="" style="swimlane;startSize=0;" parent="dgOjKsuumcO5vC2E-GCq-14" vertex="1">
+                    <mxGeometry width="118.14" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="change_template" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-18" vertex="1">
+                    <mxGeometry x="7.875999999999976" y="89.99769230769243" width="102.388" height="20.769230769230766" as="geometry"/>
+                </mxCell>
+                <mxCell id="dgOjKsuumcO5vC2E-GCq-12" value="&lt;font style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); --darkreader-inline-color: var(--darkreader-text-ffffff, #e8e6e3);&quot; data-darkreader-inline-color=&quot;&quot;&gt;&lt;b&gt;Prompt&lt;/b&gt;: Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="dgOjKsuumcO5vC2E-GCq-13" vertex="1">
+                    <mxGeometry x="10" y="50" width="170" height="70" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

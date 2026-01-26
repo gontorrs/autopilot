@@ -5,8 +5,7 @@
 )
 
 (:init
-    (not (open Notepad))
-    (text Hola_me_llamo_Gonzalo)
+    (empty)
 )
 
 (:goal (and

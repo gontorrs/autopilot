@@ -1,16 +1,11 @@
-;Header and description
-
 (define (domain gui)
 
-;remove requirements that are not needed
 (:requirements :strips :typing :negative-preconditions)
 
 (:types file app folder text style)
 
-; un-comment following line if constants are needed
-;(:constants )
-
 (:predicates
+    (empty)
     (open ?v - app)
     (current ?v - folder)
     (inside ?child_folder - folder ?current - folder)
@@ -18,21 +13,24 @@
     (open_file)
     (typed_text)
     (changed_text)
+    (created_file)
     (text ?text - text)
+    (text_searched ?text - text)
     (style ?style - style)
+    (can_create_files ?folder - folder)
 )
 
 (:action open
     :parameters (?app - app)
     :precondition (and 
-        (not(open ?app)))
-    :effect(open ?app)
+        (not(open ?app)) (empty))
+    :effect(and (open ?app) (not(empty)))
 )
 
 (:action navigate
     :parameters (?app - app ?current - folder ?child - folder)
     :precondition (and 
-        (open ?app) (current ?current) (inside ?child ?current)
+        (open ?app) (current ?current) (inside ?child ?current) (not (empty))
     )
     :effect (and 
         (current ?child)
@@ -42,27 +40,34 @@
 
 (:action open_file
     :parameters (?app - app ?current - folder ?file - file)
-    :precondition (and (open ?app) (current ?current) (file_to ?file ?current) (not (open_file)))
+    :precondition (and (open ?app) (current ?current) (file_to ?file ?current) (not (open_file)) (not (empty)))
     :effect (and (open_file))
 )
 
 (:action type
     :parameters (?app - app ?text - text)
-    :precondition (and (open ?app) (not(typed_text)))
+    :precondition (and (open ?app) (not(typed_text)) (not (empty)))
     :effect (and (text ?text) (typed_text))
 )
 
 (:action search_text
     :parameters (?app - app ?text - text)
-    :precondition (and (open ?app))
-    :effect (and (text ?text))
+    :precondition (and (open ?app) (not(changed_text)) (not (empty)) (open_file))
+    :effect (text_searched ?text)
 )
 
 (:action change_text
     :parameters (?app - app ?text - text ?style - style)
-    :precondition (and (open ?app) (not(changed_text)))
-    :effect (and (text ?text) (style ?style) (changed_text))
+    :precondition (and (open ?app) (text_searched ?text) (not(changed_text)) (not (empty)) (open_file))
+    :effect (and (style ?style) (changed_text))
 )
+
+(:action create_file
+    :parameters (?app - app ?file - file ?current - folder)
+    :precondition (and (open ?app) (current ?current) (not(created_file)) (not (empty)) (can_create_files ?current))
+    :effect (and (created_file) (file_to ?file ?current))
+)
+
 
 
     

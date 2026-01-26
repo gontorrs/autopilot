@@ -1,13 +1,17 @@
 (define (problem change) (:domain gui)
 (:objects
-    Word - app
+    File_Explorer - app
     Hola_me_llamo_Gonzalo - text
     bold - style
+    Default Downloads - folder
+    gonzalo_doc - file
 )
 
 (:init
-    (not (open Word))
-    (text Hola_me_llamo_Gonzalo)
+    (empty)
+    (current Default)
+    (inside Downloads Default)
+    (file_to gonzalo_doc Downloads)
 )
 
 (:goal (and

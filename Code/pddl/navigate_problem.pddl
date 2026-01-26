@@ -1,4 +1,4 @@
-(define (problem files) (:domain gui)
+(define (problem navigate) (:domain gui)
 (:objects
     File_Explorer - app
     Default Documents TFG Docs - folder
@@ -6,6 +6,7 @@
 )
 
 (:init
+    (empty)
     (current Default)
     (inside Documents Default)
     (inside TFG Documents)
