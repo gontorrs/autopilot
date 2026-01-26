@@ -1,0 +1,6 @@
+(open windows_file_explorer)
+(navigate windows_file_explorer default documents)
+(navigate windows_file_explorer documents tfg)
+(navigate windows_file_explorer tfg docs)
+(open_file windows_file_explorer docs gonzalo_anteproyecto_pdf)
+; cost = 5 (unit cost)
