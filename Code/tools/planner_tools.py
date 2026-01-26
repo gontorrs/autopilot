@@ -10,7 +10,7 @@ explorer_tool = {
                 'path': {
                     'type': 'array',
                     'items': {'type': 'string'},
-                    'description': 'Optional ordered list of folders to navigate: ["downloads", "masters"]. Omit if path is unknown.'
+                    'description': 'Ordered list of folders to navigate: ["downloads", "masters"]. Omit if path is unknown.'
                 },
                 'file_name': {
                     'type': 'string',
@@ -61,12 +61,12 @@ change_text_tool = {
             "properties": {
                 "application": {
                     "type": "string",
-                    "enum": ["notepad", "Microsoft Word", "Microsoft Power Point"],
-                    "description": "The name of the Windows application to open. If the user does not specify an application, this must default to 'word'."
+                    "enum": ["Notepad", "Microsoft Word", "Microsoft Power Point", "File Explorer", "Microsoft Outlook"],
+                    "description": "The name of the Windows application to open to acces that file. If the user does not specify an application, this must default to 'File Explorer'."
                 },
                 "file_name": {
                     "type": "string",
-                    "description": "The name of the file to open where the text is located."
+                    "description": "The name of the file to open to format the text."
                 },
                 "content": {
                     "type": "string",

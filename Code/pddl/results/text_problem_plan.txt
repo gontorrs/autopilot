@@ -1,0 +1,3 @@
+(open notepad)
+(type notepad meeting_tomorrow_at_3_pm_in_tokyo.)
+; cost = 2 (unit cost)

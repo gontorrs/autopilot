@@ -24,7 +24,7 @@ tool_click = {
 
 def get_coordinates_prompt(goal):
     return (
-        f"Observe the screenshot and identify where to click to: '{goal}' folder, file, application, butto or area. "
+        f"Observe the screenshot and identify where to click to: '{goal}' folder, file, application, button or area. "
         "Use the tool_click tool to specify the action and normalized coordinates (0-1000 scale)."
         )
 
@@ -79,10 +79,10 @@ def verification_prompt_formatting(text, style):
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
     
-def ctrl_find(state: dict):
+def ctrl_find(file_name):
     pyautogui.press('win')
     time.sleep(1)
-    pyautogui.write(state['file_name'], interval=0.05)
+    pyautogui.write(file_name, interval=0.05)
     time.sleep(1)
     print(f"3. Opening file...")
     pyautogui.press('enter')
