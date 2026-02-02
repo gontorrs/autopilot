@@ -1,0 +1,64 @@
+{
+  "model": "llama3k",
+  "user_input": "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",
+  "total_time": 5.417402744293213,
+  "steps_count": 1,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": null,
+      "args": null,
+      "status": "attempting",
+      "result": "No intent generated (None)."
+    }
+  ],
+  "cpu_avg": 15.775000000000002,
+  "cpu_peak": 150.9,
+  "ram_avg_mb": 197.87513950892858,
+  "ram_peak_mb": 198.43359375,
+  "vram_avg_mb": 2335.8214285714284,
+  "vram_peak_mb": 4522.0
+}
+,{
+  "model": "llama3k",
+  "user_input": "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.",
+  "total_time": 1.555856704711914,
+  "steps_count": 1,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": null,
+      "args": null,
+      "status": "attempting",
+      "result": "No intent generated (None)."
+    }
+  ],
+  "cpu_avg": 0.0,
+  "cpu_peak": 0.0,
+  "ram_avg_mb": 182.802734375,
+  "ram_peak_mb": 182.80859375,
+  "vram_avg_mb": 2996.0,
+  "vram_peak_mb": 2996.0
+}
+,{
+  "model": "llama3k",
+  "user_input": "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.",
+  "total_time": 0.5538828372955322,
+  "steps_count": 1,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": null,
+      "args": null,
+      "status": "attempting",
+      "result": "No intent generated (None)."
+    }
+  ],
+  "cpu_avg": 0.0,
+  "cpu_peak": 0.0,
+  "ram_avg_mb": 182.80859375,
+  "ram_peak_mb": 182.8125,
+  "vram_avg_mb": 2966.0,
+  "vram_peak_mb": 2966.0
+}
+,

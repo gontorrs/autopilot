@@ -1,0 +1,144 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global/global}
+    \entry{Keyder:2010}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=d54b8c1797d0eff40d5d927244883c1c}{%
+           family={Keyder},
+           familyi={K\bibinitperiod},
+           given={Emil},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b3b3bd2ad9b122b7907272c4f6e07385}{%
+           family={Richter},
+           familyi={R\bibinitperiod},
+           given={Silvia},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=518daa5cb5c87e0f92aa342eb223eba3}{%
+           family={Helmert},
+           familyi={H\bibinitperiod},
+           given={Malte},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{location}{1}{%
+        {Amsterdam, The Netherlands}%
+      }
+      \strng{namehash}{185d91325dfd9a76f26c2516d19b0ef5}
+      \strng{fullhash}{91e688cb419a9a62316592912b83ab21}
+      \strng{fullhashraw}{91e688cb419a9a62316592912b83ab21}
+      \strng{bibnamehash}{91e688cb419a9a62316592912b83ab21}
+      \strng{authorbibnamehash}{91e688cb419a9a62316592912b83ab21}
+      \strng{authornamehash}{185d91325dfd9a76f26c2516d19b0ef5}
+      \strng{authorfullhash}{91e688cb419a9a62316592912b83ab21}
+      \strng{authorfullhashraw}{91e688cb419a9a62316592912b83ab21}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 2010 Conference on ECAI 2010: 19th European Conference on Artificial Intelligence}
+      \field{title}{Sound and Complete Landmarks for And/Or Graphs}
+      \field{year}{2010}
+      \field{pages}{335\bibrangedash 340}
+      \range{pages}{6}
+    \endentry
+    \entry{nas:1972}{book}{}{}
+      \name{author}{2}{}{%
+        {{un=1,uniquepart=given,hash=8f62a7a8b535a0a3285530036452983a}{%
+           family={Newell},
+           familyi={N\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=1}}%
+        {{un=2,uniquepart=given,hash=7196e626d3f0d71a36b2d95d761a3506}{%
+           family={Simon},
+           familyi={S\bibinitperiod},
+           given={{H.A}.},
+           giveni={H\bibinitperiod},
+           givenun=2}}%
+      }
+      \list{location}{1}{%
+        {Upper Saddle River, NJ, USA}%
+      }
+      \list{publisher}{1}{%
+        {Prentice Hall, Englewood Cliffs}%
+      }
+      \strng{namehash}{f619f823249b30ece53e0bba5b339297}
+      \strng{fullhash}{f619f823249b30ece53e0bba5b339297}
+      \strng{fullhashraw}{f619f823249b30ece53e0bba5b339297}
+      \strng{bibnamehash}{f619f823249b30ece53e0bba5b339297}
+      \strng{authorbibnamehash}{f619f823249b30ece53e0bba5b339297}
+      \strng{authornamehash}{f619f823249b30ece53e0bba5b339297}
+      \strng{authorfullhash}{f619f823249b30ece53e0bba5b339297}
+      \strng{authorfullhashraw}{f619f823249b30ece53e0bba5b339297}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Human Problem Solving}
+      \field{year}{1972}
+    \endentry
+    \entry{nas:1969}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=2,uniquepart=given,hash=80bd7010b965c112afc55f6699003232}{%
+           family={Simon},
+           familyi={S\bibinitperiod},
+           given={Herbert},
+           giveni={H\bibinitperiod},
+           givenun=2}}%
+        {{un=1,uniquepart=given,hash=f080ae30b90bf5e123b455203be2ac05}{%
+           family={Newell},
+           familyi={N\bibinitperiod},
+           given={Allen\bibnamedelima H.},
+           giveni={A\bibinitperiod\bibinitdelim H\bibinitperiod},
+           givenun=1}}%
+      }
+      \strng{namehash}{6bdad961519aeca6d2309f8cfb38ac04}
+      \strng{fullhash}{6bdad961519aeca6d2309f8cfb38ac04}
+      \strng{fullhashraw}{6bdad961519aeca6d2309f8cfb38ac04}
+      \strng{bibnamehash}{6bdad961519aeca6d2309f8cfb38ac04}
+      \strng{authorbibnamehash}{6bdad961519aeca6d2309f8cfb38ac04}
+      \strng{authornamehash}{6bdad961519aeca6d2309f8cfb38ac04}
+      \strng{authorfullhash}{6bdad961519aeca6d2309f8cfb38ac04}
+      \strng{authorfullhashraw}{6bdad961519aeca6d2309f8cfb38ac04}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Artificial Intelligence}
+      \field{number}{5}
+      \field{title}{Gps: A case study in generality and problem solving}
+      \field{volume}{2}
+      \field{year}{1969}
+      \field{pages}{109\bibrangedash 124}
+      \range{pages}{16}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

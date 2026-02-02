@@ -1,0 +1,52 @@
+{
+  "model": "functiongemma",
+  "user_input": "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",
+  "total_time": 124.4981050491333,
+  "steps_count": 1,
+  "execution_trace": [
+    {
+      "error": "Recursion limit of 25 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT"
+    }
+  ],
+  "cpu_avg": 3.4475409836065576,
+  "cpu_peak": 152.6,
+  "ram_avg_mb": 184.6269018954918,
+  "ram_peak_mb": 202.9453125,
+  "vram_avg_mb": 5032.383606557377,
+  "vram_peak_mb": 5037.0
+}
+,{
+  "model": "functiongemma",
+  "user_input": "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.",
+  "total_time": 143.28993463516235,
+  "steps_count": 1,
+  "execution_trace": [
+    {
+      "error": "Recursion limit of 25 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT"
+    }
+  ],
+  "cpu_avg": 6.246554149085795,
+  "cpu_peak": 295.3,
+  "ram_avg_mb": 191.44617506153304,
+  "ram_peak_mb": 219.5078125,
+  "vram_avg_mb": 5037.0,
+  "vram_peak_mb": 5037.0
+}
+,{
+  "model": "functiongemma",
+  "user_input": "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.",
+  "total_time": 122.48643064498901,
+  "steps_count": 1,
+  "execution_trace": [
+    {
+      "error": "Recursion limit of 25 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT"
+    }
+  ],
+  "cpu_avg": 3.895986622073579,
+  "cpu_peak": 153.1,
+  "ram_avg_mb": 196.03810880016724,
+  "ram_peak_mb": 224.9375,
+  "vram_avg_mb": 5037.0,
+  "vram_peak_mb": 5037.0
+}
+,

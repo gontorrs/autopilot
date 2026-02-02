@@ -1,0 +1,178 @@
+{
+  "model": "qwen4instruct",
+  "user_input": "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",
+  "total_time": 144.17949175834656,
+  "steps_count": 5,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 2,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 3,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 4,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 5,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer did not launch."
+    }
+  ],
+  "cpu_avg": 4.983976261127596,
+  "cpu_peak": 153.7,
+  "ram_avg_mb": 229.6660909681009,
+  "ram_peak_mb": 258.91015625,
+  "vram_avg_mb": 3915.9169139465876,
+  "vram_peak_mb": 4650.0
+}
+,{
+  "model": "qwen4instruct",
+  "user_input": "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.",
+  "total_time": 115.10227346420288,
+  "steps_count": 5,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    },
+    {
+      "step": 2,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    },
+    {
+      "step": 3,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    },
+    {
+      "step": 4,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    },
+    {
+      "step": 5,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    }
+  ],
+  "cpu_avg": 5.664218455743879,
+  "cpu_peak": 153.3,
+  "ram_avg_mb": 240.96695503766477,
+  "ram_peak_mb": 270.984375,
+  "vram_avg_mb": 3770.647834274953,
+  "vram_peak_mb": 4646.0
+}
+,{
+  "model": "qwen4instruct",
+  "user_input": "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.",
+  "total_time": 118.38346838951111,
+  "steps_count": 5,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 2,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 3,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 4,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 5,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    }
+  ],
+  "cpu_avg": 7.077413479052823,
+  "cpu_peak": 179.8,
+  "ram_avg_mb": 249.4901240892532,
+  "ram_peak_mb": 280.015625,
+  "vram_avg_mb": 3747.0856102003645,
+  "vram_peak_mb": 4646.0
+}
+,

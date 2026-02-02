@@ -1,0 +1,136 @@
+{
+  "model": "qwen4k",
+  "user_input": "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",
+  "total_time": 119.12676572799683,
+  "steps_count": 5,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 2,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 3,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 4,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 5,
+      "intent": "open_application",
+      "args": {
+        "app_name": "file_explorer"
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    }
+  ],
+  "cpu_avg": 4.2734657039711195,
+  "cpu_peak": 151.8,
+  "ram_avg_mb": 217.96902498871842,
+  "ram_peak_mb": 247.91015625,
+  "vram_avg_mb": 3770.014440433213,
+  "vram_peak_mb": 4650.0
+}
+,{
+  "model": "qwen4k",
+  "user_input": "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.",
+  "total_time": 174.7914173603058,
+  "steps_count": 5,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    },
+    {
+      "step": 2,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    },
+    {
+      "step": 3,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    },
+    {
+      "step": 4,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    },
+    {
+      "step": 5,
+      "intent": "open_application",
+      "args": {
+        "app_name": "notepad"
+      },
+      "status": "attempting",
+      "result": "Application notepad opened correctly."
+    }
+  ],
+  "cpu_avg": 2.6917166866746696,
+  "cpu_peak": 152.6,
+  "ram_avg_mb": 220.65424763655463,
+  "ram_peak_mb": 248.84375,
+  "vram_avg_mb": 4028.8499399759903,
+  "vram_peak_mb": 4650.0
+}
+,{
+  "model": "qwen4k",
+  "user_input": "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.",
+  "total_time": 56.817978620529175,
+  "steps_count": 1,
+  "execution_trace": [
+    {
+      "error": "PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED."
+    }
+  ],
+  "cpu_avg": 3.444015444015444,
+  "cpu_peak": 151.8,
+  "ram_avg_mb": 222.79788549710426,
+  "ram_peak_mb": 248.88671875,
+  "vram_avg_mb": 3882.3938223938226,
+  "vram_peak_mb": 4646.0
+}
+,

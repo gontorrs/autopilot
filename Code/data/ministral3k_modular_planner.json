@@ -1,0 +1,160 @@
+{
+  "model": "ministral3k",
+  "user_input": "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",
+  "total_time": 122.48919034004211,
+  "steps_count": 5,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 2,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 3,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 4,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 5,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    }
+  ],
+  "cpu_avg": 3.4504378283712787,
+  "cpu_peak": 154.4,
+  "ram_avg_mb": 207.34957859019264,
+  "ram_peak_mb": 235.1796875,
+  "vram_avg_mb": 3866.9912434325743,
+  "vram_peak_mb": 4650.0
+},
+{
+  "model": "ministral3k",
+  "user_input": "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.",
+  "total_time": 7.517333030700684,
+  "steps_count": 1,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": null,
+      "args": null,
+      "status": "attempting",
+      "result": "No intent generated (None)."
+    }
+  ],
+  "cpu_avg": 4.963333333333334,
+  "cpu_peak": 148.9,
+  "ram_avg_mb": 210.54036458333334,
+  "ram_peak_mb": 210.54296875,
+  "vram_avg_mb": 3388.6,
+  "vram_peak_mb": 4646.0
+}
+,{
+  "model": "ministral3k",
+  "user_input": "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.",
+  "total_time": 120.42894673347473,
+  "steps_count": 5,
+  "execution_trace": [
+    {
+      "step": 1,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 2,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 3,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 4,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    },
+    {
+      "step": 5,
+      "intent": "open_application",
+      "args": {
+        "app_name": [
+          "file_explorer"
+        ]
+      },
+      "status": "attempting",
+      "result": "Application file_explorer opened correctly."
+    }
+  ],
+  "cpu_avg": 4.389929328621908,
+  "cpu_peak": 152.9,
+  "ram_avg_mb": 212.62021725927562,
+  "ram_peak_mb": 242.453125,
+  "vram_avg_mb": 3931.4699646643107,
+  "vram_peak_mb": 4650.0
+}
+,

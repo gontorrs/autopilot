@@ -2,7 +2,7 @@ import pyautogui as py
 import time
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
-from router import verify, check_item, get_coord
+from utils.router import verify, check_item, get_coord
 
 class open_app(TypedDict):
     prompt: str
@@ -23,7 +23,7 @@ def node_launch(state: open_app):
         py.hotkey('win')
         time.sleep(1.3)
         py.write(app_name, interval=0.05)
-        time.sleep(0.7)
+        time.sleep(1.3)
         py.press('enter')
         time.sleep(2)
         return {"status": "App launched without coordinates"}

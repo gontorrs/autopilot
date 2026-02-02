@@ -2,7 +2,7 @@ import pyautogui as py
 import time
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
-from router import verify
+from utils.router import verify
 
 class Write_Agent(TypedDict):
     prompt: str
@@ -19,9 +19,9 @@ def node_write_content(state: Write_Agent):
     if isinstance(app_name, list):
         app_name = app_name[0]
     if "notepad" not in app_name.lower():
-        time.sleep(1)
+        time.sleep(1.3)
         py.press('enter')
-    time.sleep(1)
+    time.sleep(1.3)
     print(f"2. Writing content...")
     content = state['content']
     if isinstance(content, list):

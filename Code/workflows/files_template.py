@@ -2,7 +2,7 @@ import pyautogui as py
 import time
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
-from router import verify, get_coord, check_item
+from utils.router import verify, get_coord, check_item
 from tools.vlm_tools import ctrl_find, scroll_back
 
 class Explore_Agent(TypedDict):
@@ -15,7 +15,7 @@ class Explore_Agent(TypedDict):
     attempts: 0
 
 def node_navigate(state: Explore_Agent):
-    time.sleep(0.7)
+    time.sleep(1.3)
     path = state.get('path', [])
     navigation_failed = False
 
@@ -32,7 +32,7 @@ def node_navigate(state: Explore_Agent):
                     print(f"Opening folder '{folder}' at {x}, {y}")
                     py.moveTo(x, y, duration=1)
                     py.doubleClick()
-                    time.sleep(0.7)
+                    time.sleep(1.3)
                     #scroll_back(-150)
                 #En caso de que este vlm diga que no hay coords, pues hacemos ctrl + f.
                 else:
@@ -70,7 +70,7 @@ def node_verify(state: Explore_Agent):
     path = state['path']
     file_name = state['path']
     verify_prompt = f"Is the file or folder '{file_name}' visible and open on the screen?"
-    time.sleep(0.7)
+    time.sleep(1.3)
     if verify(state["vlm_model"], verify_prompt):
         print("Action verified successfully.")
         if state['path']:

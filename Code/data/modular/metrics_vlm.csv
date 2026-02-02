@@ -1,0 +1,28 @@
+model,user_input,inference_time,steps,intent_name,cpu_avg,cpu_peak,ram_avg_mb,ram_peak_mb,vram_avg_mb,vram_peak_mb
+gemma3n,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",110.04312205314636,5,MODULAR_FLOW,4.302905982905982,153.4,104.95550881410256,133.87109375,4448.651282051282,6091.0
+gemma3n,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,232.57587003707886,1,MODULAR_FLOW,3.821355060034305,307.3,120.32630923027445,148.7890625,4526.698113207547,6091.0
+gemma3n,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,110.95128440856934,5,MODULAR_FLOW,2.5924268502581755,153.6,133.24144793459553,152.22265625,4443.74182444062,6091.0
+gemma4k,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",131.69232773780823,5,MODULAR_FLOW,3.5265007320644215,153.9,141.85342697657393,172.6953125,4169.493411420205,4827.0
+gemma4k,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,310.3199419975281,5,MODULAR_FLOW,4.633628879037365,153.5,160.14709418540215,185.84375,4387.814439518683,4827.0
+gemma4k,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,196.1276912689209,1,MODULAR_FLOW,2.510953346855984,173.4,174.47101610040568,207.70703125,4381.1085192697765,4827.0
+functiongemma,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",124.4981050491333,1,MODULAR_FLOW,3.4475409836065576,152.6,184.6269018954918,202.9453125,5032.383606557377,5037.0
+functiongemma,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,143.28993463516235,1,MODULAR_FLOW,6.246554149085795,295.3,191.44617506153304,219.5078125,5037.0,5037.0
+functiongemma,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,122.48643064498901,1,MODULAR_FLOW,3.895986622073579,153.1,196.03810880016724,224.9375,5037.0,5037.0
+llama3k,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",5.417402744293213,1,MODULAR_FLOW,15.775000000000002,150.9,197.87513950892858,198.43359375,2335.8214285714284,4522.0
+llama3k,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,1.555856704711914,1,MODULAR_FLOW,0.0,0.0,182.802734375,182.80859375,2996.0,2996.0
+llama3k,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,0.5538828372955322,1,MODULAR_FLOW,0.0,0.0,182.80859375,182.8125,2966.0,2966.0
+llama3,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",2.6262474060058594,1,MODULAR_FLOW,0.0,0.0,182.81171875,182.8125,876.0,2966.0
+llama3,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,1.5727322101593018,1,MODULAR_FLOW,0.0,0.0,182.814453125,182.8203125,2966.0,2966.0
+llama3,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,1.5644848346710205,1,MODULAR_FLOW,0.0,0.0,182.82421875,182.83203125,2966.0,2966.0
+ministral3,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",123.93334937095642,5,MODULAR_FLOW,3.448704663212435,153.2,198.71684747409327,227.23828125,3828.879101899827,4646.0
+ministral3,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,7.55373477935791,1,MODULAR_FLOW,4.703225806451614,145.8,200.10509072580646,200.10546875,3308.451612903226,4646.0
+ministral3,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,116.90140748023987,5,MODULAR_FLOW,3.064954128440367,152.5,202.8705275229358,230.59765625,3890.777981651376,4646.0
+ministral3k,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",122.48919034004211,5,MODULAR_FLOW,3.4504378283712787,154.4,207.34957859019264,235.1796875,3866.9912434325743,4650.0
+ministral3k,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,7.517333030700684,1,MODULAR_FLOW,4.963333333333334,148.9,210.54036458333334,210.54296875,3388.6,4646.0
+ministral3k,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,120.42894673347473,5,MODULAR_FLOW,4.389929328621908,152.9,212.62021725927562,242.453125,3931.4699646643107,4650.0
+qwen4k,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",119.12676572799683,5,MODULAR_FLOW,4.2734657039711195,151.8,217.96902498871842,247.91015625,3770.014440433213,4650.0
+qwen4k,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,174.7914173603058,5,MODULAR_FLOW,2.6917166866746696,152.6,220.65424763655463,248.84375,4028.8499399759903,4650.0
+qwen4k,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,56.817978620529175,1,MODULAR_FLOW,3.444015444015444,151.8,222.79788549710426,248.88671875,3882.3938223938226,4646.0
+qwen4instruct,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",144.17949175834656,5,MODULAR_FLOW,4.983976261127596,153.7,229.6660909681009,258.91015625,3915.9169139465876,4650.0
+qwen4instruct,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,115.10227346420288,5,MODULAR_FLOW,5.664218455743879,153.3,240.96695503766477,270.984375,3770.647834274953,4646.0
+qwen4instruct,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,118.38346838951111,5,MODULAR_FLOW,7.077413479052823,179.8,249.4901240892532,280.015625,3747.0856102003645,4646.0

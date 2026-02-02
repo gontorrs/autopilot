@@ -23,6 +23,24 @@ open_app = {
     }
 }
 
+task_complete = {
+    'type': 'function',
+    'function': {
+        'name': 'task_complete',
+        'description': 'Call this function ONLY when the user goal has been fully achieved and verified. This stops the agent.',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'reason': {
+                    'type': 'string',
+                    'description': 'Short explanation of why the task is considered done.'
+                }
+            },
+            'required': ['reason']
+        }
+    }
+}
+
 navigate = {
     'type': 'function',
     'function': {
