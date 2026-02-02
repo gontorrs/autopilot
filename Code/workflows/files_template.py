@@ -1,9 +1,11 @@
 import pyautogui as py
 import time
+import pyperclip
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
 from utils.router import verify, get_coord, check_item
 from tools.vlm_tools import ctrl_find, scroll_back
+py.FAILSAFE = False 
 
 class Explore_Agent(TypedDict):
     prompt: str
@@ -15,9 +17,10 @@ class Explore_Agent(TypedDict):
     planner_model: str
     attempts: int
 
+
 def node_launch_explorer(state: Explore_Agent):
     print(f"1. File explorer open")
-    #item = check_item(state["vlm_model"], state['app_name'], type='application')
+    # item = check_item(state["vlm_model"], state['app_name'], type='application')
     item = 1
     if not item:
         py.hotkey('win', 'e')
@@ -41,9 +44,9 @@ def node_navigate(state: Explore_Agent):
         print(f"2. Navigating path: {path}")
         for folder in path:
             item = check_item(state["vlm_model"], folder, type='folder')
-            #Primero comprobamos que la carpeta está en pantalla.
+            # Primero comprobamos que la carpeta está en pantalla.
             if item:
-                #Como si que está entonces cogemos coordenadas.
+                # Como si que está entonces cogemos coordenadas.
                 coord = get_coord(state["vlm_model"], folder)
                 if coord:
                     x, y = coord['x'], coord['y']
@@ -51,22 +54,22 @@ def node_navigate(state: Explore_Agent):
                     py.moveTo(x, y, duration=1)
                     py.doubleClick()
                     time.sleep(0.7)
-                    #scroll_back(-150)
-                #En caso de que este vlm diga que no hay coords, pues hacemos ctrl + f.
+                    # scroll_back(-150)
+                # En caso de que este vlm diga que no hay coords, pues hacemos ctrl + f.
                 else:
                     print(f"Folder '{folder}' found but no coords.")
                     navigation_failed = True
                     break
-            #no encontró la carpeta del path, hacemos ctrl  + f.
+            # no encontró la carpeta del path, hacemos ctrl  + f.
             else:
                 print(f"Folder '{folder}' not found.")
                 navigation_failed = True
                 break
-    #una vez el path a terminado buscamos el archivo final.
+    # una vez el path a terminado buscamos el archivo final.
     if not navigation_failed:
         print(f"Looking for final file: {state['file_name']}")
         item = check_item(state["vlm_model"], state['file_name'], type='file')
-        
+
         if item:
             coord = get_coord(state["vlm_model"], state['file_name'])
             if coord:
@@ -75,12 +78,13 @@ def node_navigate(state: Explore_Agent):
                 py.moveTo(x, y, duration=1)
                 py.doubleClick()
                 return {"status": "opened_with_coordinates"}
-    
-    #útlimo fallback total en caso de que todo falle.
+
+    # útlimo fallback total en caso de que todo falle.
     print("Using ctrl + f")
     ctrl_find(state)
-    
+
     return {"status": "opened_with_search"}
+
 
 def node_verify(state: Explore_Agent):
     print(f"4. Verifying action...")
@@ -93,9 +97,9 @@ def node_verify(state: Explore_Agent):
         print("Action verification failed.")
         return {"status": "failed",
                 "attempts": attempts + 1}
-    
 
-#Compilamos el workflow.
+
+# Compilamos el workflow.
 workflow = StateGraph(Explore_Agent)
 workflow.add_node("launch", node_launch_explorer)
 workflow.add_node("navigate", node_navigate)
@@ -105,13 +109,16 @@ workflow.set_entry_point("launch")
 workflow.add_edge("launch", "navigate")
 workflow.add_edge("navigate", "verify")
 
-#Si falla pues intentamos otra vez, un máximo de 2 intentos.
+
+# Si falla pues intentamos otra vez, un máximo de 2 intentos.
 def verify_edge(state):
     if state["status"] == "verified" or state['attempts'] >= 2:
         return END
     else:
         return "launch"
 
+
 workflow.add_conditional_edges("verify", verify_edge)
+
 
 file_explorer = workflow.compile()

@@ -1,5 +1,6 @@
 import pyautogui
 import time
+import pyperclip
 
 
 tool_click = {
@@ -82,7 +83,9 @@ def verification_prompt_formatting(text, style):
 def ctrl_find(state: dict):
     pyautogui.press('win')
     time.sleep(1)
-    pyautogui.write(state['file_name'], interval=0.05)
+    #pyautogui.write(state['file_name'], interval=0.05)
+    pyperclip.copy(state['file_name'])
+    pyautogui.hotkey('ctrl', 'v')
     time.sleep(1)
     print(f"3. Opening file...")
     pyautogui.press('enter')

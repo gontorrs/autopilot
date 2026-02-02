@@ -1,0 +1,5 @@
+(pick a table)
+(drop a top)
+(pick b top)
+(drop b table)
+; cost = 4 (unit cost)

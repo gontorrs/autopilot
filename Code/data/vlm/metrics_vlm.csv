@@ -1,0 +1,38 @@
+model,user_input,inference_time,intent_name,vlm_result,cpu_avg,cpu_peak,ram_avg_mb,ram_peak_mb,vram_avg_mb,vram_peak_mb
+qwen2k-vl,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",60.234885454177856,navigate_tool,verified,8.29904458598726,154.1,107.47081508757962,139.71875,2885.767515923567,2970.0
+qwen2k-vl,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,17.33499765396118,write_tool,verified,9.2,154.0,118.74071180555555,134.625,2515.4,2806.0
+qwen2k-vl,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,26.560812950134277,change_tool,verified,5.597857142857143,153.5,114.59905133928571,148.5234375,2699.8714285714286,2928.0
+gemma4k,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",25.109251737594604,navigate_tool,failed,3.5348148148148146,154.0,101.56394675925925,130.90234375,4411.029629629629,4814.0
+gemma4k,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,16.97961664199829,write_tool,failed,7.27,153.3,107.09774305555555,132.98046875,4067.5777777777776,4715.0
+gemma4k,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,51.14994978904724,change_tool,failed,8.418315018315017,153.6,107.61276614010988,138.78125,4274.241758241758,4478.0
+qwen4k-vl,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",65.90644860267639,navigate_tool,verified,9.544632768361582,154.6,134.4814066913842,166.1328125,4164.073446327684,4330.0
+qwen4k-vl,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,20.221752405166626,write_tool,verified,8.698181818181817,153.6,145.603125,160.43359375,3814.8727272727274,4326.0
+qwen4k-vl,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,30.84481453895569,change_tool,verified,5.366470588235294,154.5,142.4954963235294,164.7578125,3986.823529411765,4330.0
+qwen2-vl,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",33.418370485305786,navigate_tool,verified,20.279960707269154,449.1,164.74467399312377,195.59375,2580.7760314341845,2821.0
+qwen2-vl,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,18.293118000030518,write_tool,verified,7.177551020408163,152.8,174.16147161989795,189.42578125,2442.1632653061224,2806.0
+qwen2-vl,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,27.555357933044434,change_tool,verified,9.687755102040816,164.5,171.18003295068027,193.05078125,2570.197278911565,2817.0
+ministral3,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",28.15955662727356,navigate_tool,failed,6.235526315789474,154.1,103.5819027549342,121.81640625,4036.1710526315787,4403.0
+ministral3,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,10.166824340820312,write_tool,verified,6.163636363636364,151.3,110.28579545454545,124.26953125,3437.1272727272726,4403.0
+ministral3,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,52.02347755432129,change_tool,failed,5.98932384341637,153.9,110.84201234430606,134.796875,4036.526690391459,4402.0
+ministral3k,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",28.897398948669434,navigate_tool,failed,4.13076923076923,151.8,121.83866686698718,140.5078125,3872.4102564102564,4240.0
+ministral3k,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,17.945945262908936,write_tool,failed,5.1625,151.1,130.048828125,144.484375,3683.8333333333335,4240.0
+ministral3k,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,53.628676414489746,change_tool,failed,4.6835051546391755,154.2,129.32495704467354,153.5078125,4043.773195876289,4240.0
+phi3,"Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",16.19325017929077,navigate_tool,failed,9.042528735632184,151.8,104.40512751436782,120.33984375,4238.816091954023,4702.0
+phi3,Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.,8.401273488998413,write_tool,failed,13.704444444444446,153.7,108.93454861111111,123.41796875,3571.1111111111113,4554.0
+phi3,Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold.,40.57804489135742,change_tool,failed,6.460550458715597,153.3,107.75299240252293,128.4140625,4348.853211009175,4554.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -5,6 +5,7 @@ import pyautogui
 import io
 import time
 import json
+import re
 
 def get_tool(model, user_query):
     if "gemma" in model and "function" not in model:
@@ -108,24 +109,72 @@ def get_coord(model, user_query):
     print(f"Getting coordinates with {model}")
     img_bytes = take_screenshot()
 
-    response = ollama.chat(model=model, messages=[{'role':'user', 'content': get_coordinates_prompt(user_query), 'images': [img_bytes]}], tools=vlm_tools, options={"temperature": 0.1})
-    
-    print(f"DEBUG - Full response: {response.model_dump_json(indent=2)}")
-    answer = response['message']['content'].strip()
-    print(f"VLM answer for coordinates: {answer}")
+    if "gemma" in model or "ministral" in model or "phi" in model:
+        print(f"Using JSON mode for {model} (No Tools)")
+        
+        json_prompt = f"""Observe the screenshot and identify where to click to: '{user_query}' folder, file, application, button or area.
+        The screen resolution is normalized to 0-1000.
+        Respond ONLY with a JSON object in this exact format containing the [x, y] coordinates:
+        {{
+            "coordinate": [x, y]
+        }}
+        Do not include any explanation, only the JSON object."""
+        
+        try:
+            response = ollama.chat(
+                model=model, 
+                messages=[{'role':'user', 'content': json_prompt, 'images': [img_bytes]}], 
+                options={"temperature": 0.1}
+            )
+            answer = response['message']['content'].strip()
+            print(f"VLM answer for coordinates: {answer}")
 
-    if response['message'].get('tool_calls'):
-        tool_call = response['message']['tool_calls'][0]
-        arguments = tool_call['function']['arguments']
-        
-        bad_coords = arguments.get('coordinate')
-        
-        if bad_coords:
-            good_coords = parse_coordinates(bad_coords)
+            # SOLUCIÓN DEL ERROR: Usamos Regex en vez de split
+            # Busca cualquier cosa que parezca un objeto JSON { ... }
+            match = re.search(r'\{.*?\}', answer, re.DOTALL)
             
-            return {
-                "x": good_coords[0],
-                "y": good_coords[1]
-            }
-    print("no tool used.")
+            if match:
+                json_str = match.group(0)
+                json_str = re.sub(r'//.*', '', json_str)
+                parsed = json.loads(json_str)
+                bad_coords = parsed.get('coordinate')
+                
+                if bad_coords:
+                    good_coords = parse_coordinates(bad_coords)
+                    return {
+                        "x": good_coords[0],
+                        "y": good_coords[1]
+                    }
+            else:
+                print("No JSON structure found in Gemma response.")
+                return None
+
+        except Exception as e:
+            print(f"Error parsing JSON from Gemma: {e}")
+            return None
+
+    # --- BLOQUE ESTÁNDAR (CON TOOLS - QWEN, ETC) ---
+    else:
+        response = ollama.chat(
+            model=model, 
+            messages=[{'role':'user', 'content': get_coordinates_prompt(user_query), 'images': [img_bytes]}], 
+            tools=vlm_tools, 
+            options={"temperature": 0.1}
+        )
+
+        print(f"DEBUG - Full response: {response.model_dump_json(indent=2)}")
+        
+        if response['message'].get('tool_calls'):
+            tool_call = response['message']['tool_calls'][0]
+            arguments = tool_call['function']['arguments']
+            bad_coords = arguments.get('coordinate')
+            
+            if bad_coords:
+                good_coords = parse_coordinates(bad_coords)
+                return {
+                    "x": good_coords[0],
+                    "y": good_coords[1]
+                }
+
+    print("no tool used or failed to parse.")
     return None
