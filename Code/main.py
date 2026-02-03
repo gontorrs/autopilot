@@ -1,7 +1,7 @@
 from utils.router import get_tool
-from workflows.files_template import file_explorer
-from workflows.text_template import write_text
-from workflows.change_text_template import change_text
+from py_workflows.files_template import file_explorer
+from py_workflows.text_template import write_text
+from py_workflows.change_text_template import change_text
 
 model_dict = {
     'gemma4k': 'gemma3:4b-it-qat',
@@ -21,9 +21,9 @@ model_dict = {
 planner_model = model_dict['qwen4k']
 vlm_model = model_dict['qwen4k-vl']
 
-user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
+#user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-#3user_input = "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold."
+user_input = "Open my Entrevista_Reli.odt located at OneDrive - UFV and make the text Gonzalo Torras Serrano in bold."
 intent_name, intent_args = get_tool(planner_model, user_input)
     
 if intent_name == 'navigate_tool':
