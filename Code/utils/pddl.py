@@ -1,65 +1,73 @@
 import os
 import shutil
 import subprocess
+import json
+
+# Global mapping for PDDL sanitization
+OBJECT_MAPPING = {}
+
+def sanitize(text):
+    """Sanitize string for PDDL and store original value."""
+    if not text:
+        return text
+    
+    clean_text = text.lower().replace(' ', '_').replace('.', '_').replace('-', '_')
+    OBJECT_MAPPING[clean_text] = text
+    return clean_text
 
 def objects(state_dict):
-
     parts = ["(:objects"]
     
     # App
     if 'app_name' in state_dict:
-        app = state_dict['app_name'].replace(' ', '_')
+        app = sanitize(state_dict['app_name'])
         parts.append(f"    {app} - app")
     
     # Folders
     if 'path' in state_dict and state_dict['path']:
-        folders = [f.replace(' ', '_') for f in state_dict['path']]
+        folders = [sanitize(f) for f in state_dict['path']]
         parts.append(f"{' '.join(folders)} - folder")
     
     # File
     if 'file_name' in state_dict and state_dict['file_name']:
-        file_name = state_dict['file_name'].replace('.', '_').replace(' ', '_')
+        file_name = sanitize(state_dict['file_name'])
         parts.append(f"{file_name} - file")
     
     # Text
     if 'content' in state_dict and state_dict['content']:
-        text = state_dict['content'].replace(' ', '_')
+        text = sanitize(state_dict['content'])
         parts.append(f"{text} - text")
     
     # Style
     if 'style' in state_dict and state_dict['style']:
-        style = state_dict['style']
+        style = sanitize(state_dict['style'])
         parts.append(f"{style} - style")
     
     parts.append(")")
     return '\n'.join(parts)
 
-
 def state(state_dict):
-
     goal = state_dict.get('goal', '')
     predicates = ['(empty)']
     
-    # Para goals que necesitan path (navigate, change)
+    # Handle paths and hierarchy
     if 'path' in state_dict and state_dict['path']:
-        folders = [f.replace(' ', '_') for f in state_dict['path']]
+        folders = [sanitize(f) for f in state_dict['path']]
         
-        #Default ese el estado inicial de file explorer
-        predicates.append('(current Default)')
+        # Ensure Default is mapped
+        default_safe = sanitize("Default")
+        predicates.append(f'(current {default_safe})')
         
-        #Relacionamos carpetas
         if len(folders) > 1:
-            predicates.append(f'(inside {folders[1]} Default)')
+            predicates.append(f'(inside {folders[1]} {default_safe})')
             for i in range(1, len(folders) - 1):
                 predicates.append(f'(inside {folders[i+1]} {folders[i]})')
         
-        # Archivo dentro de la útlima carpeta siempre.
         if 'file_name' in state_dict and state_dict['file_name']:
-            file_name = state_dict['file_name'].replace('.', '_').replace(' ', '_')
+            file_name = sanitize(state_dict['file_name'])
             predicates.append(f'(file_to {file_name} {folders[-1]})')
     
     return '\n'.join(predicates)
-
 
 def clear_results():
     results_dir = 'pddl/results'
@@ -67,21 +75,16 @@ def clear_results():
         shutil.rmtree(results_dir)
     os.makedirs(results_dir, exist_ok=True)
 
-
 def generate_problem(template_path, state_dict, output_filename):
-
-    # Leer template
     with open(template_path, 'r') as f:
         template = f.read()
     
-    # Generar problema
     objects_str = objects(state_dict)
     state_str = state(state_dict)
     
     problem = template.replace('{OBJECTS}', objects_str)
     problem = problem.replace('{INIT_PREDICATES}', state_str)
     
-    # Guardar en results
     results_dir = 'pddl/results'
     os.makedirs(results_dir, exist_ok=True)
     
@@ -92,9 +95,17 @@ def generate_problem(template_path, state_dict, output_filename):
     return output_path
 
 def to_goal(template_path, state_dict, output_filename):
+    OBJECT_MAPPING.clear()
+    sanitize("Default")
+    
     clear_results()
-    #We generate PDDL problem
+    
     problem_path = generate_problem(template_path, state_dict, output_filename)
+    
+    # Save mapping to JSON
+    mapping_path = os.path.join('pddl/results', 'mapping.json')
+    with open(mapping_path, 'w') as f:
+        json.dump(OBJECT_MAPPING, f, indent=4)
     
     domain_path = 'pddl/gui_domain.pddl'
     results_dir = 'pddl/results'
@@ -109,12 +120,13 @@ def to_goal(template_path, state_dict, output_filename):
     
     if result.returncode == 0:
         print("Plan executed")
-        shutil.move('sas_plan', plan_path)
-        with open(plan_path, 'r') as f:
-            plan_content = f.read()
-        print(result.stdout)
-        return plan_content
+        if os.path.exists('sas_plan'):
+            shutil.move('sas_plan', plan_path)
+            with open(plan_path, 'r') as f:
+                plan_content = f.read()
+                print(plan_content)
+            return plan_content
     else:
-        print("How about you take a rest.")
+        print("Planner failed.")
         print(result.stderr)
         return None

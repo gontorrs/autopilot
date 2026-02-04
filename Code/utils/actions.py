@@ -28,8 +28,7 @@ def final_verify(attempts, vlm_model, prompt, goal=None, content=None, style=Non
 
 def open_app(app, vlm_model):
     print(f"1. Opening app...")
-    #item = check_item(state["vlm_model"], state['app_name'], type='application')
-    item = None
+    item = check_item(vlm_model, app, type='application')
     if not item:
         ctrl_find(app)
         print(f"Launched without coordinates")
@@ -40,6 +39,7 @@ def open_app(app, vlm_model):
         print(f"Moving mouse: {x}, {y}")
         py.moveTo(x, y, duration=1)
         py.click()
+        time.sleep(2)
         return {"status": "launched with coordinates"}
     
 def navigate_path(path, vlm_model, file_name):
@@ -94,7 +94,8 @@ def navigate_path(path, vlm_model, file_name):
 
 def find_content(content, vlm_model):
     print(f"Checking: {content}")
-    time.sleep(1)
+    time.sleep(3)
+    print("Esperando 3 segundos")
     item = check_item(vlm_model, content, type='text_content')
     if not item:
         py.hotkey('ctrl','f')
@@ -132,14 +133,16 @@ def format(style):
     py.press('left')
     return {"status": "text formatted"}
 
-def type(app_name, content, vlm_model):
+def type_text(app_name, content, vlm_model):
+    content_extended = f"Is there any written content in the open document, regardless of this: {content}?"
     if "notepad" not in app_name.lower():
         time.sleep(1)
         py.press('enter')
     time.sleep(1)
     print(f"2. Writing content...")
-    if "notepad" in app_name.lower() and not verify(vlm_model, content):
+    if "notepad" is app_name.lower() and not verify(vlm_model, content_extended):
         py.hotkey('ctrl', 't')
+        print("CTRL + T")
         time.sleep(0.3)
         py.write(content, interval=0.05)
     else:

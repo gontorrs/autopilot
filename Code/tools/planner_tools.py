@@ -3,14 +3,14 @@ explorer_tool = {
     'function': {
         'Operating System': 'Windows',
         'name': 'navigate_tool',
-        'description': 'Open Windows File Explorer and navigate to a specific file or folder.',
+        'description': 'Open Windows File Explorer and navigate to a specific file or folder. Nothing more, only use to navigate or/and open the app.',
         'parameters': {
             'type': 'object',
             'properties': {
                 'path': {
                     'type': 'array',
                     'items': {'type': 'string'},
-                    'description': 'Ordered list of folders to navigate: ["downloads", "masters"]. Omit if path is unknown.'
+                    'description': 'An ordered list of folders to navigate, for example : ["downloads", "masters"]. If path is not provided return [].'
                 },
                 'file_name': {
                     'type': 'string',
@@ -55,18 +55,23 @@ change_text_tool = {
     "function": {
         "Operating System": "Windows",
         "name": "change_tool",
-        "description": "Open a specific file in a text editor application and apply formatting (bold, italic, underlined) to a specific text segment.",
+        "description": "Open a specific file and apply formatting (bold, italic, underlined) to a specific text segment.",
         "parameters": {
             "type": "object",
             "properties": {
                 "application": {
                     "type": "string",
                     "enum": ["Notepad", "Microsoft Word", "Microsoft Power Point", "File Explorer", "Microsoft Outlook"],
-                    "description": "The name of the Windows application to open to acces that file. If the user does not specify an application, this must default to 'File Explorer'."
+                    "description": "The application required to START the process. IMPORTANT: If the user asks to open/find a specific file (e.g., 'Open file.docx'), you MUST return 'File Explorer' so the agent can navigate to it. Only return 'Microsoft Word' or 'Notepad' if the user asks to open the application purely to create a new file from scratch."
                 },
-                "file_name": {
-                    "type": "string",
-                    "description": "The name of the file to open to format the text."
+                'path': {
+                    'type': 'array',
+                    'items': {'type': 'string'},
+                    'description': 'An ordered list of folders to navigate, for example : ["downloads", "masters"]. If path is not provided return [].'
+                },
+                'file_name': {
+                    'type': 'string',
+                    'description': 'Name of the final file to search/open. Always required.'
                 },
                 "content": {
                     "type": "string",
@@ -82,8 +87,6 @@ change_text_tool = {
         }
     }
 }
-
-
 
 def _collect_tools():
     tools = []
