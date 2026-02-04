@@ -112,7 +112,7 @@ def to_goal(template_path, state_dict, output_filename):
     plan_filename = output_filename.replace('.pddl', '_plan.txt')
     plan_path = os.path.join(results_dir, plan_filename)
 
-    fd = "C:\\Users\\gonza\\fastdownward\\fast-downward.py"
+    fd = "bin/fastdownward/fast-downward.py"
     
     cmd = ['python', fd, domain_path, problem_path, '--search', 'astar(lmcut())']
     

@@ -7,3 +7,4 @@ pyscreeze
 pillow
 psutil
 GPUtil
+everytools

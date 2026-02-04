@@ -7,11 +7,6 @@ explorer_tool = {
         'parameters': {
             'type': 'object',
             'properties': {
-                'path': {
-                    'type': 'array',
-                    'items': {'type': 'string'},
-                    'description': 'An ordered list of folders to navigate, for example : ["downloads", "masters"]. If path is not provided return [].'
-                },
                 'file_name': {
                     'type': 'string',
                     'description': 'Name of the final file to search/open. Always required.'
@@ -63,11 +58,6 @@ change_text_tool = {
                     "type": "string",
                     "enum": ["Notepad", "Microsoft Word", "Microsoft Power Point", "File Explorer", "Microsoft Outlook"],
                     "description": "The application required to START the process. IMPORTANT: If the user asks to open/find a specific file (e.g., 'Open file.docx'), you MUST return 'File Explorer' so the agent can navigate to it. Only return 'Microsoft Word' or 'Notepad' if the user asks to open the application purely to create a new file from scratch."
-                },
-                'path': {
-                    'type': 'array',
-                    'items': {'type': 'string'},
-                    'description': 'An ordered list of folders to navigate, for example : ["downloads", "masters"]. If path is not provided return [].'
                 },
                 'file_name': {
                     'type': 'string',
