@@ -112,11 +112,16 @@ def to_goal(template_path, state_dict, output_filename):
     plan_filename = output_filename.replace('.pddl', '_plan.txt')
     plan_path = os.path.join(results_dir, plan_filename)
 
-    fd = "bin/fastdownward/fast-downward.py"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+    fd = os.path.join(parent_dir, "bin", "fastdownward", "fast-downward.py")
     
     cmd = ['python', fd, domain_path, problem_path, '--search', 'astar(lmcut())']
     
     result = subprocess.run(cmd, capture_output=True, text=True)
+    # print(f"Return code: {result.returncode}")
+    # print(f"STDOUT: {result.stdout}")
+    # print(f"STDERR: {result.stderr}")
     
     if result.returncode == 0:
         print("Plan executed")

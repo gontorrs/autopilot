@@ -24,7 +24,8 @@ planner_model = model_dict['qwen4k']
 vlm_model = model_dict['qwen4k-vl']
 
 #user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
-user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
+user_input = "Open Gonzalo_Anteproyecto.pdf."
+#user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
 #user_input = "Open my Entrevista_Reli.odt in Gonzalo - UFV and make the text Gonzalo Torras Serrano in bold."
 intent_name, intent_args = get_tool(planner_model, user_input)
 
@@ -34,18 +35,19 @@ def main():
         print(f"Intent: {intent_name}")
         print(f"Arguments: {intent_args}")
         goal = "(open_file)"
-        path = search_files
+        path = search_files(search_engine, intent_args.get('file_name', ''))
+        print(f"\n\n\nEste es el path {path}\n\n\n")
         
         initial_state = {
             "prompt": user_input,
-        "file_name": intent_args.get('file_name', ''),
-        "app_name": intent_args.get('app_name', ''),
-        "path": path,
-        "vlm_model": vlm_model,
-        "planner_model": planner_model,
-        "status": "start",
-        "goal": goal,
-        "attempts": 0
+            "file_name": intent_args.get('file_name', ''),
+            "app_name": intent_args.get('app_name', ''),
+            "path": path,
+            "vlm_model": vlm_model,
+            "planner_model": planner_model,
+            "status": "start",
+            "goal": goal,
+            "attempts": 0
         }
         print(initial_state)
         print("\nFlow Starting")
@@ -60,13 +62,13 @@ def main():
         
         initial_state = {
             "prompt": user_input,
-        "app_name": intent_args.get('application', 'notepad'),
-        "content": intent_args.get('text', ''),
-        "vlm_model": vlm_model,
-        "planner_model": planner_model,
-        "status": "start",
-        "goal": goal,
-        "attempts": 0
+            "app_name": intent_args.get('application', 'notepad'),
+            "content": intent_args.get('text', ''),
+            "vlm_model": vlm_model,
+            "planner_model": planner_model,
+            "status": "start",
+            "goal": goal,
+            "attempts": 0
         }
         print(initial_state)
         print("\nFlow Starting")
@@ -78,8 +80,8 @@ def main():
         print(f"Intent: {intent_name}")
         print(f"Arguments: {intent_args}")
         goal = "(changed_text)"
-        path = intent_args.get('path', [])
-        path = ["Default"] + path
+        path = search_files(search_engine, intent_args.get('file_name', ''))
+        print(f"\n\n\nEste es el path {path}\n\n\n")
         
         initial_state = {
             "prompt": user_input,

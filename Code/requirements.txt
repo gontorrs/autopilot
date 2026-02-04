@@ -8,3 +8,4 @@ pillow
 psutil
 GPUtil
 everytools
+pywin32
