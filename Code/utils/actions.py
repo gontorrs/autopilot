@@ -8,7 +8,7 @@ from tools.vlm_tools import ctrl_find, scroll_back
 def final_verify(attempts, vlm_model, prompt, goal=None, content=None, style=None):
     print(f"4. Verifying action...")
     attempts = attempts
-    time.sleep(0.7)
+    time.sleep(1.5)
     if goal:
         if verify_formatting(vlm_model, content, style):
             print("Action verified successfully.")

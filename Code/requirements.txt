@@ -9,3 +9,4 @@ psutil
 GPUtil
 everytools
 pywin32
+pywinauto
