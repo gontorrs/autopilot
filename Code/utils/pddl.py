@@ -7,7 +7,6 @@ import json
 OBJECT_MAPPING = {}
 
 def sanitize(text):
-    """Sanitize string for PDDL and store original value."""
     if not text:
         return text
     

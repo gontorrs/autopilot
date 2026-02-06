@@ -60,7 +60,7 @@ def navigate_path(path, vlm_model, file_name):
                     print(f"Opening folder '{folder}' at {x}, {y}")
                     py.moveTo(x, y, duration=1)
                     py.doubleClick()
-                    time.sleep(0.7)
+                    time.sleep(1)
                     #scroll_back(-150)
                 #En caso de que este vlm diga que no hay coords, pues hacemos ctrl + f.
                 else:
@@ -140,7 +140,7 @@ def type_text(app_name, content, vlm_model):
         py.press('enter')
     time.sleep(1)
     print(f"2. Writing content...")
-    if "notepad" is app_name.lower() and not verify(vlm_model, content_extended):
+    if "notepad" not in app_name.lower() and not verify(vlm_model, content_extended):
         py.hotkey('ctrl', 't')
         print("CTRL + T")
         time.sleep(0.3)
