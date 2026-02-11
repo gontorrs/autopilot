@@ -24,7 +24,7 @@ tool_click = {
 
 def get_coordinates_prompt(goal):
     return (
-        f"Observe the screenshot and identify where to click to: '{goal}' folder, file, application, butto or area. "
+        f"Observe the screenshot and identify where to click to: '{goal}' folder, file, application, button or area. "
         "Use the tool_click tool to specify the action and normalized coordinates (0-1000 scale)."
         )
 
@@ -39,23 +39,26 @@ def check_item_prompt(item, type='item'):
         print('app')
         return (
             f"Is the application '{item}' present "
-            "either as an open window OR as its icon in the taskbar? "
+            "either as an open window, or not running but visible on the desktop or taskbar? "
             "If you see its icon in the taskbar opened, minimised or closed with only the icon, answer 'YES'. "
             "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
         )
     elif type == 'file':
+        print("file")
         return (
         f"Observe the screenshot. Is the {type} '{item}' present on the screen?"
         f"Note: Ignore file extensions. If you see '{item}.pdf', or just '{item}', or any other extension counts as YES."
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
     elif type == 'text_content':
+        print("text_content")
         return (
         f"Observe the screenshot. Look ONLY at the content inside the open document window (not file names, not taskbar, not folder names). "
         f"Is the text '{item}' visible as content WITHIN the open document? "
         f"IMPORTANT: Only answer YES if you can see this exact text as part of the document content that is currently displayed and readable. "
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
+    print("other")
     return (
         f"Observe the screenshot. Is the {type} '{item}' present on the screen?"
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
@@ -79,10 +82,10 @@ def verification_prompt_formatting(text, style):
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
     
-def ctrl_find(state: dict):
+def ctrl_find(file_name):
     pyautogui.press('win')
     time.sleep(1)
-    pyautogui.write(state['file_name'], interval=0.05)
+    pyautogui.write(file_name, interval=0.05)
     time.sleep(1)
     print(f"3. Opening file...")
     pyautogui.press('enter')
