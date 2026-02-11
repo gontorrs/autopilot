@@ -11,12 +11,15 @@
 \fi
 \makeatother
 
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta} 
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc} % For spanish characters
 \usepackage[T1]{fontenc} % For special characters
 \usepackage{times} 
 \usepackage{emptypage} 
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{float, multirow, rotating}
@@ -35,21 +38,28 @@
 \usepackage{fancyhdr}
 \usepackage{lipsum}
 \usepackage{csquotes}
+% \usepackage[
+%   backend=biber,
+%   style=authoryear,
+%   citestyle=authoryear,
+%   backref=true, % include links to pages where the cite is
+%   mincrossrefs=100000, % Avoid including data of the proceedings
+%   dashed=minyear, labeldate=true, %Do not group entries from the same authors
+%   maxbibnames=10, % Use et al for references with more than two names
+%   maxcitenames=2, % Use et al for references with more than two names
+%   uniquelist=false, % Use et al for references with more than two names
+%   firstinits=false, % Use complete names in the bibliography
+%   natbib=true, % Use natbib
+%   hyperref=true, % Use hyperref
+%   isbn=false,doi=false,url=false %Ommit all that info
+% ]{biblatex}
+
 \usepackage[
   backend=biber,
-  style=authoryear,
-  citestyle=authoryear,
-  backref=true, % include links to pages where the cite is
-  mincrossrefs=100000, % Avoid including data of the proceedings
-  dashed=minyear, labeldate=true, %Do not group entries from the same authors
-  maxbibnames=10, % Use et al for references with more than two names
-  maxcitenames=2, % Use et al for references with more than two names
-  uniquelist=false, % Use et al for references with more than two names
-  firstinits=false, % Use complete names in the bibliography
-  natbib=true, % Use natbib
-  hyperref=true, % Use hyperref
-  isbn=false,doi=false,url=false %Ommit all that info
+  style=ieee,
+  sorting=none
 ]{biblatex}
+
 
 \addto\captionsspanish{}
 
@@ -59,7 +69,7 @@
 }
 
 \renewcommand\nameyeardelim{, }
-\DeclareNameAlias{sortname}{first-last}
+\DeclareNameAlias{sortname}{given-family}
 \setlength{\bibitemsep}{\baselineskip}
 
 \newcommand{\image}[4]{
@@ -85,22 +95,22 @@
 
 \bibliography{references}
 
-\renewcommand{\cite}{\parencite}
+% \renewcommand{\cite}{\parencite}
 
-\DeclareCiteCommand{\parencite}[\mkbibparens]
-  {\usebibmacro{prenote}}
-  {\usebibmacro{citeindex}%
-    \printtext[bibhyperref]{\usebibmacro{cite}}}
-  {\multicitedelim}
-  {\usebibmacro{postnote}}
+% \DeclareCiteCommand{\parencite}[\mkbibparens]
+%   {\usebibmacro{prenote}}
+%   {\usebibmacro{citeindex}%
+%     \printtext[bibhyperref]{\usebibmacro{cite}}}
+%   {\multicitedelim}
+%   {\usebibmacro{postnote}}
 
 \usepackage{hyperref}
 \hypersetup{
    colorlinks,
    linktoc=all, 
-   linkcolor=Blue, 
-   citecolor=Blue,
-   urlcolor=Blue
+   linkcolor=blue, 
+   citecolor=blue,
+   urlcolor=blue
 }
 
 \DefineBibliographyStrings{english}{%
@@ -146,12 +156,12 @@
 
 
 \setcounter{tocdepth}{1}
-\newcommand{\myname}{Mois{\'e}s Mart{\'i}nez}
+\newcommand{\myname}{Gonzalo Torras Serrano}
 \newcommand{\tutor}{Mois{\'e}s Mart{\'i}nez}
 \newcommand{\subject}{Final Degree Project (FDP)}
 \newcommand{\mykeywords}{keyword1, keyword2, keyword3, ...}
 \newcommand{\mykeywordses}{keyword1, keyword2, keyword3, ...}
-\newcommand{\mytitle}{My awesome title}
+\newcommand{\mytitle}{On-Device AI Desktop Agent for Hands-Free and Accessible Windows Automation}
 
 \hypersetup{pdfauthor={\myname{}},%
             pdftitle={\mytitle{}},%
