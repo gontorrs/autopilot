@@ -7,3 +7,5 @@ pyscreeze
 pillow
 psutil
 GPUtil
+crewai[tools]
+litellm[proxy]

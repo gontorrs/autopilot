@@ -1,6 +1,7 @@
 from utils.router import get_tool
 from utils.pddl import to_goal
 from utils.parser import parse_plan
+from crew.crew import get_intent
 
 model_dict = {
     'gemma4k': 'gemma3:4b-it-qat',
@@ -23,7 +24,7 @@ vlm_model = model_dict['qwen4k-vl']
 #user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
 user_input = "Open my Entrevista_Reli.odt in Gonzalo - UFV and make the text Gonzalo Torras Serrano in bold."
-intent_name, intent_args = get_tool(planner_model, user_input)
+intent_name, intent_args = get_intent(user_input, planner_model, vlm_model)
     
 if intent_name == 'navigate_tool':
     print(f"Intent: {intent_name}")
