@@ -69,36 +69,19 @@ def verification_prompt_formatting(text, style):
         'italic': 'in italic/slanted style', 
         'underlined': 'with an underline'
     }
-    
+
     style_key = style.lower()
     if style_key not in style_description:
         style_key = 'bold'
     
     return (
-        f"Observe the screenshot. Look at the document content and find the text '{text}'. "
-        f"Is this text formatted {style_description[style_key]}? "
-        f"IMPORTANT: Ignore any selection highlights (grey/blue backgrounds) - focus ONLY on the actual text formatting. "
-        f"Look at the font weight/style of the letters themselves. "
+        f"Observe the screenshot. Find the text '{text}' in the document. "
+        f"Compare its visual appearance to the surrounding text around it. "
+        f"Is it formatted {style_description[style_key]}? "
+        f"IMPORTANT: Base your answer PRIMARILY on the visual appearance of the text itself compared to nearby text — NOT on the toolbar state, since the toolbar only reflects formatting when the cursor is placed on that text. "
+        f"Ignore any selection highlights. "
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
-    
-def ctrl_find(file_name):
-    pyautogui.press('win')
-    time.sleep(1)
-    pyautogui.write(file_name, interval=0.05)
-    time.sleep(1)
-    print(f"3. Opening file...")
-    pyautogui.press('enter')
-    time.sleep(1)
-
-def scroll_back(value):
-    pyautogui.keyDown('ctrl')
-    time.sleep(0.1)
-
-    pyautogui.scroll(value) 
-    
-    time.sleep(0.1)
-    pyautogui.keyUp('ctrl')
     
 def _collect_tools():
     tools = []

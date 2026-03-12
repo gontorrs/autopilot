@@ -3,14 +3,14 @@ explorer_tool = {
     'function': {
         'Operating System': 'Windows',
         'name': 'navigate_tool',
-        'description': 'Open Windows File Explorer and navigate to a specific file or folder. Nothing more, only use to navigate or/and open the app.',
+        'description': 'Open File Explorer and navigate to a specific file or folder. Nothing more, only use to navigate or/and open the app.',
         'parameters': {
             'type': 'object',
             'properties': {
                 'path': {
                     'type': 'array',
                     'items': {'type': 'string'},
-                    'description': 'An ordered list of folders to navigate, for example : ["downloads", "masters"]. If path is not provided return [].'
+                    'description': 'An ordered list of folders to navigate FROM ROOT TO TARGET, preserving exact folder names as the user stated them. Never abbreviate or rename folders. Root folder can be Documents, Downloads, This PC, Picutes, and more.'
                 },
                 'file_name': {
                     'type': 'string',
@@ -18,7 +18,7 @@ explorer_tool = {
                 },
                 'app_name': {
                     'type': 'string',
-                    'description': 'Application to use (e.g., "Windows File Explorer").'
+                    'description': 'Application to use (e.g., "File Explorer").'
                 }
             },
             'required': ['operation', 'file_name']
