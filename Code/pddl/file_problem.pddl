@@ -10,11 +10,10 @@
     (current Default)
     (inside Downloads Default)
     (can_create_files Downloads)
-    
 )
 
 (:goal (and
-    (created_file)
+    (created_file gonzalo_text_file)
 ))
 
 )

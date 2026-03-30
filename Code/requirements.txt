@@ -9,3 +9,4 @@ psutil
 GPUtil
 crewai[tools]
 litellm[proxy]
+langchain

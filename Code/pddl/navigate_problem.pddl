@@ -15,7 +15,7 @@
 )
 
 (:goal (and
-    (open_file)
+    (open_file Gonzalo_Anteproyecto_pdf)
 ))
 
 )

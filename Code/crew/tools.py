@@ -1,13 +1,10 @@
 # utils/crew_tools.py
 import json
 import pyautogui as py
-import ollama
 import io
 import time
 from crewai.tools import tool
-
-from tools.planner_tools import planner_tools
-from tools.vlm_tools import get_coordinates_prompt, verification_prompt_file, check_item_prompt, vlm_tools, ctrl_find
+from typing import List
 
 def take_screenshot() -> bytes:
     screenshot = py.screenshot()
@@ -23,104 +20,131 @@ def parse_coordinates(coords):
         return real_x, real_y
     return None
 
-def create_tools(planner_model_name: str, vlm_model_name: str) -> dict:
+def ctrl_find(file_name):
+    py.press('win')
+    time.sleep(1)
+    py.write(file_name, interval=0.05)
+    time.sleep(1)
+    print(f"3. Opening file...")
+    py.press('enter')
+    time.sleep(1)
 
-    @tool("intention_tool")
-    def intention_tool(user_query: str) -> str:
-        """Analyzes natural language and returns the intent and arguments in JSON format.
-        Args:
-            user_query: The user's instruction.
-        """
-        response = ollama.chat(
-            model=planner_model_name,
-            messages=[{"role": "user", "content": user_query}],
-            tools=planner_tools,
-        )
-        msg = response["message"]
-        
-        if msg.get("tool_calls"):
-            tool_call = msg["tool_calls"][0]
-            json_result = json.dumps({
-                "intent": tool_call["function"]["name"],
-                "args": tool_call["function"]["arguments"]
-            })
-            return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Give this exact JSON as your Final Answer: {json_result}"
+def click(x: int, y: int) -> str:
+    py.moveTo(x, y, duration=1)
+    py.doubleClick()
+    time.sleep(1)
+    return f"SUCCESS: Clicked at coordinates {x}, {y}."
 
-        return "FAILED. Intent not found."
 
-    @tool("scout_tool")
-    def scout_tool(item: str, type_item: str) -> str:
-        """Checks if an element is visible on screen. Returns YES or NO.
-        Args:
-            item: Name of the element to look for.
-            type_item: application | file | folder | textcontent
-        """
-        img = take_screenshot()
-        response = ollama.chat(
-            model=vlm_model_name,
-            messages=[{"role": "user", "content": check_item_prompt(item, type_item), "images": [img]}],
-        )
-        return response["message"]["content"].strip()
-
-    @tool("vision_tool")
-    def vision_tool(target: str) -> str:
-        """Returns exact pixel coordinates.
-        Args:
-            target: Description of the element.
-        """
-        img = take_screenshot()
-        response = ollama.chat(
-            model=vlm_model_name,
-            messages=[{"role": "user", "content": get_coordinates_prompt(target), "images": [img]}],
-            tools=vlm_tools,
-            options={"temperature": 0.1},
-        )
-        if response["message"].get("tool_calls"):
-            coords = parse_coordinates(response["message"]["tool_calls"][0]["function"]["arguments"].get("coordinate"))
-            if coords:
-                return json.dumps({"x": coords[0], "y": coords[1]})
-        return json.dumps({"x": None, "y": None})
-
-    @tool("qa_tool")
-    def qa_tool(goal: str) -> str:
-        """Verifies if the specified goal is achieved on the current screen.
-        Args:
-            goal: Description of the objective.
-        """
-        img = take_screenshot()
-        response = ollama.chat(
-            model=vlm_model_name,
-            messages=[{"role": "user", "content": verification_prompt_file(goal), "images": [img]}],
-        )
-        return response["message"]["content"].strip()
-
-    @tool("click_tool")
-    def click_tool(x: int, y: int) -> str:
-        """Clicks on the given screen coordinates. Use this when coordinates are found."""
-        py.moveTo(x, y, duration=1)
-        #Siempre doble_click()
-        py.doubleClick()
+def fallback_search_tool(target: str, intent: str = "") -> str:
+    print(f"DEBUG fallback_search_tool called — target: '{target}' ; intent: '{intent}'")
+    time.sleep(1)
+    if intent == "search_text":
         time.sleep(1)
-        return f"SUCCESS: Clicked at coordinates {x}, {y}."
+        py.keyDown('ctrlleft')
+        time.sleep(0.3)
+        py.press('f')
+        time.sleep(0.2)
+        py.keyUp('ctrlleft')
+        time.sleep(1)
+        py.write(target, interval=0.05)
+        py.press('enter')
+        time.sleep(1)
+        py.press('esc')
+    else:
+        time.sleep(1)
+        ctrl_find(target)
+    time.sleep(1)
+    return f"SUCCESS: Fallback search executed for {target}."
 
-    @tool("search_tool")
-    def fallback_search_tool(target: str, item_type: str) -> str:
-        """Use this when coordinates are null or the item is not visible. It handles Ctrl+F or system search."""
-        if item_type == "text_content":
-            py.hotkey('ctrl', 'f')
-            time.sleep(0.5)
-            py.write(target)
-            py.press('enter')
-            py.press('esc')
-        else:
-            ctrl_find(target)
-        return f"SUCCESS: Fallback search executed for {target}."
+def type_text(app_name, content):
+    #content_extended = f"Is there any written content in the open document, regardless of this: {content}?"
+    if "notepad" not in app_name.lower():
+        time.sleep(1)
+        py.press('enter')
+    time.sleep(1)
+    print("Writing content...")
+    py.write(content, interval=0.05)
+    print("Content written.sdafkljasdklfjasdlñkfjañslkdfjalñsdkfjlñaskdfjñlaksdjfñalskdfjañskldfjalñskdfjñaslkdfjlñasdkfjasñldkfjasdfñlkja")
+    return {"status": "content written"}
+
+def format_text(style: str) -> str:
+    time.sleep(2)
+    if 'bold' in style:
+        py.hotkey('ctrl', 'b')
+    elif 'italic' in style:
+        py.hotkey('ctrl', 'i')
+    elif 'under' in style:
+        py.hotkey('ctrl', 'u')
+    else:
+        print("No style recognized")
+    py.press('left')
+    time.sleep(3)
+    return {"status": "text formatted"}
+
+def create_tools() -> dict:
+    
+    @tool("navigate_tool")
+    def navigate_tool(file_name: str, path: List[str] = [], app_name: str = "File Explorer") -> str:
+        """
+        Use this if the user's ONLY requirement is to open a file and navigate to a specific file or folder, nothing else, only this action.
+        
+        Args:
+            file_name: Name of the final file to search/open. Always required.
+            path: An ordered list of folders to navigate, for example: ["downloads", "masters"]. If path is not provided return [].
+            app_name: Application to use (e.g., "File Explorer").
+        """
+
+        result = {
+            "intent": "navigate_tool",
+            "args": {"file_name": file_name, "path": path, "app_name": app_name}
+        }
+        return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
+
+    @tool("write_tool")
+    def write_tool(text: str, application: str = "notepad") -> str:
+        """
+        Open a text editor application and type specific content into it.
+        
+        Args:
+            application: The name of the Windows application to open (e.g., 'notepad' or 'word'). If application is not stated, default to notepad. (Options: "notepad", "word", "power point")
+            text: The content text that needs to be written inside the application.
+        """
+        result = {
+            "intent": "write_tool",
+            "args": {"application": application, "text": text}
+        }
+        return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
+
+    @tool("change_tool")
+    def change_tool(application: str, file_name: str, content: str, style: str, path: List[str] = []) -> str:
+        """
+        If the user asks to open a file and apply formatting to specific text inside it, use this tool.
+        ONLY use this when the user explicitly asks to format text (bold, italic, underlined) inside a document.
+        Apply formatting to a text segment. 
+        IMPORTANT: The 'application' argument MUST be 'file explorer' if the file needs 
+        to be located through folders before being opened.
+        Args:
+            application: The application required to START this process if File Explorer.
+            file_name: Name of the final file to search/open. Always required.
+            content: The specific text content inside the document that needs to be formatted.
+            style: The style to apply to the text content. (Options: "bold", "italic", "underlined")
+            path: An ordered list of folders to navigate, for example: ["downloads", "masters"]. If path is not provided return [].
+        """
+        result = {
+            "intent": "change_tool",
+            "args": {
+                "application": application, 
+                "file_name": file_name, 
+                "content": content, 
+                "style": style, 
+                "path": path
+            }
+        }
+        return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
 
     return {
-        "intention_tool": intention_tool,
-        "scout_tool": scout_tool,
-        "vision_tool": vision_tool,
-        "qa_tool": qa_tool,
-        "click_tool": click_tool,
-        "search_tool": fallback_search_tool
+        "navigate_tool": navigate_tool,
+        "write_tool": write_tool,
+        "change_tool": change_tool
     }
