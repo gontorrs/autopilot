@@ -170,10 +170,62 @@ def create_tools() -> dict:
             }
         }
         return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
+    
+    @tool("delete_tool")
+    def delete_tool(application: str, content: str, file_name: str, path: List[str] = []) -> str:
+        """
+        Use this tool when the user asks to open a file and delete specific text inside it.
+        This tool handles the full workflow: navigating to the file, opening it, and deleting the text.
+        ONLY use this when the user explicitly asks to delete or remove text from a document.
+        
+        Args:
+            application: The application required to START this process. Must be 'file explorer' if the file needs to be located through folders.
+            content: The specific text content to be deleted from the document.
+            file_name: Name of the file containing the text to delete.
+            path: An ordered list of folders to navigate, for example: ["downloads", "masters"]. If not provided return [].
+        """
+
+        result = {
+            "intent": "delete_tool",
+            "args": {
+                "application": application,
+                "content": content,
+                "file_name": file_name,
+                "path": path
+            }
+        }
+        return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
+    
+    @tool("search_tool")
+    def search_tool(application: str, content: str, file_name: str, path: List[str] = []) -> str:
+        """
+        Use this tool when the user asks to open a file and find a specific text inside it.
+        This tool handles the full workflow: navigating to the file, opening it, and searching for the text.
+        ONLY use this when the user explicitly asks to search for text in a document.
+
+        Args:
+            application: The application required to START this process. Must be 'file explorer' if the file needs to be located through folders.
+            content: The specific text content to be searched for in the document.
+            file_name: Name of the file containing the text to search.
+            path: An ordered list of folders to navigate, for example: ["downloads", "masters"]. If not provided return [].
+        """
+
+        result = {
+            "intent": "search_tool",
+            "args": {
+                "application": application,
+                "content": content,
+                "file_name": file_name,
+                "path": path
+            }
+        }
+        return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
 
     return {
         "navigate_tool": navigate_tool,
         "write_tool": write_tool,
         "change_tool": change_tool,
-        "create_tool": create_tool
+        "create_tool": create_tool,
+        "delete_tool": delete_tool,
+        "search_tool": search_tool
     }

@@ -1,8 +1,9 @@
 from crewai import Agent, LLM
-from crew.tools import create_tools
+from utils.tools import create_tools
 from crew.vlm_agents import ScoutAgent, VisionAgent, QAAgent
 from crew.executor_agent import ExecutorAgent
 from crew.pddl_translator import PDDLTranslatorAgent
+from crew.planner_agent import PDDLPlannerAgent
 
 def create_agents(planner_model: str, vlm_model: str) -> dict:
     """Creates agents dynamically using the provided model strings."""
@@ -26,7 +27,7 @@ def create_agents(planner_model: str, vlm_model: str) -> dict:
         role="GUI Task Planner",
         goal="Analyze the user's intention and determine which PDDL template to use and with what arguments.",
         backstory="You are a direct intent classifier, you just classify the end goal, you do not plan any steps in between. You translate natural language into structured intents.",
-        tools=[tools_dict["navigate_tool"], tools_dict["write_tool"], tools_dict["change_tool"], tools_dict["create_tool"]],
+        tools=[tools_dict["navigate_tool"], tools_dict["write_tool"], tools_dict["change_tool"], tools_dict["create_tool"], tools_dict["delete_tool"], tools_dict["search_tool"]],
         llm=planner_llm,
         verbose=True,
         max_iter=1
@@ -43,11 +44,15 @@ def create_agents(planner_model: str, vlm_model: str) -> dict:
     #Creamos el agente traductor de PDDL a python.
     translator_agent = PDDLTranslatorAgent()
 
+    #agente PDDL planificacor
+    planner_agent = PDDLPlannerAgent()
+
     return {
         "intention": intention_agent,
         "scout": scout_agent,
         "vision": vision_agent,
         "qa": qa_agent, 
         "executor": executor_agent,
-        "translator": translator_agent
+        "translator": translator_agent, 
+        "planner": planner_agent
     }

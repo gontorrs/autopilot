@@ -2,7 +2,7 @@ import json
 import re
 from crewai import Crew, Process, Task
 from crew.agents import create_agents
-from crew.tasks import create_intent_task
+from utils.tasks import create_intent_task
 
 def get_intent(user_query: str, planner_model: str, vlm_model: str) -> tuple[str, dict]:
     agents = create_agents(planner_model, vlm_model)

@@ -1,5 +1,7 @@
 import json
-from utils.pddl import to_goal, sanitize
+from crewai import Crew, Process
+from crew.agents import create_agents
+from utils.tasks import create_planner_task
 from crew.crew import get_intent
 from crew.orchestrator import Orchestrator
 import langchain
@@ -23,10 +25,30 @@ model_dict = {
 planner_model = model_dict['qwen4k']
 vlm_model = model_dict['qwen2k-vl']
 
+agents_dict = create_agents(planner_model, vlm_model)
+pddl_agent = agents_dict["planner"]
+
+def sanitize(text):
+    return pddl_agent.sanitize(text)
+
+def run_pddl_agent(state_dict, output_filename="navigate_problem.pddl"):
+    task = create_planner_task(state_dict, pddl_agent, output_filename)
+    
+    result_raw = pddl_agent.execute_task(
+        task=task,
+        state_dict=state_dict,
+        output_filename=output_filename
+    )
+    return result_raw
+
+initial_state = None
+
 #user_input = "Open the file Gonzalo_Anteproyecto.pdf which is in Documents, then TFG folder and then Docs folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-user_input = "Open my Entrevista_Reli.odt in Gonzalo - UFV and make the text Gonzalo Torras Serrano in bold."
+#user_input = "Open my Entrevista_Reli.odt in Gonzalo - UFV and make the text Gonzalo Torras Serrano in bold."
 #user_input = 'Create a folder named "GTS" in the Documents folder.'
+#user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and delete the text Gonzalo Torras Serrano.'
+user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and search for the text Gonzalo Torras Serrano.'
 intent_name, intent_args = get_intent(user_input, planner_model, vlm_model)
 print(f"DEBUG intent_name: '{intent_name}'")
 print(f"DEBUG intent_args: {intent_args}")
@@ -47,15 +69,6 @@ if intent_name == 'navigate_tool':
        "goal": goal,
        "attempts": 0
     }
-    print(initial_state)
-    print("\nFlow Starting")
-    plan = to_goal(initial_state, "navigate_problem.pddl")
-    if plan:
-        with open("pddl/results/mapping.json", "r") as f:
-            name_map = json.load(f)
-        orchestrator = Orchestrator(state=initial_state, name_map=name_map)
-        orchestrator.run(plan)
-    print(plan)
 
 elif intent_name == 'write_tool':
     goal = "(typed_text " + sanitize(intent_args.get('text', '')) + ")"
@@ -70,15 +83,6 @@ elif intent_name == 'write_tool':
        "goal": goal,
        "attempts": 0
     }
-    print(initial_state)
-    print("\nFlow Starting")
-    plan = to_goal(initial_state, "navigate_problem.pddl")
-    if plan:
-        with open("pddl/results/mapping.json", "r") as f:
-            name_map = json.load(f)
-        orchestrator = Orchestrator(state=initial_state, name_map=name_map)
-        orchestrator.run(plan)
-    print(plan)
 
 elif intent_name == 'change_tool':
     goal = "(changed_text " + sanitize(intent_args.get('style', '')) + ")"
@@ -98,15 +102,6 @@ elif intent_name == 'change_tool':
         "status": "start",
         "attempts": 0
     }
-    print(initial_state)
-    print("\nFlow Starting")
-    plan = to_goal(initial_state, "navigate_problem.pddl")
-    if plan:
-        with open("pddl/results/mapping.json", "r") as f:
-            name_map = json.load(f)
-        orchestrator = Orchestrator(state=initial_state, name_map=name_map)
-        orchestrator.run(plan)
-    print(plan)
 
 elif intent_name == 'create_tool':
     item_type = intent_args.get('item_type', 'folder')
@@ -129,17 +124,60 @@ elif intent_name == 'create_tool':
         "attempts": 0
     }
 
-    print(initial_state)
-    print("\nFlow Starting")
-    plan = to_goal(initial_state, "navigate_problem.pddl")
-    if plan:
-        with open("pddl/results/mapping.json", "r") as f:
-            name_map = json.load(f)
-        orchestrator = Orchestrator(state=initial_state, name_map=name_map)
-        orchestrator.run(plan)
-    print(plan)
+elif intent_name == 'delete_tool':
+    goal = f"(delete_text {sanitize(intent_args.get('content', ''))})"
+    path = intent_args.get('path', [])
+    path = ["Default"] + path
+
+    initial_state = {
+        "prompt": user_input,
+        "app_name": intent_args.get('application'),
+        "file_name": intent_args.get('file_name', ''),
+        "content": intent_args.get('content', ''),
+        "path": path,
+        "goal": goal,
+        "vlm_model": vlm_model,
+        "planner_model": planner_model,
+        "status": "start",
+        "attempts": 0
+    }
+
+elif intent_name == 'search_tool':
+    goal = f"(text_searched {sanitize(intent_args.get('content', ''))})"
+    path = intent_args.get('path', [])
+    path = ["Default"] + path
+
+    initial_state = {
+        "prompt": user_input,
+        "app_name": intent_args.get('application'),
+        "file_name": intent_args.get('file_name', ''),
+        "content": intent_args.get('content', ''),
+        "path": path,
+        "goal": goal,
+        "vlm_model": vlm_model,
+        "planner_model": planner_model,
+        "status": "start",
+        "attempts": 0
+    }
         
 elif intent_name:
     print(f"Intent not classified.")
 else:
     print("Fallo curioso.")
+
+if initial_state:
+    print(initial_state)
+    print("\nFlow Starting using CrewAI PDDL Agent")
+    
+    # Usamos la función helper de CrewAI en lugar del antiguo to_goal
+    plan = run_pddl_agent(initial_state, "navigate_problem.pddl")
+    
+    if plan and "Planner failed" not in plan:
+        with open("pddl/results/mapping.json", "r") as f:
+            name_map = json.load(f)
+            
+        orchestrator = Orchestrator(state=initial_state, name_map=name_map)
+        orchestrator.run(plan)
+        print(plan)
+    else:
+        print("El planner no supo hacer un plan.")

@@ -87,4 +87,9 @@ ACTION_REGISTRY: dict[str, ActionConfig] = {
         target_param=None,
     ),
 
+    "delete_text": ActionConfig(
+        agents=["executor"],
+        target_param="text",
+    ),
+
 }

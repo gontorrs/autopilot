@@ -37,3 +37,15 @@ def create_qa_task(goal: str, agent, qa_type: str = "default", style: str = "") 
         agent=agent,
         config={"qa_type": qa_type, "style": style}
     )
+
+# En tasks.py
+def create_planner_task(state_dict: dict, agent, output_filename: str = "navigate_problem.pddl") -> Task:
+    return Task(
+        description=f"Generate a PDDL plan based on the provided state dictionary and save it to {output_filename}.",
+        expected_output="A string representing the generated plan steps, or None if planning failed.",
+        agent=agent,
+        config={
+            "state_dict": state_dict,
+            "output_filename": output_filename
+        }
+    )

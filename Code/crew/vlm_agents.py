@@ -5,8 +5,8 @@ import time
 from crewai import Task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import Optional, Any
-from crew.tools import take_screenshot, parse_coordinates
-from tools.vlm_tools import get_coordinates_prompt, verification_prompt_file, check_item_prompt, vlm_tools, verification_prompt_formatting
+from utils.tools import take_screenshot, parse_coordinates
+from tools.vlm_tools import get_coordinates_prompt, verification_prompt_file, check_item_prompt, vlm_tools, verification_prompt_formatting, verification_prompt_delete
 
 class VLMBaseAgent(BaseAgent):
     vlm_model_name: str
@@ -133,7 +133,13 @@ class QAAgent(VLMBaseAgent):
         style = (task.config or {}).get("style", "bold")
         if qa_type == "formatting":
             prompt = verification_prompt_formatting(target, style)
+        elif qa_type == "delete":
+            prompt = verification_prompt_delete(target)
+            print("I was here")
         else:
             prompt = verification_prompt_file(target)
         response = self._call_ollama(prompt, img)
-        return response["message"]["content"].strip()
+        print(response)
+        result = response["message"]["content"].strip()
+        print(f"qa response: '{result}'")
+        return result

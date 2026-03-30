@@ -1,6 +1,3 @@
-import pyautogui
-import time
-
 
 tool_click = {
     'type': 'function',
@@ -81,6 +78,15 @@ def verification_prompt_formatting(text, style):
         f"IMPORTANT: Base your answer PRIMARILY on the visual appearance of the text itself compared to nearby text — NOT on the toolbar state, since the toolbar only reflects formatting when the cursor is placed on that text. "
         f"Ignore any selection highlights. "
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
+    )
+
+def verification_prompt_delete(text):
+    return (
+        f"Observe the screenshot. Look ONLY at the content inside the open document window. "
+        f"Your task is to check if the exact text '{text}' is visible as content WITHIN the open document.\n\n"
+        f"You MUST format your response exactly like this:\n"
+        f"OBSERVATION: [Write a detailed description of what text you see in the document]\n"
+        f"DECISION: [Write only YES if the text is visible, or NO if the text is not visible]"
     )
     
 def _collect_tools():

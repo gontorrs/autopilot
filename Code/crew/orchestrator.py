@@ -1,8 +1,8 @@
 import json
 from crewai import Crew, Process, Task
-from crew.registry import ACTION_REGISTRY
+from utils.registry import ACTION_REGISTRY
 from crew.agents import create_agents
-from crew.tasks import (
+from utils.tasks import (
     create_scout_task,
     create_vision_task,
     create_executor_task,
@@ -89,9 +89,18 @@ class Orchestrator:
 
         # QA es siempre el últim paso.
         if action_name == "final":
-            qa_type = "formatting" if self.state.get("goal") == "(changed_text)" else "default"
+            if "changed_text" in self.state.get("goal", ""):
+                qa_type = "formatting"
+                target_text = self.state.get("content", "")
+            elif "delete_text" in self.state.get("goal", ""):
+                qa_type = "delete"
+                target_text = self.state.get("content", "") # Usar el contenido a borrar
+            else:
+                qa_type = "default"
+                target_text = self.state.get("prompt", "")
+
             qa_task = create_qa_task(
-                goal=self.state.get("prompt", ""),
+                goal=target_text, # <--- Pasar el target específico
                 agent=self._agents["qa"],
                 qa_type=qa_type,
                 style=self.state.get("style", "")
@@ -104,7 +113,10 @@ class Orchestrator:
             )
             result = crew.kickoff()
             
-            return "YES" in str(result).upper()
+            if qa_type == "delete":
+                return "NO" in str(result).upper()
+            else:
+                return "YES" in str(result).upper()
 
         # Instancia de cuando necesitamos scout, vision y executor trabajando juntos.
         if set(config.agents) >= {"scout", "vision", "executor"}:

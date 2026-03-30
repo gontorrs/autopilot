@@ -1,10 +1,16 @@
 import json
 from crewai.agents.agent_builder.base_agent import BaseAgent
-from typing import Optional
-from crew.tools import click, fallback_search_tool, type_text, format_text
+from typing import Optional, Any
+from utils.tools import click, fallback_search_tool, type_text, format_text
 import pyautogui as py
+import time
 
 class ExecutorAgent(BaseAgent):
+
+    function_calling_llm: Optional[BaseAgent] = None
+    llm: Optional[BaseAgent] = None
+    step_callback: Optional[Any] = None
+    last_messages: list = []
 
     def __init__(self):
         super().__init__(
@@ -30,7 +36,12 @@ class ExecutorAgent(BaseAgent):
             if intent in ("navigate", "open_file", "open"):
                 file_name = target or (state or {}).get("file_name") or (state or {}).get("folder_name") or ""
                 fallback_search_tool(file_name, intent=intent)
-                return "FALLBACK_SKIP"
+                
+                # Solo saltar hasta 'search_text' si el fallback fue para el documento final
+                if intent == "open_file":
+                    return "FALLBACK_SKIP"
+                else:
+                    return "FALLBACK_SUCCESS"
             
             # Para click_new, select_type no hay fallback
             return f"FAILED: Could not find '{target}' on screen."
@@ -49,10 +60,12 @@ class ExecutorAgent(BaseAgent):
         elif intent == "navigate_back":
             return py.hotkey('alt', 'left')
         
+        elif intent == "delete_text":
+            py.press('backspace')
+            return "SUCCESS: Pressed delete key."
+        
         # type_name: solo escribir el nombre y pulsar Enter (no necesita VLM)
         elif intent == "type_name":
-            import pyautogui as py
-            import time
             time.sleep(0.5)
             py.write(target, interval=0.05)
             time.sleep(0.3)
