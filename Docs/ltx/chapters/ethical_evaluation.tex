@@ -30,7 +30,7 @@ use of AI systems of this kind.
     \cite{gdpr}: The GDPR governs the processing of personal data in the EU. Its
     Article~25 introduces \textit{privacy by design and by default}, requiring data
     protection to be embedded into a system's architecture from the beginning.
-
+    \vspace{2.5em}
     \item \textbf{Spanish Organic Law on Data Protection (LOPDGDD, Ley Orgánica
     3/2018)} \cite{lopdgdd}: The LOPDGDD is the national transposition of the GDPR
     into Spanish law. It reinforces the same principles of data minimisation, purpose
@@ -123,6 +123,7 @@ made available for uses that align with ethical guidelines. This prevents it fro
 being reused for malicious or unintended intents, therefore the final applications
 of this system should be outlined accordingly.
 
+\vspace{3em}
 \section{Project Analysis}
 
 The following section evaluates this system against each of the seven Google AI Principles. For each principle, a set of metrics is defined and scored on a scale from 1 to 5, where this applies:
@@ -140,6 +141,7 @@ The following section evaluates this system against each of the seven Google AI 
 5 & The dimension is fully and satisfactorily addressed \\
 \hline
 \end{tabular}
+\caption{Scoring rubric for the ethical dimension evaluation.}
 \end{table}
 
 \subsection{Be Socially Beneficial}
@@ -151,9 +153,10 @@ This principle evaluates the tangible value that this system provides to users a
 
     \item \textbf{Hardware accessibility:} The entire pipeline fits within 4.4GB of VRAM, making it viable on consumer hardware machines rather than requiring expensive infrastructure. This design decision ensures that the system is not restricted to users with cutting edge hardware, therefore a score of 5/5 is assigned.
 
-    \item \textbf{Open-source research contribution:} It is important to note that this is a research project does not include a graphical user interface, which limits its immediate accessibility to more experienced users. However, as an open-source academic project, it lays the technical foundation for future work that might make this kind of tool available for far more users, contributing on accessible and private AI systems. Despite this, given this limitation, a score of 3/5 is assigned.
+    \item \textbf{Open-source research contribution:} It is important to note that this is a research project that does not include a graphical user interface, which limits its immediate accessibility to more experienced users. However, as an open-source academic project, it lays the technical foundation for future work that might make this kind of tool available for far more users, contributing on accessible and private AI systems. Despite this, given this limitation, a score of 3/5 is assigned.
 \end{itemize}
 
+\pagebreak
 \subsection{Avoid Creating or Reinforcing Unfair Bias}
 
 This principle evaluates the steps taken to ensure the system is fair and inclusive, without any predefined bias. The following dimensions have been considered:
@@ -177,7 +180,7 @@ This principle evaluates how safety has been prioritised in the design and devel
 
     \item \textbf{Controlled action space (PDDL templates):} The use of predefined PDDL task templates means this system can only execute a controlled and well-defined set of actions, preventing it from taking arbitrary or unexpected steps outside of its intended scope. This is a deliberate architectural decision that significantly reduces the risk of unintended or harmful behaviour, therefore a score of 5/5 is assigned.
 
-    \item \textbf{Least-privilege principle per agent:} Each agent in the pipeline only has access to what is strictly necessary for its specific task. This is why, there are 8 agents in the pipeline, despite being a high number, this was though from the beginning of the project, before the development of the system, to ensure that no agent could do more than the necessary actions. Therefore, a 5/5 is assigned, due to the security by design implementation.
+    \item \textbf{Least-privilege principle per agent:} Each agent in the pipeline only has access to what is strictly necessary for its specific task. This is why, there are 8 agents in the pipeline, despite being a high number, this was thought from the beginning of the project, before the development of the system, to ensure that no agent could do more than the necessary actions. Therefore, a 5/5 is assigned, due to the security by design implementation.
 \end{itemize}
 
 \subsection{Be Accountable to People}
@@ -205,7 +208,7 @@ This principle evaluates how this system protects user data and privacy. The fol
 This principle evaluates whether this system is grounded in rigorous research and transparent methodology. The following dimensions have been considered:
 
 \begin{itemize}
-    \item \textbf{Grounding in planning and VLM literature:} The integration of formal PDDL planning with a multi-agent pipeline, ensure that the most optimal path is chosen every time, making choices that in some cases might be better that other LLM based systems. Moreover, this gives backed evidence on the systems capabilities, however, the system is limited to the templates chosen, therefore a score of 4/5 is assigned.
+    \item \textbf{Grounding in planning and VLM literature:} The integration of formal PDDL planning with a multi-agent pipeline, ensure that the most optimal path is chosen every time, making choices that in some cases might be better than other LLM based systems. Moreover, this gives backed evidence on the systems capabilities, however, the system is limited to the templates chosen, therefore a score of 4/5 is assigned.
 
     \item \textbf{Empirical benchmarking against competitors:} This system is being evaluated against state-of-the-art cloud and local competitors, reducing the potential bias in own comparison statistics. Strengthening the scientific validity of the evaluation. Therefore a score of 5/5 is assigned.
 \end{itemize}
@@ -215,7 +218,7 @@ This principle evaluates whether this system is grounded in rigorous research an
 This principle evaluates whether this system is only made available for uses that align with ethical guidelines. The following dimension has been considered:
 
 \begin{itemize}
-    \item \textbf{Restricted action space by design:} The architecture itself acts as a natural constraint, as it only supports a predefined set of task templates, meaning it cannot be repurposed for any harmful automation. Moreover, the minimum privilege access of agents, ensure that only the in case of any misuse, it is contained as much as possible. Although, the PDDL templates where not thought as a security measure, but more as limitation of the scope of the project, therefore a score of 4/5 is assigned.
+    \item \textbf{Restricted action space by design:} The architecture itself acts as a natural constraint, as it only supports a predefined set of task templates, meaning it cannot be repurposed for any harmful automation. Moreover, the minimum privilege access of agents, ensure that in case of any misuse, it is contained as much as possible. Although, the PDDL templates where not thought as a security measure, but more as limitation of the scope of the project, therefore a score of 4/5 is assigned.
 \end{itemize}
 
 \section{Impact Scale of Ethical Aspects}
@@ -239,6 +242,7 @@ Be Made Available for Uses that Accord with These Principles & 4.0 / 5 \\
 \textbf{Overall} & \textbf{4.29 / 5} \\
 \hline
 \end{tabular}
+\caption{Summary of Google AI Principles scores.}
 \end{table}
 
 The results show that this system performs particularly well in privacy, safety and availability, all of which are directly enforced by its local-first architecture. The lowest score corresponds to accountability, which is an acknowledged limitation of the implementation given the absence of a pre-execution confirmation step. Overall, with a score of 4.29 out of 5, this system demonstrates a strong alignment with Google's AI Principles, with clear areas for improvement identified for future iterations.

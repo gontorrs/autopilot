@@ -15,7 +15,7 @@
 )
 
 (:goal (and
-    (changed_text)
+    (changed_text bold)
 ))
 
 )

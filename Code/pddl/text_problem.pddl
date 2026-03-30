@@ -9,7 +9,7 @@
 )
 
 (:goal (and
-    (typed_text)
+    (typed_text Hola_me_llamo_Gonzalo)
 ))
 
 )
