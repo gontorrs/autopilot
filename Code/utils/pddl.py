@@ -41,6 +41,14 @@ def objects(state_dict):
     if 'style' in state_dict and state_dict['style']:
         style = sanitize(state_dict['style'])
         parts.append(f"{style} - style")
+
+    if 'folder_name' in state_dict and state_dict['folder_name']:
+        folder_name = sanitize(state_dict['folder_name'])
+        parts.append(f"{folder_name}_name - text")
+
+    if 'file_name_new' in state_dict and state_dict['file_name_new']:
+        file_name_new = sanitize(state_dict['file_name_new'])
+        parts.append(f"{file_name_new}_name - text")
     
     parts.append(")")
     return '\n'.join(parts)
@@ -65,6 +73,10 @@ def state(state_dict):
         if 'file_name' in state_dict and state_dict['file_name']:
             file_name = sanitize(state_dict['file_name'])
             predicates.append(f'(file_to {file_name} {folders[-1]})')
+        
+        if state_dict.get('folder_name') or state_dict.get('file_name_new'):
+            last_folder = sanitize(state_dict['path'][-1])
+            predicates.append(f'(can_create_files {last_folder})')
     
     return '\n'.join(predicates)
 
@@ -74,32 +86,36 @@ def clear_results():
         shutil.rmtree(results_dir)
     os.makedirs(results_dir, exist_ok=True)
 
-def generate_problem(template_path, state_dict, output_filename):
-    with open(template_path, 'r') as f:
-        template = f.read()
-    
+def generate_problem(state_dict, output_filename):
+    domain_name = "gui"
+    problem_name = output_filename.replace('.pddl', '')
+
     objects_str = objects(state_dict)
-    state_str = state(state_dict)
-    
-    problem = template.replace('{OBJECTS}', objects_str)
-    problem = problem.replace('{INIT_PREDICATES}', state_str)
-    
+    init_str    = state(state_dict)
+    goal_str    = state_dict.get('goal', '(empty)')
+
+    problem = f"""(define (problem {problem_name})
+  (:domain {domain_name})
+  {objects_str}
+  (:init
+    {init_str}
+  )
+  (:goal {goal_str})
+)"""
+
     results_dir = 'pddl/results'
     os.makedirs(results_dir, exist_ok=True)
-    
     output_path = os.path.join(results_dir, output_filename)
+    print(problem)
     with open(output_path, 'w') as f:
         f.write(problem)
-    
     return output_path
 
-def to_goal(template_path, state_dict, output_filename):
+def to_goal(state_dict, output_filename):
     OBJECT_MAPPING.clear()
     sanitize("Default")
-    
     clear_results()
-    
-    problem_path = generate_problem(template_path, state_dict, output_filename)
+    problem_path = generate_problem(state_dict, output_filename)
     
     # Save mapping to JSON
     mapping_path = os.path.join('pddl/results', 'mapping.json')
@@ -127,5 +143,6 @@ def to_goal(template_path, state_dict, output_filename):
             return plan_content
     else:
         print("Planner failed.")
+        print(result.stdout)
         print(result.stderr)
         return None

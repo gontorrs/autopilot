@@ -2,6 +2,7 @@ import json
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import Optional
 from crew.tools import click, fallback_search_tool, type_text, format_text
+import pyautogui as py
 
 class ExecutorAgent(BaseAgent):
 
@@ -21,12 +22,18 @@ class ExecutorAgent(BaseAgent):
         coords = self._extract_coords(context)
         scout_found = "YES" in scout_result.upper()
 
-        if intent in ("open", "navigate", "open_file"):
+        if intent in ("open", "navigate", "open_file", "click_new", "select_type"):
             if coords and scout_found:
-                return click(coords[0], coords[1])
-            file_name = (state or {}).get("file_name", target)
-            fallback_search_tool(file_name, intent=intent)
-            return "FALLBACK_SKIP"
+                return click(coords[0], coords[1], intent=intent)
+            
+            # Fallback solo para navegación
+            if intent in ("navigate", "open_file", "open"):
+                file_name = target or (state or {}).get("file_name") or (state or {}).get("folder_name") or ""
+                fallback_search_tool(file_name, intent=intent)
+                return "FALLBACK_SKIP"
+            
+            # Para click_new, select_type no hay fallback
+            return f"FAILED: Could not find '{target}' on screen."
 
         elif intent == "search_text":
             print(f"DEBUG executor search_text — target: '{target}'")
@@ -38,6 +45,21 @@ class ExecutorAgent(BaseAgent):
 
         elif intent == "type":
             return type_text((state or {}).get("app_name", ""), target)
+        
+        elif intent == "navigate_back":
+            return py.hotkey('alt', 'left')
+        
+        # type_name: solo escribir el nombre y pulsar Enter (no necesita VLM)
+        elif intent == "type_name":
+            import pyautogui as py
+            import time
+            time.sleep(0.5)
+            py.write(target, interval=0.05)
+            time.sleep(0.3)
+            py.press('enter')
+            time.sleep(1)
+            print(f"[Orchestrator] type_name escrito: '{target}'")
+            return True
 
         return f"FAILED: Unknown intent '{intent}'."
 

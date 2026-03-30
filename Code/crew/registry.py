@@ -46,9 +46,45 @@ ACTION_REGISTRY: dict[str, ActionConfig] = {
         agents=["executor"],
         target_param="content",
     ),
+    
+    "create_file": ActionConfig(
+        agents=["scout", "vision", "executor"],
+        item_type="button",
+        target_param=None,
+    ),
+
+    "create_folder": ActionConfig(
+        agents=["scout", "vision", "executor"],
+        item_type="button",
+        target_param=None,
+    ),
 
     "final": ActionConfig(
         agents=["qa"],
         target_param="prompt",
     ),
+
+    "navigate_back": ActionConfig(
+        agents=["executor"],
+        item_type="button",
+        target_param=None,
+    ),
+
+    "click_new": ActionConfig(
+        agents=["scout", "vision", "executor"],
+        item_type="button",
+        target_param=None,
+    ),
+ 
+    "select_type": ActionConfig(
+        agents=["scout", "vision", "executor"],
+        item_type="menu_option",
+        target_param=None,
+    ),
+ 
+    "type_name": ActionConfig(
+        agents=["executor"],
+        target_param=None,
+    ),
+
 }

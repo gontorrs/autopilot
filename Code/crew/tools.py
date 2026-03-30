@@ -29,9 +29,12 @@ def ctrl_find(file_name):
     py.press('enter')
     time.sleep(1)
 
-def click(x: int, y: int) -> str:
+def click(x: int, y: int, intent: str = "") -> str:
     py.moveTo(x, y, duration=1)
-    py.doubleClick()
+    if intent in ("navigate", "open_file"):
+        py.doubleClick()
+    else:
+        py.click()
     time.sleep(1)
     return f"SUCCESS: Clicked at coordinates {x}, {y}."
 
@@ -142,9 +145,35 @@ def create_tools() -> dict:
             }
         }
         return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
+    
+    @tool("create_tool")
+    def create_tool(application: str, name: str, item_type: str = "text document", path: List[str] = []) -> str:
+        """
+        Use this tool when the user explicitly asks to create a file or folder.
+        Args:
+            application: The application required to START this process if File Explorer.
+            name: The name of the new file or folder to be created.
+            item_type: Whether to create a "file" or a "folder". Default is "folder".
+            path: An ordered list of folders to navigate, for example: ["downloads", "masters"]. If not provided return [].
+        """
+        folder_name = name if item_type == "folder" else None
+        file_name = name if item_type == "file" else None
+
+        result = {
+            "intent": "create_tool",
+            "args": {
+                "application": application,
+                "file_name": file_name,
+                "folder_name": folder_name,
+                "name": name,
+                "path": path
+            }
+        }
+        return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
 
     return {
         "navigate_tool": navigate_tool,
         "write_tool": write_tool,
-        "change_tool": change_tool
+        "change_tool": change_tool,
+        "create_tool": create_tool
     }

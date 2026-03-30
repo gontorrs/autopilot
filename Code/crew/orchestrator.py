@@ -169,6 +169,8 @@ class Orchestrator:
             
             return "failed" not in str(result).lower()
 
+        if any(a in config.agents for a in ["scout", "vision"]):
+            self._unload_models()
         return True
 
     def _resolve_target(self, action_name: str, config, pddl_params: list[str]) -> str:
@@ -179,6 +181,21 @@ class Orchestrator:
             self.state["path_tracking"].append(real)
             print(f"[Orchestrator] path_tracking: {self.state['path_tracking']}")
             return real
+        
+        if action_name == "type_name":
+            raw = pddl_params[-1] if pddl_params else ""
+            base = raw.replace("_name", "") if raw.endswith("_name") else raw
+            real = self.name_map.get(base, self.state.get("folder_name") or self.state.get("name", raw))
+            return real
+
+        if action_name == "click_new":
+            return "New"
+
+        if action_name == "select_type":
+            if self.state.get("folder_name"):
+                return "Folder"
+            else:
+                return self.state.get("item_type", "Text Document")
 
         if config.target_param:
             return self.state.get(config.target_param, "")

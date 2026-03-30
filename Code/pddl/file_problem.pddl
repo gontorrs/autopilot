@@ -1,19 +1,16 @@
-(define (problem file) (:domain gui)
-(:objects 
-    File_Explorer - app
-    gonzalo_text_file - file
-    Default Downloads - folder
-)
-
-(:init
+(define (problem create_test)
+  (:domain gui)
+  (:objects
+    file_explorer - app
+    default documents - folder
+    gts - folder
+    gts_name - text
+  )
+  (:init
     (empty)
-    (current Default)
-    (inside Downloads Default)
-    (can_create_files Downloads)
-)
-
-(:goal (and
-    (created_file gonzalo_text_file)
-))
-
+    (current default)
+    (inside documents default)
+    (can_create_files documents)
+  )
+  (:goal (created gts_name))
 )
