@@ -27,7 +27,7 @@ def create_agents(planner_model: str, vlm_model: str) -> dict:
         role="GUI Task Planner",
         goal="Analyze the user's intention and determine which PDDL template to use and with what arguments.",
         backstory="You are a direct intent classifier, you just classify the end goal, you do not plan any steps in between. You translate natural language into structured intents.",
-        tools=[tools_dict["navigate_tool"], tools_dict["write_tool"], tools_dict["change_tool"], tools_dict["create_tool"], tools_dict["delete_tool"], tools_dict["search_tool"]],
+        tools=[tools_dict["navigate_tool"], tools_dict["write_tool"], tools_dict["change_tool"], tools_dict["create_tool"], tools_dict["delete_tool"], tools_dict["search_tool"], tools_dict["copy_paste_tool"]],
         llm=planner_llm,
         verbose=True,
         max_iter=1

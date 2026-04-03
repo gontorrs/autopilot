@@ -15,7 +15,6 @@
     (style ?style - style)
     (can_create_files ?folder - folder)
     (in_clipboard ?file - file)
-    (is_cut ?file - file)
     (pasted ?file - file ?folder - folder)
 
     ;goal predicates for each template
@@ -85,12 +84,6 @@
     :parameters (?app - app ?file - file ?current - folder)
     :precondition (and (open ?app) (not (empty)) (current ?current) (file_to ?file ?current) (not (in_clipboard ?file)))
     :effect (in_clipboard ?file)
-)
-
-(:action cut
-    :parameters (?app - app ?file - file ?current - folder)
-    :precondition (and (open ?app) (not (empty)) (current ?current) (file_to ?file ?current) (not (in_clipboard ?file)))
-    :effect (and (in_clipboard ?file) (is_cut ?file))
 )
 
 (:action paste

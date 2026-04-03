@@ -21,9 +21,9 @@ tool_click = {
 
 def get_coordinates_prompt(goal):
     return (
-        f"Observe the screenshot and identify where to click to: '{goal}' folder, file, application, button or area. "
-        "Use the tool_click tool to specify the action and normalized coordinates (0-1000 scale)."
-        )
+        f"Observe the screenshot and identify where to click to find: '{goal}' (folder, file, application, button or area). "
+        "Respond ONLY with the coordinates in this exact format: [x, y] in 0-1000 scale. Nothing else."
+    )
 
 def verification_prompt_file(goal):
     return (
@@ -87,6 +87,14 @@ def verification_prompt_delete(text):
         f"You MUST format your response exactly like this:\n"
         f"OBSERVATION: [Write a detailed description of what text you see in the document]\n"
         f"DECISION: [Write only YES if the text is visible, or NO if the text is not visible]"
+    )
+
+def verification_prompt_copy_paste(file_name, dest_folder):
+    return (
+        f"Observe the screenshot. Look at the current folder contents. "
+        f"Is the file '{file_name}' visible inside the '{dest_folder}' folder? "
+        f"IMPORTANT: Only answer YES if you can see the file in the destination folder currently displayed. "
+        "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
     
 def _collect_tools():

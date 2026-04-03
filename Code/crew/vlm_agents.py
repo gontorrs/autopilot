@@ -5,8 +5,10 @@ import time
 from crewai import Task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import Optional, Any
+
+from typer import style
 from utils.tools import take_screenshot, parse_coordinates
-from tools.vlm_tools import get_coordinates_prompt, verification_prompt_file, check_item_prompt, vlm_tools, verification_prompt_formatting, verification_prompt_delete
+from tools.vlm_tools import get_coordinates_prompt, verification_prompt_file, check_item_prompt, vlm_tools, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste
 
 class VLMBaseAgent(BaseAgent):
     vlm_model_name: str
@@ -25,6 +27,7 @@ class VLMBaseAgent(BaseAgent):
         response = ollama.chat(
             model=self.vlm_model_name,
             messages=[{"role": "user", "content": prompt, "images": [img]}],
+            keep_alive=0
         )
         return response
 
@@ -34,6 +37,7 @@ class VLMBaseAgent(BaseAgent):
             messages=[{"role": "user", "content": prompt, "images": [img]}],
             tools=vlm_tools,
             options={"temperature": 0.1},
+            keep_alive=0
         )
         return response
 
@@ -106,12 +110,14 @@ class VisionAgent(VLMBaseAgent):
         target = self._parse_target(task.description)
         print(f"vision target: '{target}'")
         prompt = get_coordinates_prompt(target)
-        response = self._call_ollama_tools(prompt, img)
-        if response["message"].get("tool_calls"):
-            raw_coords = response["message"]["tool_calls"][0]["function"]["arguments"].get("coordinate")
-            coords = parse_coordinates(raw_coords)
-            if coords:
-                return json.dumps({"x": coords[0], "y": coords[1]})
+        response = self._call_ollama(prompt, img)
+        content = response["message"]["content"].strip()
+        match = re.search(r'\[(\d+),\s*(\d+)\]', content)
+        if match:
+            coords = [int(match.group(1)), int(match.group(2))]
+            result = parse_coordinates(coords)
+            if result:
+                return json.dumps({"x": result[0], "y": result[1]})
         return json.dumps({"x": None, "y": None})
 
 
@@ -130,12 +136,14 @@ class QAAgent(VLMBaseAgent):
         target = self._parse_target(task.description)
         print(f"qa goal: '{target}'")
         qa_type = (task.config or {}).get("qa_type", "default")
-        style = (task.config or {}).get("style", "bold")
+        style = (task.config or {}).get("style", "nothing")
         if qa_type == "formatting":
             prompt = verification_prompt_formatting(target, style)
         elif qa_type == "delete":
             prompt = verification_prompt_delete(target)
             print("I was here")
+        elif qa_type == "copy_paste":
+            prompt = verification_prompt_copy_paste(target, style)
         else:
             prompt = verification_prompt_file(target)
         response = self._call_ollama(prompt, img)

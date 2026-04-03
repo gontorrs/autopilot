@@ -95,15 +95,19 @@ class Orchestrator:
             elif "delete_text" in self.state.get("goal", ""):
                 qa_type = "delete"
                 target_text = self.state.get("content", "") # Usar el contenido a borrar
+            elif "pasted" in self.state.get("goal", ""):  # <-- aquí
+                qa_type = "copy_paste"
+                target_text = self.state.get("file_name", "")
+                dest = self.state.get("path_to_paste", [""])[-1]
             else:
                 qa_type = "default"
                 target_text = self.state.get("prompt", "")
 
             qa_task = create_qa_task(
-                goal=target_text, # <--- Pasar el target específico
+                goal=target_text,
                 agent=self._agents["qa"],
                 qa_type=qa_type,
-                style=self.state.get("style", "")
+                style=dest if qa_type == "copy_paste" else self.state.get("style", "")
             )
             crew = Crew(
                 agents=[self._agents["qa"]],
@@ -131,14 +135,25 @@ class Orchestrator:
                 scout_task=scout_task
             )
 
-            # Run Scout and Vision as a crew first
-            scout_vision_crew = Crew(
-                agents=[self._agents["scout"], self._agents["vision"]],
-                tasks=[scout_task, vision_task],
+            scout_crew = Crew(
+                agents=[self._agents["scout"]],
+                tasks=[scout_task],
                 process=Process.sequential,
                 verbose=True
             )
-            vision_result = str(scout_vision_crew.kickoff())
+            scout_crew.kickoff()
+            scout_found = "YES" in str(scout_task.output.raw).upper()
+
+            if scout_found:
+                vision_crew = Crew(
+                    agents=[self._agents["vision"]],
+                    tasks=[vision_task],
+                    process=Process.sequential,
+                    verbose=True
+                )
+                vision_result = str(vision_crew.kickoff())
+            else:
+                vision_result = None
 
             result = self._agents["executor"].execute_task(
                 task=create_executor_task(

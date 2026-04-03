@@ -91,5 +91,16 @@ ACTION_REGISTRY: dict[str, ActionConfig] = {
         agents=["executor"],
         target_param="text",
     ),
+    
+    "copy": ActionConfig(
+        agents=["scout", "vision", "executor"],
+        item_type="file",
+        target_param="file_name",
+    ),
+
+    "paste": ActionConfig(
+        agents=["executor"],
+        target_param=None,
+    ),
 
 }

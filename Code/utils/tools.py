@@ -221,11 +221,37 @@ def create_tools() -> dict:
         }
         return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
 
+    @tool("copy_paste_tool")
+    def copy_paste_tool(application: str, file_name: str, operation: str = "copy", path_to_copy: List[str] = [], path_to_paste: List[str] = []) -> str:
+        """
+         Use this tool when the user asks to copy or cut and paste a file.
+
+        Args:
+            application: The application required to START this process. Must be 'file explorer' if the file needs to be located through folders.
+            file_name: Name of the file to copy and paste.
+            operation: Whether to 'copy' or 'cut' the file. Default is 'copy'.
+            path_to_copy: An ordered list of folders to navigate to the source location, for example: ["downloads", "masters"]. If not provided return [].
+            path_to_paste: An ordered list of folders to navigate to the destination location, for example: ["downloads", "masters"]. If not provided return [].
+        """
+
+        result = {
+            "intent": "copy_paste_tool",
+            "args": {
+                "application": application,
+                "file_name": file_name,
+                "operation": operation,
+                "path_to_copy": path_to_copy,
+                "path_to_paste": path_to_paste
+            }
+        }
+        return f"SUCCESS. DO NOT USE ANY MORE TOOLS. Final Answer: {json.dumps(result)}"
+
     return {
         "navigate_tool": navigate_tool,
         "write_tool": write_tool,
         "change_tool": change_tool,
         "create_tool": create_tool,
         "delete_tool": delete_tool,
-        "search_tool": search_tool
+        "search_tool": search_tool,
+        "copy_paste_tool": copy_paste_tool
     }

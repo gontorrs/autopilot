@@ -45,10 +45,11 @@ initial_state = None
 
 #user_input = "Open the file Gonzalo_Anteproyecto.pdf which is in Documents, then TFG folder and then Docs folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-#user_input = "Open my Entrevista_Reli.odt in Gonzalo - UFV and make the text Gonzalo Torras Serrano in bold."
+#user_input = "Open my Entrevista_Reli.odt in Gonzalo - UFV and make the text Gonzalo Torras Serrano in italic."
 #user_input = 'Create a folder named "GTS" in the Documents folder.'
 #user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and delete the text Gonzalo Torras Serrano.'
-user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and search for the text Gonzalo Torras Serrano.'
+#user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and search for the text Gonzalo Torras Serrano.'
+user_input = 'Copy my claude.docx in my Downloads folder and paste it in my Documents folder.'
 intent_name, intent_args = get_intent(user_input, planner_model, vlm_model)
 print(f"DEBUG intent_name: '{intent_name}'")
 print(f"DEBUG intent_args: {intent_args}")
@@ -157,6 +158,25 @@ elif intent_name == 'search_tool':
         "vlm_model": vlm_model,
         "planner_model": planner_model,
         "status": "start",
+        "attempts": 0
+    }
+
+elif intent_name == 'copy_paste_tool':
+    path_copy = ["Default"] + intent_args.get('path_to_copy', [])
+    path_paste = ["Default"] + intent_args.get('path_to_paste', [])
+    
+    initial_state = {
+        "prompt": user_input,
+        "app_name": intent_args.get('application', 'file explorer'),
+        "file_name": intent_args.get('file_name', ''),
+        "path_to_copy": path_copy,
+        "path_to_paste": path_paste,
+        "cut": intent_args.get('operation', 'copy') == 'cut',
+        "vlm_model": vlm_model,
+        "planner_model": planner_model,
+        "status": "start",
+        "goal": f"(pasted {sanitize(intent_args.get('file_name', ''))} {sanitize(intent_args.get('path_to_paste', [''])[-1])})",
+        "qa_goal": f"Is the file {sanitize(intent_args.get('file_name', ''))} present in the Documents folder?",
         "attempts": 0
     }
         

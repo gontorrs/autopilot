@@ -59,15 +59,39 @@ class PDDLPlannerAgent(BaseAgent):
         if 'file_name_new' in state_dict and state_dict['file_name_new']:
             file_name_new = self.sanitize(state_dict['file_name_new'])
             parts.append(f"{file_name_new}_name - text")
+
+        if 'path_to_copy' in state_dict and 'path_to_paste' in state_dict:
+            all_folders = list(dict.fromkeys(
+                state_dict['path_to_copy'] + state_dict['path_to_paste']
+            ))
+            folders = [self.sanitize(f) for f in all_folders]
+            parts.append(f"{' '.join(folders)} - folder")
             
         parts.append(")")
         return '\n'.join(parts)
 
     def _state(self, state_dict):
-        goal = state_dict.get('goal', '')
         predicates = ['(empty)']
         
-        if 'path' in state_dict and state_dict['path']:
+        if 'path_to_copy' in state_dict and 'path_to_paste' in state_dict:
+            default_safe = self.sanitize("Default")
+            predicates.append(f'(current {default_safe})')
+
+            seen = set()
+            for path in [state_dict['path_to_copy'], state_dict['path_to_paste']]:
+                sanitized_path = [self.sanitize(f) for f in path]
+                for i in range(1, len(sanitized_path)):
+                    predicate = f'(inside {sanitized_path[i]} {sanitized_path[i-1]})'
+                    if predicate not in seen:
+                        seen.add(predicate)
+                        predicates.append(predicate)
+
+            if 'file_name' in state_dict and state_dict['file_name']:
+                file_name = self.sanitize(state_dict['file_name'])
+                origin = self.sanitize(state_dict['path_to_copy'][-1])
+                predicates.append(f'(file_to {file_name} {origin})')
+
+        elif 'path' in state_dict and state_dict['path']:
             folders = [self.sanitize(f) for f in state_dict['path']]
             
             default_safe = self.sanitize("Default")

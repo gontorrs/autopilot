@@ -58,11 +58,28 @@ class ExecutorAgent(BaseAgent):
             return type_text((state or {}).get("app_name", ""), target)
         
         elif intent == "navigate_back":
+            time.sleep(1)
             return py.hotkey('alt', 'left')
         
         elif intent == "delete_text":
             py.press('backspace')
             return "SUCCESS: Pressed delete key."
+        
+        elif intent == "copy":
+            if coords and scout_found:
+                click(coords[0], coords[1], intent="copy")
+            time.sleep(0.2)
+            is_cut = state.get("cut", False)
+            if is_cut:
+                py.hotkey('ctrl', 'x')
+            else:
+                py.hotkey('ctrl', 'c')
+            return "SUCCESS: Cut/Copied to clipboard."
+
+        elif intent == "paste":
+            time.sleep(1)
+            py.hotkey('ctrl', 'v')
+            return "SUCCESS: Pasted."
         
         # type_name: solo escribir el nombre y pulsar Enter (no necesita VLM)
         elif intent == "type_name":
