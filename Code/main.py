@@ -19,7 +19,9 @@ model_dict = {
     'qwen4k': 'qwen3:4b-instruct-2507-q4_K_M',
     'qwen4instruct': 'qwen3:4b-instruct',
     'qwen4-vl': 'qwen3-vl:4b',
-    'qwen2-vl': 'qwen3-vl:2b-instruct'
+    'qwen2-vl': 'qwen3-vl:2b-instruct',
+    'gemma4:e2b': 'gemma4:e2b',
+    'gemma4:e4b': 'gemma4:e4b'
 }
 
 planner_model = model_dict['qwen4k']

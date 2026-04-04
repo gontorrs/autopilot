@@ -15,7 +15,8 @@
     (style ?style - style)
     (can_create_files ?folder - folder)
     (in_clipboard ?file - file)
-    (pasted ?file - file ?folder - folder)
+    (selected ?file - file)
+    (zipped)
 
     ;goal predicates for each template
     (text_searched ?text - text) ;this one can be used as an end goal or for intermediate goal for change style and delete text.
@@ -23,6 +24,7 @@
     (open_file ?file - file) ;opens a file in file explorer
     (typed_text ?text - text) ;types text in notepad
     (changed_text ?style - style) ;changed the style of a text in word
+    (pasted ?file - file ?folder - folder)
     ;these two are predicated for the same template because PDDL cannot use two variables in declarations, but then only use one in actions.
     (new_clicked)
     (naming)
@@ -115,7 +117,18 @@
     :precondition (and (open ?app) (naming) (not (typed_text ?text)) (not (empty)))
     :effect (and (typed_text ?text) (created ?text))
 )
-    
+
+(:action select_item
+    :parameters (?app - app ?file - file ?current - folder)
+    :precondition (and (open ?app) (not (empty)) (current ?current) (file_to ?file ?current) (not (selected ?file)))
+    :effect (selected ?file)
+)
+
+(:action compress
+    :parameters (?app - app ?current - folder)
+    :precondition (and (open ?app) (not (empty)) (current ?current) (not (zipped)))
+    :effect (zipped)
+)
     
     
 
