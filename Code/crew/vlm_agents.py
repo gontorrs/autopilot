@@ -27,7 +27,7 @@ class VLMBaseAgent(BaseAgent):
         response = ollama.chat(
             model=self.vlm_model_name,
             messages=[{"role": "user", "content": prompt, "images": [img]}],
-            keep_alive=0
+            #keep_alive=0
         )
         return response
 
@@ -37,7 +37,7 @@ class VLMBaseAgent(BaseAgent):
             messages=[{"role": "user", "content": prompt, "images": [img]}],
             tools=vlm_tools,
             options={"temperature": 0.1},
-            keep_alive=0
+            #keep_alive=0
         )
         return response
 
@@ -87,13 +87,11 @@ class ScoutAgent(VLMBaseAgent):
 
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         img = take_screenshot()
-        target = self._parse_target(task.description)
-        item_type = self._parse_item_type(task.description)
-        print(f"scout target: '{target}' ; type: '{item_type}'")
-        prompt = check_item_prompt(target, item_type)
+        prompt = task.description
         response = self._call_ollama(prompt, img)
-        print(f"response: {response['message']['content'].strip()}")
-        return response["message"]["content"].strip()
+        result = response["message"]["content"].strip()
+        print(f"scout response: '{result}'")
+        return result
 
 
 class VisionAgent(VLMBaseAgent):
@@ -101,15 +99,13 @@ class VisionAgent(VLMBaseAgent):
         super().__init__(
             vlm_model_name=vlm_model_name,
             role="Vision Coordinate Finder",
-            goal="Observe the screenshot and identify where to click. It can be a folder, file, application, button or area.",
+            goal="Observe the screenshot and identify where to click.",
             backstory="You are a computer vision expert at locating elements in GUIs and returning their coordinates.",
         )
 
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         img = take_screenshot()
-        target = self._parse_target(task.description)
-        print(f"vision target: '{target}'")
-        prompt = get_coordinates_prompt(target)
+        prompt = task.description
         response = self._call_ollama(prompt, img)
         content = response["message"]["content"].strip()
         match = re.search(r'\[(\d+),\s*(\d+)\]', content)
@@ -133,21 +129,10 @@ class QAAgent(VLMBaseAgent):
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         time.sleep(2)
         img = take_screenshot()
-        target = self._parse_target(task.description)
-        print(f"qa goal: '{target}'")
+        prompt = task.description
         qa_type = (task.config or {}).get("qa_type", "default")
-        style = (task.config or {}).get("style", "nothing")
-        if qa_type == "formatting":
-            prompt = verification_prompt_formatting(target, style)
-        elif qa_type == "delete":
-            prompt = verification_prompt_delete(target)
-            print("I was here")
-        elif qa_type == "copy_paste":
-            prompt = verification_prompt_copy_paste(target, style)
-        else:
-            prompt = verification_prompt_file(target)
+        style = (task.config or {}).get("style", "")
         response = self._call_ollama(prompt, img)
-        print(response)
         result = response["message"]["content"].strip()
         print(f"qa response: '{result}'")
         return result

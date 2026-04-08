@@ -148,10 +148,6 @@ class PDDLPlannerAgent(BaseAgent):
         self.sanitize("Default")
         self.clear_results()
         problem_path = self.generate_problem(state_dict, output_filename)
-        
-        mapping_path = os.path.join('pddl/results', 'mapping.json')
-        with open(mapping_path, 'w') as f:
-            json.dump(self.object_mapping, f, indent=4)
             
         domain_path = 'pddl/gui_domain.pddl'
         results_dir = 'pddl/results'
@@ -165,15 +161,17 @@ class PDDLPlannerAgent(BaseAgent):
         result = subprocess.run(cmd, capture_output=True, text=True)
         
         if result.returncode == 0:
-            print("Plan executed")
+            print("Plan generated successfully")
             if os.path.exists('sas_plan'):
                 shutil.move('sas_plan', plan_path)
             with open(plan_path, 'r') as f:
                 plan_content = f.read()
-            print(plan_content)
-            return plan_content
+            return {
+                "plan": plan_content,
+                "mapping": self.object_mapping
+            }
         else:
-            print("Planner failed.")
+            print("Planning failed.")
             print(result.stdout)
             print(result.stderr)
             return None

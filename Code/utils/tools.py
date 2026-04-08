@@ -4,7 +4,7 @@ import pyautogui as py
 import io
 import time
 from crewai.tools import tool
-from typing import List
+from typing import Any, List
 
 def take_screenshot() -> bytes:
     screenshot = py.screenshot()
@@ -84,6 +84,195 @@ def format_text(style: str) -> str:
     py.press('left')
     time.sleep(3)
     return {"status": "text formatted"}
+
+def create_manager_tools(agents: dict, task_state: dict, plan_intents: list = None) -> list:
+    """
+    Creates custom tools for the Manager agent that internally call
+    the specialized agents with the afinado prompts from vlm_tools.py.
+    """
+    from crewai import Task
+    from tools.vlm_tools import (
+        check_item_prompt,
+        get_coordinates_prompt,
+        verification_prompt_file,
+        verification_prompt_formatting,
+        verification_prompt_delete,
+        verification_prompt_copy_paste,
+    )
+
+    @tool("check_visibility")
+    def check_visibility(target: str, item_type: str = "item") -> str:
+        """
+        Check if a UI element is visible on screen. Returns YES or NO.
+        Use this FIRST before trying to find coordinates.
+
+        Args:
+            target: The name of the element to find (e.g., 'Downloads', 'file explorer', 'claude.docx').
+            item_type: The type of element: 'application', 'folder', 'file', 'button', 'menu_option', or 'text_content'.
+        """
+        prompt = check_item_prompt(target, item_type)
+        scout_task = Task(
+            description=prompt,
+            expected_output="YES or NO",
+            agent=agents["scout"],
+        )
+        result = agents["scout"].execute_task(scout_task)
+        return result
+
+    @tool("find_coordinates")
+    def find_coordinates(target: str) -> str:
+        """
+        Find the exact screen coordinates of a visible UI element.
+        Only use this AFTER check_visibility returned YES.
+
+        Args:
+            target: The name of the element to locate (e.g., 'Downloads', 'file explorer', 'claude.docx').
+        """
+        prompt = get_coordinates_prompt(target)
+        vision_task = Task(
+            description=prompt,
+            expected_output="JSON with x and y coordinates.",
+            agent=agents["vision"],
+        )
+        result = agents["vision"].execute_task(vision_task)
+        return result
+
+    intent_list = ', '.join(plan_intents) if plan_intents else 'open, navigate, open_file, click_new, select_type, copy, paste, navigate_back, type, type_name, search_text, change_text, delete_text'
+    print(f"[Manager Tools] Available intents: {intent_list}")
+
+    @tool("execute_action")
+    def execute_action(intent: str, target: str = "", scout_result: str = "", coordinates: Any = "") -> str:
+        """
+        Execute a GUI action (click, type, shortcut, etc).
+        For visual actions, pass the scout_result and coordinates from previous tools.
+        For keyboard actions, coordinates are not needed.
+
+        Args:
+            intent: The action to perform. Use ONLY the intent specified in the task.
+            target: The target of the action (e.g., file name, folder name, text to type, style to apply).
+            scout_result: The result from check_visibility ('YES' or 'NO'). Pass empty string for keyboard actions.
+            coordinates: JSON string with x,y from find_coordinates (e.g., '{"x": 500, "y": 300}'). Pass empty string for keyboard actions.
+        """
+        import pyautogui as py
+        import time
+
+        # Parse coordinates — handle dict, JSON string, or single-quote string
+        coords = None
+        if coordinates:
+            coord_data = None
+            if isinstance(coordinates, dict):
+                coord_data = coordinates
+            elif isinstance(coordinates, str):
+                try:
+                    coord_data = json.loads(coordinates.replace("'", '"'))
+                except (json.JSONDecodeError, TypeError):
+                    # Try "x,y" format
+                    parts = coordinates.split(",")
+                    if len(parts) == 2:
+                        try:
+                            coord_data = {"x": int(parts[0].strip()), "y": int(parts[1].strip())}
+                        except ValueError:
+                            pass
+            if coord_data:
+                x, y = coord_data.get("x"), coord_data.get("y")
+                if x is not None and y is not None:
+                    coords = (int(x), int(y))
+
+        scout_found = "YES" in (scout_result or "").upper()
+
+        print(f"[execute_action] intent='{intent}' target='{target}' coords={coords} scout_found={scout_found}")
+
+        if intent in ("open", "navigate", "open_file", "click_new", "select_type"):
+            if coords and scout_found:
+                return click(coords[0], coords[1], intent=intent)
+            if intent in ("open", "navigate", "open_file"):
+                file_name = target or task_state.get("file_name") or task_state.get("folder_name") or ""
+                fallback_search_tool(file_name, intent=intent)
+                return "FALLBACK_SKIP" if intent == "open_file" else "FALLBACK_SUCCESS"
+            return f"FAILED: Could not find '{target}' on screen."
+
+        elif intent == "search_text":
+            return fallback_search_tool(target, intent="search_text")
+
+        elif intent == "change_text":
+            return str(format_text(target))
+
+        elif intent == "type":
+            return str(type_text(task_state.get("app_name", ""), target))
+
+        elif intent == "navigate_back":
+            time.sleep(1)
+            py.hotkey("alt", "left")
+            return "SUCCESS: Navigated back."
+
+        elif intent == "delete_text":
+            py.press("backspace")
+            return "SUCCESS: Pressed delete key."
+
+        elif intent == "copy":
+            if coords and scout_found:
+                click(coords[0], coords[1], intent="copy")
+            time.sleep(0.2)
+            if task_state.get("cut", False):
+                py.hotkey("ctrl", "x")
+            else:
+                py.hotkey("ctrl", "c")
+            return "SUCCESS: Cut/Copied to clipboard."
+
+        elif intent == "paste":
+            time.sleep(1)
+            py.hotkey("ctrl", "v")
+            return "SUCCESS: Pasted."
+
+        elif intent == "type_name":
+            time.sleep(0.5)
+            py.write(target, interval=0.05)
+            time.sleep(0.3)
+            py.press("enter")
+            time.sleep(1)
+            return "SUCCESS: Typed name and confirmed."
+
+        return f"FAILED: Unknown intent '{intent}'."
+
+    @tool("verify_entire_workflow")
+    def verify_entire_workflow(qa_type: str = "default", goal: str = "", style: str = "") -> str:
+        """
+        Verify that a task was completed by taking a screenshot and checking.
+        Use this as the LAST step to confirm the overall task succeeded.
+
+        Args:
+            qa_type: Type of verification. One of: 'default', 'formatting', 'delete', 'copy_paste'.
+            goal: What to verify (e.g., the text content, file name, or user prompt).
+            style: For formatting verification, the style applied ('bold', 'italic', 'underlined'). For copy_paste, the destination folder name.
+        """
+        if qa_type == "formatting":
+            prompt = verification_prompt_formatting(goal, style)
+        elif qa_type == "delete":
+            prompt = verification_prompt_delete(goal)
+        elif qa_type == "copy_paste":
+            prompt = verification_prompt_copy_paste(goal, style)
+        else:
+            prompt = verification_prompt_file(goal)
+
+        qa_task = Task(
+            description=prompt,
+            expected_output="YES or NO",
+            agent=agents["qa"],
+            config={"qa_type": qa_type, "style": style},
+        )
+        result = agents["qa"].execute_task(qa_task)
+        return result
+
+    # Override execute_action description with dynamic intent list
+    execute_action.description = (
+        "Execute a GUI action. "
+        f"The intent MUST be one of: {intent_list}. "
+        "For visual actions, pass scout_result and coordinates from previous tools. "
+        "For keyboard actions (paste, navigate_back, type, type_name, search_text, change_text, delete_text), coordinates are not needed."
+    )
+
+    return [check_visibility, find_coordinates, execute_action]
+
 
 def create_tools() -> dict:
     
