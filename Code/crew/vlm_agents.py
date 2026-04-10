@@ -2,7 +2,7 @@ import json
 import re
 import ollama
 import time
-from crewai import Task
+from crewai import Task, tools
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import Optional, Any
 
@@ -64,6 +64,9 @@ class VLMBaseAgent(BaseAgent):
 
     def get_platform_tools(self):
         return []
+    
+    async def aexecute_task(self, task, context=None, tools=None):
+        return self.execute_task(task, context, tools)
 
     @staticmethod
     def _parse_target(description: str) -> str:

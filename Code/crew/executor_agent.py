@@ -32,21 +32,19 @@ class ExecutorAgent(BaseAgent):
             if coords and scout_found:
                 return click(coords[0], coords[1], intent=intent)
             
-            # Fallback solo para navegación
             if intent in ("navigate", "open_file", "open"):
                 file_name = target or (state or {}).get("file_name") or (state or {}).get("folder_name") or ""
                 fallback_search_tool(file_name, intent=intent)
                 
-                # Solo saltar hasta 'search_text' si el fallback fue para el documento final
                 if intent == "open_file":
                     return "FALLBACK_SKIP"
                 else:
                     return "FALLBACK_SUCCESS"
             
-            # Para click_new, select_type no hay fallback
             return f"FAILED: Could not find '{target}' on screen."
 
         elif intent == "search_text":
+            time.sleep(1)
             print(f"DEBUG executor search_text — target: '{target}'")
             return fallback_search_tool(target, intent="search_text")
 
@@ -117,3 +115,6 @@ class ExecutorAgent(BaseAgent):
 
     def get_platform_tools(self):
         return []
+    
+    async def aexecute_task(self, task, context=None, tools=None):
+        return self.execute_task(task, context, tools)

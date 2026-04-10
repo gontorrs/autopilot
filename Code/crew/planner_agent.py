@@ -127,13 +127,13 @@ class PDDLPlannerAgent(BaseAgent):
         goal_str = state_dict.get('goal', '(empty)')
         
         problem = f"""(define (problem {problem_name})
-  (:domain {domain_name})
-  {objects_str}
-  (:init
-    {init_str}
-  )
-  (:goal {goal_str})
-)"""
+            (:domain {domain_name})
+            {objects_str}
+            (:init
+                {init_str}
+            )
+            (:goal {goal_str})
+            )"""
         
         results_dir = 'pddl/results'
         os.makedirs(results_dir, exist_ok=True)
@@ -182,7 +182,6 @@ class PDDLPlannerAgent(BaseAgent):
 
         return self.to_goal(state_dict, output_filename)
 
-    # Requerimientos base de BaseAgent para agentes deterministas puros:
     def create_agent_executor(self, tools=None) -> None:
         pass
 
@@ -197,3 +196,6 @@ class PDDLPlannerAgent(BaseAgent):
 
     def get_platform_tools(self):
         return []
+    
+    async def aexecute_task(self, task, context=None, tools=None):
+        return self.execute_task(task, context, tools)

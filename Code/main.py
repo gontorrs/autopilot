@@ -1,6 +1,6 @@
-from crew.pipeline import PipelineFlow
-import langchain
-langchain.debug = True
+from crewai import Crew, Process, Task
+from crew.agents import create_agents
+from utils.tools import create_manager_tools
 
 model_dict = {
     'gemma4k': 'gemma3:4b-it-qat',
@@ -28,14 +28,45 @@ model_dict = {
 
 planner_model = model_dict['e4bk']
 vlm_model = model_dict['qwen2k-vl']
+intention_model = model_dict['e4bk']
 
 #user_input = "Open the file Gonzalo_Anteproyecto.pdf which is in Documents, then TFG folder and then Docs folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-user_input = "Open my Entrevista_Reli.odt in Gonzalo - UFV and make the text Gonzalo Torras Serrano in italic."
+user_input = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic."
 #user_input = 'Create a folder named "GTS" in the Documents folder.'
-#user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and delete the text Gonzalo Torras Serrano.'
-#user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and search for the text Gonzalo Torras Serrano.'
+#user_input = 'Open my Entrevista_Reli.odt in Desktop and delete the text Gonzalo Torras Serrano.'
+#user_input = 'Open my Entrevista_Reli.odt in Desktop and search for the text Gonzalo Torras Serrano.'
 #user_input = 'Copy my claude.docx in my Downloads folder and paste it in my Documents folder.'
 
-flow = PipelineFlow(user_input, planner_model, vlm_model, intention_model=model_dict['qwen4k'])
-flow.kickoff()
+# 1. Create all agents
+agents = create_agents(planner_model, vlm_model, intention_model)
+
+# 2. Create manager tools (orchestration + execution + verification)
+config = {
+    "user_input": user_input,
+    "vlm_model": vlm_model,
+    "planner_model": planner_model,
+    "intention_model": intention_model,
+}
+manager_tools = create_manager_tools(agents, config)
+agents["manager"].tools = manager_tools
+
+# 3. Single task: the manager orchestrates everything
+task = Task(
+    description=f"Complete this GUI automation request: '{user_input}'",
+    expected_output="Final result: YES (success) or NO (failure) from verification.",
+    agent=agents["manager"],
+)
+
+# 4. Run
+crew = Crew(
+    agents=[agents["manager"]],
+    tasks=[task],
+    process=Process.sequential,
+    verbose=True,
+)
+
+result = crew.kickoff()
+print(f"\n{'='*50}")
+print(f"FINAL RESULT: {result.raw}")
+print(f"{'='*50}")

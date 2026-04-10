@@ -63,7 +63,7 @@ def check_item_prompt(item, type='item'):
 def verification_prompt_formatting(text, style):
     style_description = {
         'bold': 'in bold/thick font weight',
-        'italic': 'in italic/slanted style', 
+        'italic': 'in italic (in other words a bit inclined compared to normal text)', 
         'underlined': 'with an underline'
     }
 
