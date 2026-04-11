@@ -203,6 +203,7 @@ fd = "C:\\Users\\gonza\\fastdownward\\fast-downward.py"
 Edit `main.py` to set your desired user input, then run:
 
 ```bash
+cd Code/
 python main.py
 ```
 

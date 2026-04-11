@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/Users/gonza/fastdownward/builds/release/cmake_install.cmake",
-		"C:/Users/gonza/fastdownward/builds/release/search/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
