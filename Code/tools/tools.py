@@ -5,10 +5,9 @@ import pyautogui as py
 import io
 import time
 from crewai.tools import tool
-from crewai import Crew, Process, Task
+from crewai import Task
 from typing import Any, List
-from tools.vlm_tools import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste
-from utils.tasks import create_intent_task
+from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste
 
 def take_screenshot() -> bytes:
     screenshot = py.screenshot()
@@ -32,37 +31,6 @@ def win_search(target: str):
     time.sleep(1)
     py.press('enter')
     time.sleep(1)
-
-def fallback_search_tool(target: str, intent: str = "") -> str:
-    print(f"DEBUG fallback_search_tool called — target: '{target}' ; intent: '{intent}'")
-    time.sleep(1)
-    if intent == "search_text":
-        time.sleep(1)
-        py.keyDown('ctrlleft')
-        time.sleep(0.3)
-        py.press('f')
-        time.sleep(0.2)
-        py.keyUp('ctrlleft')
-        time.sleep(1)
-        py.write(target, interval=0.05)
-        py.press('enter')
-        time.sleep(1)
-        py.press('esc')
-    else:
-        time.sleep(1)
-        ctrl_find(target)
-    time.sleep(1)
-    return f"SUCCESS: Fallback search executed for {target}."
-
-def ctrl_find(file_name):
-    py.press('win')
-    time.sleep(1)
-    py.write(file_name, interval=0.05)
-    time.sleep(1)
-    print(f"3. Opening file...")
-    py.press('enter')
-    time.sleep(1)
-
 
 def click(x: int, y: int, intent: str = "") -> str:
     py.moveTo(x, y, duration=1)
@@ -94,28 +62,9 @@ def format_text(style: str) -> str:
     time.sleep(3)
     return "SUCCESS: Text formatted."
 
-
-def parse_coords_from_arg(coordinates) -> tuple | None:
-    """Parse coordinates from dict, JSON string, or 'x,y' string."""
-    if not coordinates:
-        return None
-    if isinstance(coordinates, dict):
-        x, y = coordinates.get("x"), coordinates.get("y")
-        if x is not None and y is not None:
-            return (int(x), int(y))
-    if isinstance(coordinates, str):
-        try:
-            d = json.loads(coordinates.replace("'", '"'))
-            if d.get("x") is not None and d.get("y") is not None:
-                return (int(d["x"]), int(d["y"]))
-        except (json.JSONDecodeError, TypeError):
-            pass
-    return None
-
-
-def build_task_state(intent_name, intent_args, user_input, vlm_model, planner_model, sanitize_fn):
+def build_task_state(intent_name, intent_args, user_input, sanitize_fn):
     args = intent_args
-    common = {"prompt": user_input, "vlm_model": vlm_model, "planner_model": planner_model, "status": "start", "attempts": 0}
+    common = {"prompt": user_input, "status": "start", "attempts": 0}
 
     if intent_name == 'navigate_tool':
         path = ["Default"] + args.get('path', [])
@@ -204,22 +153,23 @@ def create_manager_tools(agents: dict, config: dict) -> list:
             user_query: The user's original request exactly as given (e.g., 'Open my file.odt in Documents and make text bold').
         """
 
-        task = create_intent_task(user_query, agents["intention"])
-        crew = Crew(agents=[agents["intention"]], tasks=[task], process=Process.sequential, verbose=True)
-        result = crew.kickoff()
+        t = Task(
+            description=f"Analyze this query using the available intention tools: '{user_query}'",
+            expected_output="A valid JSON string with 'intent' and 'args' keys.",
+            agent=agents["intention"],
+        )
+        result = agents["intention"].execute_task(t)
 
-        data = parse_intent_json(result.raw)
+        data = parse_intent_json(result)
         if not data:
-            return f"FAILED: Could not parse intent from: {result.raw}"
+            return f"FAILED: Could not parse intent from: {result}"
 
         intent_name = data.get("intent", "")
         if intent_name and not intent_name.endswith("_tool"):
-            intent_name += "_tool"
+            intent_name += "_tool"  
         intent_args = data.get("args", {})
 
-        task_state = build_task_state(intent_name, intent_args, user_query,
-                                      config["vlm_model"], config["planner_model"],
-                                      agents["planner"].sanitize)
+        task_state = build_task_state(intent_name, intent_args, user_query, agents["planner"].sanitize)
         if not task_state:
             return f"FAILED: Unknown intent '{intent_name}'"
 
@@ -241,12 +191,16 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         if not task_state:
             return "FAILED: No task state available. Call classify_intent first."
 
-        result = agents["planner"].to_goal(task_state, "problem.pddl")
+        t = Task(
+            description="Generate PDDL plan.",
+            expected_output="Plan result or None.",
+            agent=agents["planner"],
+        )
+        result = agents["planner"].execute_task(t, state_dict=task_state)
         if not result:
             return "FAILED: PDDL planner could not generate a plan."
 
         shared_state["plan_result"] = result
-        print(f"[generate_plan] Plan generated successfully.")
         return "SUCCESS: Plan generated. Now call translate_plan."
 
     # --- PHASE 3: Translate plan --- #
@@ -267,8 +221,12 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         if not plan_result or not task_state:
             return "FAILED: No plan available. Call generate_plan first."
 
-        steps = agents["translator"].translate_to_steps(
-            plan_text=plan_result["plan"], mapping=plan_result["mapping"], state=task_state)
+        t = Task(
+            description="Translate PDDL plan to steps.",
+            expected_output="List of executable steps.",
+            agent=agents["translator"],
+        )
+        steps = agents["translator"].execute_task(t, plan_text=plan_result["plan"], mapping=plan_result["mapping"], state=task_state)
 
         lines = []
         for i, s in enumerate(steps, 1):
@@ -343,67 +301,12 @@ def create_manager_tools(agents: dict, config: dict) -> list:
             coordinates: JSON string from find_coordinates (e.g., '{"x": 500, "y": 300}'). Empty string for keyboard actions.
         """
         task_state = shared_state.get("task_state") or {}
-        coords = parse_coords_from_arg(coordinates)
-        scout_found = "YES" in (scout_result or "").upper()
-
-        print(f"[execute_action] intent='{intent}' target='{target}' coords={coords} scout_found={scout_found}")
-
-        # --- Visual intents ---
-        if intent in ("open", "navigate", "open_file", "click_new", "select_type"):
-            if coords and scout_found:
-                return click(coords[0], coords[1], intent=intent)
-            if intent in ("open", "navigate", "open_file"):
-                name = target or task_state.get("file_name", "")
-                win_search(name)
-                return "SUCCESS: Opened via Windows search."
-            return f"FAILED: Could not find '{target}' on screen."
-
-        if intent == "copy":
-            if coords and scout_found:
-                click(coords[0], coords[1], intent="copy")
-            time.sleep(0.2)
-            py.hotkey("ctrl", "x" if task_state.get("cut") else "c")
-            return "SUCCESS: Copied to clipboard."
-
-        # --- Keyboard intents ---
-        if intent == "paste":
-            time.sleep(1)
-            py.hotkey("ctrl", "v")
-            return "SUCCESS: Pasted."
-
-        if intent == "navigate_back":
-            time.sleep(1)
-            py.hotkey("alt", "left")
-            return "SUCCESS: Navigated back."
-
-        if intent == "type":
-            return type_text(task_state.get("app_name", ""), target)
-
-        if intent == "type_name":
-            time.sleep(0.5)
-            py.write(target, interval=0.05)
-            time.sleep(0.3)
-            py.press("enter")
-            time.sleep(1)
-            return "SUCCESS: Typed name and confirmed."
-
-        if intent == "search_text":
-            py.hotkey("ctrl", "f")
-            time.sleep(1)
-            py.write(target, interval=0.05)
-            py.press("enter")
-            time.sleep(1)
-            py.press("esc")
-            return "SUCCESS: Text searched."
-
-        if intent == "change_text":
-            return format_text(target)
-
-        if intent == "delete_text":
-            py.press("backspace")
-            return "SUCCESS: Text deleted."
-
-        return f"FAILED: Unknown intent '{intent}'."
+        t = Task(
+            description=f"Execute '{intent}' on '{target}'",
+            expected_output="SUCCESS or FAILED",
+            agent=agents["executor"],
+        )
+        return agents["executor"].execute_task(t, intent=intent, target=target, scout_result=scout_result, coordinates=coordinates, state=task_state)
 
     # --- PHASE 5: QA Verification --- #
 
@@ -418,20 +321,17 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         """
         task_state = shared_state.get("task_state") or {}
         goal = task_state.get("goal", "")
-        style = task_state.get("style", "")
 
         if "changed_text" in goal:
-            prompt = verification_prompt_formatting(goal, style)
+            prompt = verification_prompt_formatting(task_state.get("content", ""), task_state.get("style", ""))
         elif "delete_text" in goal:
-            prompt = verification_prompt_delete(goal)
+            prompt = verification_prompt_delete(task_state.get("content", ""))
         elif "pasted" in goal:
-            dest = task_state.get("path_to_paste", [""])[-1] if task_state.get("path_to_paste") else ""
-            prompt = verification_prompt_copy_paste(goal, dest)
+            prompt = verification_prompt_copy_paste(task_state.get("file_name", ""), task_state.get("path_to_paste", [""])[-1])
         else:
-            prompt = verification_prompt_file(goal)
+            prompt = verification_prompt_file(task_state.get("file_name", ""))
 
-        t = Task(description=prompt, expected_output="YES or NO", agent=agents["qa"],
-                 config={"qa_type": "default", "style": style})
+        t = Task(description=prompt, expected_output="YES or NO", agent=agents["qa"])
         result = agents["qa"].execute_task(t)
         print(f"[verify_result] QA result: {result}")
         return result

@@ -1,6 +1,6 @@
 from crewai import Crew, Process, Task
 from crew.agents import create_agents
-from utils.tools import create_manager_tools
+from tools.tools import create_manager_tools
 
 model_dict = {
     'gemma4k': 'gemma3:4b-it-qat',
@@ -32,11 +32,11 @@ intention_model = model_dict['e4bk']
 
 #user_input = "Open the file Gonzalo_Anteproyecto.pdf which is in Documents, then TFG folder and then Docs folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-user_input = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic."
+#user_input = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic."
 #user_input = 'Create a folder named "GTS" in the Documents folder.'
 #user_input = 'Open my Entrevista_Reli.odt in Desktop and delete the text Gonzalo Torras Serrano.'
 #user_input = 'Open my Entrevista_Reli.odt in Desktop and search for the text Gonzalo Torras Serrano.'
-#user_input = 'Copy my claude.docx in my Downloads folder and paste it in my Documents folder.'
+user_input = 'Copy my claude.docx in my Downloads folder and paste it in my Documents folder.'
 
 # 1. Create all agents
 agents = create_agents(planner_model, vlm_model, intention_model)

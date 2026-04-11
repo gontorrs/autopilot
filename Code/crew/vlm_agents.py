@@ -5,10 +5,8 @@ import time
 from crewai import Task, tools
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import Optional, Any
-
-from typer import style
-from utils.tools import take_screenshot, parse_coordinates
-from tools.vlm_tools import get_coordinates_prompt, verification_prompt_file, check_item_prompt, vlm_tools, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste
+from tools.tools import take_screenshot, parse_coordinates
+from tools.vlm_prompts import vlm_tools
 
 class VLMBaseAgent(BaseAgent):
     vlm_model_name: str
@@ -133,8 +131,7 @@ class QAAgent(VLMBaseAgent):
         time.sleep(2)
         img = take_screenshot()
         prompt = task.description
-        qa_type = (task.config or {}).get("qa_type", "default")
-        style = (task.config or {}).get("style", "")
+        print(prompt)
         response = self._call_ollama(prompt, img)
         result = response["message"]["content"].strip()
         print(f"qa response: '{result}'")

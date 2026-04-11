@@ -1,224 +1,246 @@
-# 🤖 Autopilot
+# Autopilot — AI-Powered GUI Automation System
 
-> **Natural language → PDDL planning → GUI execution — fully local, fully private.**
+> **⚠️ Windows Only:** This system is currently only guaranteed to work on Windows. It relies on Windows-specific GUI elements (taskbar, Start menu, File Explorer), keyboard shortcuts (Win key search), and PyAutoGUI behaviors that may not translate to macOS or Linux desktop environments.
 
-Autopilot is a multi-agent desktop automation system that lets you control your Windows PC using plain English. Unlike cloud-based competitors, Autopilot runs entirely on your machine using small quantized models (2–4B parameters, ≤4 GB VRAM), with zero data ever leaving your device.
+Autopilot is a fully local, multi-agent desktop automation system that translates natural language instructions into real GUI actions. It combines classical AI planning (PDDL + Fast Downward) with vision-language models and a manager agent that orchestrates the entire pipeline — from understanding user intent to clicking buttons on screen.
 
-**Status:** Beta — core pipelines implemented and functional. Empirical benchmarking against competitors in progress.
+Built as a Final Degree Project (FDP) in Computer Engineering.
 
----
+## Repository Branches
 
-## 📄 Research Paper
+Each branch in this repository represents a different phase in the project's evolution. Rather than overwriting previous work, each stage has been preserved in its own branch so you can see how the architecture evolved over time — from early prototypes to the current manager-agent orchestration approach.
 
-> **A paper based on this work is currently being written for academic publication.**
+## How It Works
 
-This project is the foundation of an undergraduate thesis (TFG) and an accompanying research paper exploring the integration of formal PDDL planning with multi-agent VLM-based GUI automation on consumer hardware. The paper covers architecture design, empirical evaluation against state-of-the-art competitors, and a discussion of privacy-preserving desktop automation as a research direction.
-
----
-
-## ✨ What makes Autopilot different
-
-| Feature | Autopilot | Cloud systems (Agent S2, GPT CU, Gemini CU) | Peekaboo | ScreenAgent |
-|---|---|---|---|---|
-| Runs fully locally | ✅ | ❌ | ✅ (macOS only) | ✅ |
-| Zero data leaves device | ✅ | ❌ Screenshots sent to API | ✅ | ✅ |
-| Formal planning layer (PDDL) | ✅ | ❌ Reactive LLM | ❌ | ❌ |
-| Works on Windows | ✅ | ✅ | ❌ macOS 15+ only | ✅ |
-| VRAM requirement | ≤ 4 GB | N/A (cloud) | N/A (cloud) | 8–16 GB |
-| Verifiable, auditable plans | ✅ | ❌ | ❌ | ❌ |
-| QA self-verification step | ✅ | ❌ | ❌ | ❌ |
-
----
-
-## 🏗️ Architecture
-
-Autopilot uses a **three-layer pipeline**: intent classification → formal planning → multi-agent execution.
+A single **Manager Agent** sits at the top and orchestrates every other agent through tool-calling. It never executes GUI actions itself — it delegates to specialized agents:
 
 ```
-User prompt (natural language)
-        │
-        ▼
-┌───────────────────┐
-│  IntentionAgent   │  LLM (CrewAI) — classifies intent, extracts args
-└────────┬──────────┘
-         │ intent + args
-         ▼
-┌───────────────────┐
-│   PDDL Planner    │  Fast Downward — generates optimal, verifiable plan
-│  (Fast Downward)  │
-└────────┬──────────┘
-         │ plan steps
-         ▼
-┌───────────────────┐
-│   Orchestrator    │  Iterates over plan steps, dispatches agents
-└────────┬──────────┘
-         │
-    ┌────┴─────────────────────────┐
-    │                              │
-    ▼                              ▼
-┌──────────┐  ┌──────────┐    ┌──────────┐
-│  Scout   │→ │  Vision  │ →  │ Executor │  Per step: VLM pipeline or pure code
-│  Agent   │  │  Agent   │    │  Agent   │
-└──────────┘  └──────────┘    └──────────┘
-    VLM           VLM           Pure code
-    YES/NO      {x, y}        pyautogui
-         │
-         ▼
-┌───────────────────┐
-│     QA Agent      │  VLM — verifies goal was achieved (YES / NO)
-└───────────────────┘
+                         ┌──────────────────────┐
+                         │    MANAGER AGENT      │
+                         │  (Gemma 4, Ollama)    │
+                         │                       │
+                         │  Orchestrates all      │
+                         │  agents via tools      │
+                         └──┬──┬──┬──┬──┬──┬──┬──┘
+                            │  │  │  │  │  │  │
+          ┌─────────────────┘  │  │  │  │  │  └─────────────────┐
+          ▼                    ▼  │  │  │  ▼                    ▼
+   ┌─────────────┐   ┌──────────┐│  │  ││──────────┐   ┌─────────────┐
+   │  Intention   │   │  PDDL    ││  │  ││  PDDL    │   │     QA      │
+   │  Agent       │   │  Planner ││  │  ││Translator│   │  Verifier   │
+   │  (LLM)       │   │  (Fast   ││  │  ││(Determ.) │   │  (VLM)      │
+   │              │   │ Downward)││  │  ││          │   │             │
+   └─────────────┘   └──────────┘│  │  │└──────────┘   └─────────────┘
+                                  │  │  │
+                    ┌─────────────┘  │  └─────────────┐
+                    ▼                ▼                 ▼
+             ┌─────────────┐ ┌─────────────┐  ┌─────────────┐
+             │    Scout     │ │   Vision    │  │  Executor   │
+             │   Agent      │ │   Agent     │  │   Agent     │
+             │  (VLM)       │ │  (VLM)      │  │ (Determ.)   │
+             │ "Is it       │ │ "Where is   │  │  Clicks,    │
+             │  visible?"   │ │  it?"        │  │  types,     │
+             │              │ │              │  │  shortcuts   │
+             └─────────────┘ └─────────────┘  └─────────────┘
 ```
 
-### Agents
+The manager calls 7 tools in sequence:
 
-| Agent | Type | Framework | Role |
-|---|---|---|---|
-| `IntentionAgent` | LLM | CrewAI Agent | Classifies user input into a PDDL template |
-| `Orchestrator` | LLM | CrewAI Agent *(planned)* | Dispatches plan steps to the right agents |
-| `ScoutAgent` | VLM | Custom BaseAgent (Ollama embedded) | Checks if target UI element is visible on screen |
-| `VisionAgent` | VLM | Custom BaseAgent (Ollama embedded) | Locates exact pixel coordinates of a UI element |
-| `QAAgent` | VLM | Custom BaseAgent (Ollama embedded) | Verifies the task goal was achieved |
-| `ExecutorAgent` | Pure code | Custom BaseAgent | Executes GUI actions (click, type, format text) |
-| `PDDLTranslatorAgent` | Pure code | Custom BaseAgent | Parses PDDL plan text into structured action steps |
+1. **classify_intent** → Intention Agent classifies the user request into a structured intent (navigate, write, format, create, delete, search, copy/paste).
+2. **generate_plan** → PDDL Planner Agent generates a classical plan using Fast Downward.
+3. **translate_plan** → Translator Agent converts the PDDL plan into executable GUI steps.
+4. **check_visibility** → Scout Agent takes a screenshot and checks if a UI element is visible.
+5. **find_coordinates** → Vision Agent takes a screenshot and returns pixel coordinates of the element.
+6. **execute_action** → Executor Agent performs the actual GUI interaction (click, type, shortcut).
+7. **verify_result** → QA Agent takes a final screenshot to confirm the task was completed.
 
----
+## Supported Tasks
 
-## 🗂️ Supported Task Templates
+| Task | Example |
+|------|---------|
+| Navigate & open files | *"Open report.pdf in Documents/TFG/Docs"* |
+| Write text | *"Take a note saying I have a meeting at 3pm"* |
+| Format text | *"Open my file.odt and make 'Hello' bold"* |
+| Create files/folders | *"Create a folder named 'Projects' in Documents"* |
+| Delete text | *"Open my file and delete 'old paragraph'"* |
+| Search text | *"Open my file and search for 'Introduction'"* |
+| Copy/paste files | *"Copy report.docx from Downloads to Documents"* |
 
-| Template | Implemented |
-|---|---|
-| Search and open a file | ✅ |
-| Write a note (Notepad / Word) | ✅ |
-| Apply text formatting (bold, italic, underline) | ✅ |
-| Create a file or folder at a given path | PDDL only |
-| Send an email via Outlook | 🔲 Planned |
-| Copy and paste a file | 🔲 Optional |
-| Compress files/folders to ZIP | 🔲 Optional |
-| Add a slide to a PowerPoint | 🔲 Planned |
-| Search for specific text in a document | 🔲 Planned |
-| Delete specific text in a document | 🔲 Planned |
+## Project Structure
 
----
+```
+Code/
+├── main.py                    # Entry point
+├── crew/
+│   ├── agents.py              # Agent factory (manager, intention, VLM agents, etc.)
+│   ├── manager_agent.py       # Custom BaseLLM for Ollama with CrewAI 1.14+ support
+│   ├── executor_agent.py      # Deterministic GUI executor (clicks, typing, shortcuts)
+│   ├── planner_agent.py       # PDDL problem generator + Fast Downward runner
+│   ├── pddl_translator.py     # Converts PDDL plans to executable step dicts
+│   └── vlm_agents.py          # Scout, Vision, and QA agents (Ollama VLM wrappers)
+├── tools/
+│   ├── tools.py               # All CrewAI tools (orchestration + execution + intent tools)
+│   └── vlm_prompts.py         # Prompt templates for VLM agents
+├── pddl/
+│   ├── gui_domain.pddl        # PDDL domain definition for GUI actions
+│   └── *.pddl                 # Example problem files
+└── requirements.txt
+```
 
-## ⚙️ Requirements
+## Prerequisites
 
-- **OS:** Windows 10 / 11
-- **GPU:** NVIDIA GPU with ≥ 4 GB VRAM (tested on RTX 3060)
-- **RAM:** ≥ 8 GB
-- **Python:** 3.11+
-- **Ollama:** running locally at `http://localhost:11434`
-- **Fast Downward:** installed and accessible from PATH
+- **Python** 3.10+
+- **Ollama** — running locally at `http://localhost:11434`
+- **Fast Downward** — classical AI planner (compiled from source)
+- **Windows desktop environment** — the system controls the actual GUI via PyAutoGUI
 
-### Recommended models
+### Models (pulled via Ollama)
 
-| Role | Model | Size |
-|---|---|---|
-| LLM planner / intent | `qwen3:4b-instruct` | ~2.5 GB |
-| VLM (scout / vision / QA) | `qwen3-vl:2b-instruct` | ~1.5 GB |
+| Role | Default Model | Purpose |
+|------|--------------|---------|
+| Manager (planner LLM) | `gemma4:e4b-it-q4_K_M` | Orchestrates the pipeline via tool-calling |
+| Intention classifier | `qwen3:4b-instruct` | Classifies user intent |
+| VLM (scout/vision/QA) | `qwen3-vl:2b-instruct-q4_K_M` | Screenshot analysis and coordinate detection |
 
----
+## Installation
 
-## 🚀 Installation
+### 1. Clone the repository
 
 ```bash
-# 1. Clone the repo
-git clone https://github.com/TBD/autopilot.git
-cd autopilot
+git clone <your-repo-url>
+cd TFG/Code
+```
 
-# 2. Install Python dependencies
+### 2. Create a Python environment
+
+Using conda (recommended):
+```bash
+conda create -n autopilot python=3.12
+conda activate autopilot
+```
+
+Or using venv:
+```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# Linux/macOS
+source .venv/bin/activate
+```
+
+### 3. Install Python dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# 3. Pull the required Ollama models
-ollama pull qwen3:4b-instruct-2507-q4_K_M
+### 4. Install and start Ollama
+
+**Windows/macOS:** Download from [ollama.com](https://ollama.com) and install.
+
+**Linux:**
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+Start Ollama and pull the required models:
+```bash
+ollama serve  # if not running as a service
+
+ollama pull gemma4:e4b-it-q4_K_M
+ollama pull qwen3:4b-instruct
 ollama pull qwen3-vl:2b-instruct-q4_K_M
+```
 
-# 4. Make sure Fast Downward is installed and in PATH
-# https://www.fast-downward.org/
+### 5. Install Fast Downward
 
-# 5. Run
+Fast Downward requires a C++ compiler and CMake to build from source.
+
+#### Windows
+
+1. Install [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/) with the **"Desktop development with C++"** workload (this includes CMake).
+2. Install [Python](https://www.python.org/downloads/) if not already installed.
+3. Download the [Fast Downward source tarball](https://www.fast-downward.org/latest/releases/) and extract it.
+4. Open **Developer PowerShell for VS** and run:
+
+```powershell
+cd fast-downward-24.06.1
+py build.py
+```
+
+#### Linux (Ubuntu/Debian)
+
+```bash
+sudo apt install cmake g++ make python3
+git clone https://github.com/aibasel/downward.git
+cd downward
+python3 build.py
+```
+
+#### macOS
+
+```bash
+brew install cmake
+git clone https://github.com/aibasel/downward.git
+cd downward
+python3 build.py
+```
+
+### 6. Configure the Fast Downward path
+
+In `crew/planner_agent.py`, update the path to your Fast Downward installation:
+
+```python
+# Change this line to match your system:
+fd = "C:\\Users\\gonza\\fastdownward\\fast-downward.py"
+
+# Linux/macOS example:
+# fd = "/home/user/downward/fast-downward.py"
+```
+
+## Usage
+
+Edit `main.py` to set your desired user input, then run:
+
+```bash
 python main.py
 ```
 
----
+**Important:** Minimize your terminal after launching. The system controls your mouse and keyboard directly — do not interact with the desktop while Autopilot is running.
 
-## 💬 Usage examples
+Example inputs (uncomment one in `main.py`):
 
-```bash
-# Open a file
-"Open my Gonzalo_Anteproyecto.pdf which is in Documents > TFG > Docs"
-
-# Write a note
-"Take a quick note saying I have a meeting tomorrow at 3pm in Tokyo"
-
-# Format text
-"Open Entrevista_Reli.odt in Gonzalo - UFV and make the text 'Gonzalo Torras Serrano' bold"
+```python
+user_input = "Open the file report.pdf which is in Documents, then TFG folder and then Docs folder."
+user_input = "Take a quick note saying that I have a meeting tomorrow at 3 pm."
+user_input = "Open my file.odt in MyFolder and make the text 'Hello World' in italic."
+user_input = 'Create a folder named "Projects" in the Documents folder.'
+user_input = 'Copy my document.docx in my Downloads folder and paste it in my Documents folder.'
 ```
 
-When you run `main.py`, Autopilot will:
-1. Classify your intent and extract structured arguments
-2. Generate a PDDL problem file and solve it with Fast Downward
-3. Execute the plan step by step using the agent pipeline
-4. Take a final screenshot and verify the goal was achieved
+The manager agent will orchestrate the full pipeline automatically, performing real GUI actions on your screen.
 
----
+## Configuration
 
-## 🔬 Competitors & context
+Models can be changed in `main.py` via the `model_dict`:
 
-Autopilot was designed and evaluated against the following systems:
-
-- **Agent S2** — state-of-the-art cloud-based desktop agent (GUI Odyssey benchmark leader)
-- **ScreenAgent** — first VLM grounding paper, local but resource-heavy
-- **Peekaboo** — macOS-only, uses accessibility tree + optional Ollama
-- **Claude Cowork / GPT Computer Use / Gemini Computer Use** — high-capability cloud agents
-- **Windows Voice Access** — rule-based speech-to-action, not a model
-- **WarmWind** — Linux-only remote automation
-
-The key distinction of Autopilot is **formal planning + local-first + Windows** — a combination no existing system currently offers.
-
----
-
-## 📁 Project structure
-
-```
-autopilot/
-├── main.py                  # Entry point
-├── crew/
-│   ├── agents.py            # Agent definitions
-│   ├── crew.py              # Intent extraction crew
-│   ├── orchestrator.py      # Plan execution orchestrator
-│   ├── tasks.py             # CrewAI task definitions
-│   ├── tools.py             # pyautogui tools
-│   ├── vlm_agents.py        # Scout, Vision, QA agents
-│   ├── executor_agent.py    # Pure-code executor
-│   ├── pddl_translator.py   # PDDL plan parser
-│   └── registry.py          # Action registry
-├── pddl/
-│   ├── templates/           # PDDL domain + problem templates
-│   └── results/             # Generated plans + name mappings
-└── utils/
-    └── pddl.py              # PDDL problem builder
+```python
+planner_model = model_dict['e4bk']       # Manager LLM
+vlm_model = model_dict['qwen2k-vl']      # Vision-language model
+intention_model = model_dict['qwen4k']    # Intention classifier
 ```
 
----
+See `main.py` for the full list of available model aliases.
 
-## 📜 License
+## Tech Stack
 
-This project is part of an undergraduate thesis (TFG) at Universidad Francisco de Vitoria. Academic use only.
+- **CrewAI 1.14+** — multi-agent orchestration framework
+- **Ollama** — local LLM/VLM inference
+- **Fast Downward** — classical AI planner (PDDL)
+- **PyAutoGUI** — GUI automation (mouse/keyboard control)
+- **Gemma 4 / Qwen 3** — language models for reasoning and tool-calling
+- **Qwen3-VL** — vision-language model for screenshot analysis
 
----
+## License
 
-## 👤 About
-
-**Author:** Gonzalo Torras Serrano  
-**Supervisor:** Moisés Martínez Muñoz  
-**Institution:** Universidad Francisco de Vitoria (UFV), Madrid  
-**Degree:** Computer Science — Final Degree Project (TFG)  
-**Year:** 2025
-
----
-
-*Built with [CrewAI](https://crewai.com), [Ollama](https://ollama.com), and [Fast Downward](https://www.fast-downward.org/).*
-
----
-
-<sub>© 2025 Gonzalo Torras Serrano — Universidad Francisco de Vitoria. All rights reserved. This project and its associated research paper are the original work of the author, developed under the supervision of Moisés Martínez Muñoz.</sub>
+Part of a Final Degree Project (FDP) at Universidad Francisco de Vitoria, Madrid.

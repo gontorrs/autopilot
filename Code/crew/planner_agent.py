@@ -176,10 +176,11 @@ class PDDLPlannerAgent(BaseAgent):
             print(result.stderr)
             return None
 
-    def execute_task(self, task, state_dict=None, output_filename="problem.pddl", **kwargs) -> str:
+    def execute_task(self, task, state_dict=None, output_filename="problem.pddl", **kwargs):
         if state_dict is None:
             state_dict = (task.config or {}).get("state_dict", {})
-
+        print(f"[DEBUG PLANNER] state_dict keys: {list(state_dict.keys())}")
+        print(f"[DEBUG PLANNER] state_dict: {state_dict}")
         return self.to_goal(state_dict, output_filename)
 
     def create_agent_executor(self, tools=None) -> None:

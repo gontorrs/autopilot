@@ -124,5 +124,10 @@ class PDDLTranslatorAgent(BaseAgent):
     async def aexecute_task(self, task, context=None, tools=None):
         return self.execute_task(task, context, tools)
     
-    def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> list[Task]:
-        return []
+    def execute_task(self, task, context=None, tools=None, plan_text=None, mapping=None, state=None, **kwargs):
+        if plan_text is None:
+            payload = json.loads(task.description)
+            plan_text = payload["plan"]
+            mapping = payload["mapping"]
+            state = payload.get("state", {})
+        return self.translate_to_steps(plan_text, mapping, state)
