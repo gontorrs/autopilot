@@ -1,4 +1,3 @@
-
 tool_click = {
     'type': 'function',
     'function': {
@@ -63,7 +62,7 @@ def check_item_prompt(item, type='item'):
 def verification_prompt_formatting(text, style):
     style_description = {
         'bold': 'in bold/thick font weight',
-        'italic': 'in italic/slanted style', 
+        'italic': 'in italic (in other words a bit inclined compared to normal text)', 
         'underlined': 'with an underline'
     }
 
@@ -92,8 +91,7 @@ def verification_prompt_delete(text):
 def verification_prompt_copy_paste(file_name, dest_folder):
     return (
         f"Observe the screenshot. Look at the current folder contents. "
-        f"Is the file '{file_name}' visible inside the '{dest_folder}' folder? "
-        f"IMPORTANT: Only answer YES if you can see the file in the destination folder currently displayed. "
+        f"Is the file '{file_name}' visible in the screen?"
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
     

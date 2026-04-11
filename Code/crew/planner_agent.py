@@ -127,13 +127,13 @@ class PDDLPlannerAgent(BaseAgent):
         goal_str = state_dict.get('goal', '(empty)')
         
         problem = f"""(define (problem {problem_name})
-  (:domain {domain_name})
-  {objects_str}
-  (:init
-    {init_str}
-  )
-  (:goal {goal_str})
-)"""
+            (:domain {domain_name})
+            {objects_str}
+            (:init
+                {init_str}
+            )
+            (:goal {goal_str})
+            )"""
         
         results_dir = 'pddl/results'
         os.makedirs(results_dir, exist_ok=True)
@@ -148,10 +148,6 @@ class PDDLPlannerAgent(BaseAgent):
         self.sanitize("Default")
         self.clear_results()
         problem_path = self.generate_problem(state_dict, output_filename)
-        
-        mapping_path = os.path.join('pddl/results', 'mapping.json')
-        with open(mapping_path, 'w') as f:
-            json.dump(self.object_mapping, f, indent=4)
             
         domain_path = 'pddl/gui_domain.pddl'
         results_dir = 'pddl/results'
@@ -165,26 +161,28 @@ class PDDLPlannerAgent(BaseAgent):
         result = subprocess.run(cmd, capture_output=True, text=True)
         
         if result.returncode == 0:
-            print("Plan executed")
+            print("Plan generated successfully")
             if os.path.exists('sas_plan'):
                 shutil.move('sas_plan', plan_path)
             with open(plan_path, 'r') as f:
                 plan_content = f.read()
-            print(plan_content)
-            return plan_content
+            return {
+                "plan": plan_content,
+                "mapping": self.object_mapping
+            }
         else:
-            print("Planner failed.")
+            print("Planning failed.")
             print(result.stdout)
             print(result.stderr)
             return None
 
-    def execute_task(self, task, state_dict=None, output_filename="problem.pddl", **kwargs) -> str:
+    def execute_task(self, task, state_dict=None, output_filename="problem.pddl", **kwargs):
         if state_dict is None:
             state_dict = (task.config or {}).get("state_dict", {})
-
+        print(f"[DEBUG PLANNER] state_dict keys: {list(state_dict.keys())}")
+        print(f"[DEBUG PLANNER] state_dict: {state_dict}")
         return self.to_goal(state_dict, output_filename)
 
-    # Requerimientos base de BaseAgent para agentes deterministas puros:
     def create_agent_executor(self, tools=None) -> None:
         pass
 
@@ -199,3 +197,6 @@ class PDDLPlannerAgent(BaseAgent):
 
     def get_platform_tools(self):
         return []
+    
+    async def aexecute_task(self, task, context=None, tools=None):
+        return self.execute_task(task, context, tools)

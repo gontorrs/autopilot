@@ -1,11 +1,6 @@
-import json
-from crewai import Crew, Process
+from crewai import Crew, Process, Task
 from crew.agents import create_agents
-from utils.tasks import create_planner_task
-from crew.crew import get_intent
-from crew.orchestrator import Orchestrator
-import langchain
-langchain.debug = True
+from tools.tools import create_manager_tools
 
 model_dict = {
     'gemma4k': 'gemma3:4b-it-qat',
@@ -20,186 +15,58 @@ model_dict = {
     'qwen4instruct': 'qwen3:4b-instruct',
     'qwen4-vl': 'qwen3-vl:4b',
     'qwen2-vl': 'qwen3-vl:2b-instruct',
-    'gemma4:e2b': 'gemma4:e2b',
-    'gemma4:e4b': 'gemma4:e4b'
+    'e2b': 'gemma4:e2b',
+    'e4b': 'gemma4:e4b',
+    'e4bk': 'gemma4:e4b-it-q4_K_M ',
+    'e2bk': 'gemma4:e2b-it-q4_K_M',
+    'qwen3.52b': 'qwen3.5:2b',
+    'qwen3.54b': 'qwen3.5:4b',
+    'qwen3.52bk': 'qwen3.5:2b-q4_K_M',
+    'qwen3.54bk': 'qwen3.5:4b-q4_K_M',
+    'qwen8k': 'qwen3:8b-q4_K_M'
 }
 
-planner_model = model_dict['qwen4k']
+planner_model = model_dict['e4bk']
 vlm_model = model_dict['qwen2k-vl']
-
-agents_dict = create_agents(planner_model, vlm_model)
-pddl_agent = agents_dict["planner"]
-
-def sanitize(text):
-    return pddl_agent.sanitize(text)
-
-def run_pddl_agent(state_dict, output_filename="navigate_problem.pddl"):
-    task = create_planner_task(state_dict, pddl_agent, output_filename)
-    
-    result_raw = pddl_agent.execute_task(
-        task=task,
-        state_dict=state_dict,
-        output_filename=output_filename
-    )
-    return result_raw
-
-initial_state = None
+intention_model = model_dict['e4bk']
 
 #user_input = "Open the file Gonzalo_Anteproyecto.pdf which is in Documents, then TFG folder and then Docs folder."
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-#user_input = "Open my Entrevista_Reli.odt in Gonzalo - UFV and make the text Gonzalo Torras Serrano in italic."
+#user_input = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic."
 #user_input = 'Create a folder named "GTS" in the Documents folder.'
-#user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and delete the text Gonzalo Torras Serrano.'
-#user_input = 'Open my Entrevista_Reli.odt in Gonzalo - UFV and search for the text Gonzalo Torras Serrano.'
+#user_input = 'Open my Entrevista_Reli.odt in Desktop and delete the text Gonzalo Torras Serrano.'
+#user_input = 'Open my Entrevista_Reli.odt in Desktop and search for the text Gonzalo Torras Serrano.'
 user_input = 'Copy my claude.docx in my Downloads folder and paste it in my Documents folder.'
-intent_name, intent_args = get_intent(user_input, planner_model, vlm_model)
-print(f"DEBUG intent_name: '{intent_name}'")
-print(f"DEBUG intent_args: {intent_args}")
-    
-if intent_name == 'navigate_tool':
-    goal = "(open_file " + sanitize(intent_args.get('file_name', '')) + ")"
-    path = intent_args.get('path', '')
-    path = ["Default"] + path
-      
-    initial_state = {
-        "prompt": user_input,
-       "file_name": intent_args.get('file_name', ''),
-       "app_name": intent_args.get('app_name', ''),
-       "path": path,
-       "vlm_model": vlm_model,
-       "planner_model": planner_model,
-       "status": "start",
-       "goal": goal,
-       "attempts": 0
-    }
 
-elif intent_name == 'write_tool':
-    goal = "(typed_text " + sanitize(intent_args.get('text', '')) + ")"
-      
-    initial_state = {
-        "prompt": user_input,
-       "app_name": intent_args.get('application', 'notepad'),
-       "content": intent_args.get('text', ''),
-       "vlm_model": vlm_model,
-       "planner_model": planner_model,
-       "status": "start",
-       "goal": goal,
-       "attempts": 0
-    }
+# 1. Create all agents
+agents = create_agents(planner_model, vlm_model, intention_model)
 
-elif intent_name == 'change_tool':
-    goal = "(changed_text " + sanitize(intent_args.get('style', '')) + ")"
-    path = intent_args.get('path', [])
-    path = ["Default"] + path
-      
-    initial_state = {
-        "prompt": user_input,
-        "app_name": intent_args.get('application'),
-        "file_name": intent_args.get('file_name', ''),
-        "content": intent_args.get('content', ''),
-        "style": intent_args.get('style', ''),
-        "path": path,
-        "goal": goal,
-        "vlm_model": vlm_model,
-        "planner_model": planner_model,
-        "status": "start",
-        "attempts": 0
-    }
+# 2. Create manager tools (orchestration + execution + verification)
+config = {
+    "user_input": user_input,
+    "vlm_model": vlm_model,
+    "planner_model": planner_model,
+    "intention_model": intention_model,
+}
+manager_tools = create_manager_tools(agents, config)
+agents["manager"].tools = manager_tools
 
-elif intent_name == 'create_tool':
-    item_type = intent_args.get('item_type', 'folder')
-    name_raw = intent_args.get('name', '')
-    goal = f"(created {sanitize(name_raw)}_name)"
-    path = intent_args.get('path', [])
-    path = ["Default"] + path
+# 3. Single task: the manager orchestrates everything
+task = Task(
+    description=f"Complete this GUI automation request: '{user_input}'",
+    expected_output="Final result: YES (success) or NO (failure) from verification.",
+    agent=agents["manager"],
+)
 
-    initial_state = {
-        "prompt": user_input,
-        "app_name": intent_args.get('application'),
-        "file_name_new": name_raw if item_type == "file" else None,
-        "folder_name": name_raw if item_type == "folder" else None,
-        "name": name_raw,
-        "path": path,
-        "goal": goal,
-        "vlm_model": vlm_model,
-        "planner_model": planner_model,
-        "status": "start",
-        "attempts": 0
-    }
+# 4. Run
+crew = Crew(
+    agents=[agents["manager"]],
+    tasks=[task],
+    process=Process.sequential,
+    verbose=True,
+)
 
-elif intent_name == 'delete_tool':
-    goal = f"(delete_text {sanitize(intent_args.get('content', ''))})"
-    path = intent_args.get('path', [])
-    path = ["Default"] + path
-
-    initial_state = {
-        "prompt": user_input,
-        "app_name": intent_args.get('application'),
-        "file_name": intent_args.get('file_name', ''),
-        "content": intent_args.get('content', ''),
-        "path": path,
-        "goal": goal,
-        "vlm_model": vlm_model,
-        "planner_model": planner_model,
-        "status": "start",
-        "attempts": 0
-    }
-
-elif intent_name == 'search_tool':
-    goal = f"(text_searched {sanitize(intent_args.get('content', ''))})"
-    path = intent_args.get('path', [])
-    path = ["Default"] + path
-
-    initial_state = {
-        "prompt": user_input,
-        "app_name": intent_args.get('application'),
-        "file_name": intent_args.get('file_name', ''),
-        "content": intent_args.get('content', ''),
-        "path": path,
-        "goal": goal,
-        "vlm_model": vlm_model,
-        "planner_model": planner_model,
-        "status": "start",
-        "attempts": 0
-    }
-
-elif intent_name == 'copy_paste_tool':
-    path_copy = ["Default"] + intent_args.get('path_to_copy', [])
-    path_paste = ["Default"] + intent_args.get('path_to_paste', [])
-    
-    initial_state = {
-        "prompt": user_input,
-        "app_name": intent_args.get('application', 'file explorer'),
-        "file_name": intent_args.get('file_name', ''),
-        "path_to_copy": path_copy,
-        "path_to_paste": path_paste,
-        "cut": intent_args.get('operation', 'copy') == 'cut',
-        "vlm_model": vlm_model,
-        "planner_model": planner_model,
-        "status": "start",
-        "goal": f"(pasted {sanitize(intent_args.get('file_name', ''))} {sanitize(intent_args.get('path_to_paste', [''])[-1])})",
-        "qa_goal": f"Is the file {sanitize(intent_args.get('file_name', ''))} present in the Documents folder?",
-        "attempts": 0
-    }
-        
-elif intent_name:
-    print(f"Intent not classified.")
-else:
-    print("Fallo curioso.")
-
-if initial_state:
-    print(initial_state)
-    print("\nFlow Starting using CrewAI PDDL Agent")
-    
-    # Usamos la función helper de CrewAI en lugar del antiguo to_goal
-    plan = run_pddl_agent(initial_state, "navigate_problem.pddl")
-    
-    if plan and "Planner failed" not in plan:
-        with open("pddl/results/mapping.json", "r") as f:
-            name_map = json.load(f)
-            
-        orchestrator = Orchestrator(state=initial_state, name_map=name_map)
-        orchestrator.run(plan)
-        print(plan)
-    else:
-        print("El planner no supo hacer un plan.")
+result = crew.kickoff()
+print(f"\n{'='*50}")
+print(f"FINAL RESULT: {result.raw}")
+print(f"{'='*50}")

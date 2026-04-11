@@ -1,21 +1,17 @@
-(define (problem navigate) (:domain gui)
-(:objects
-    File_Explorer - app
-    Default Documents TFG Docs - folder
-    Gonzalo_Anteproyecto_pdf - file
+(define (problem navigate_problem)
+  (:domain gui)
+  (:objects
+ file_explorer - app
+default documents tfg docs - folder
+gonzalo_anteproyecto_pdf - file
 )
-
-(:init
+  (:init
     (empty)
-    (current Default)
-    (inside Documents Default)
-    (inside TFG Documents)
-    (inside Docs TFG)
-    (file_to Gonzalo_Anteproyecto_pdf Docs)
-)
-
-(:goal (and
-    (open_file Gonzalo_Anteproyecto_pdf)
-))
-
+(current default)
+(inside documents default)
+(inside tfg documents)
+(inside docs tfg)
+(file_to gonzalo_anteproyecto_pdf docs)
+  )
+  (:goal (open_file gonzalo_anteproyecto_pdf))
 )

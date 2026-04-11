@@ -1,58 +1,73 @@
 from crewai import Agent, LLM
-from utils.tools import create_tools
+from tools.tools import create_tools
 from crew.vlm_agents import ScoutAgent, VisionAgent, QAAgent
 from crew.executor_agent import ExecutorAgent
 from crew.pddl_translator import PDDLTranslatorAgent
 from crew.planner_agent import PDDLPlannerAgent
 
-def create_agents(planner_model: str, vlm_model: str) -> dict:
-    """Creates agents dynamically using the provided model strings."""
-    
-    # 1. Configurar los modelos apuntando explícitamente a Ollama local
-    planner_llm = LLM(
-        model=f"ollama/{planner_model}",
-        base_url="http://localhost:11434"
-    )
-    
-    vlm_llm = LLM(
-        model=f"ollama/{vlm_model}",
+
+def create_agents(planner_model: str, vlm_model: str, intention_model: str) -> dict:
+
+    # planner_llm = ManagerAgent(
+    #     model=planner_model,
+    #     think=False,
+    # )
+
+    intention_llm = LLM(
+        model=f"ollama/{intention_model}",
         base_url="http://localhost:11434"
     )
 
-    # 2. Inyectamos los modelos en las tools
     tools_dict = create_tools()
 
-    # 3. Crear los agentes usando los objetos LLM en lugar de strings
-    intention_agent  = Agent(
-        role="GUI Task Planner",
+    intention_agent = Agent(
+        role="Intention Agent",
         goal="Analyze the user's intention and determine which PDDL template to use and with what arguments.",
         backstory="You are a direct intent classifier, you just classify the end goal, you do not plan any steps in between. You translate natural language into structured intents.",
-        tools=[tools_dict["navigate_tool"], tools_dict["write_tool"], tools_dict["change_tool"], tools_dict["create_tool"], tools_dict["delete_tool"], tools_dict["search_tool"], tools_dict["copy_paste_tool"]],
-        llm=planner_llm,
+        tools=[tools_dict["navigate_tool"], tools_dict["write_tool"], tools_dict["change_tool"],
+               tools_dict["create_tool"], tools_dict["delete_tool"], tools_dict["search_tool"],
+               tools_dict["copy_paste_tool"]],
+        llm=intention_llm,
         verbose=True,
         max_iter=1
     )
 
-    #Importamos todos los agentes de visión custom pero metidos en el loop de crewai.
+    manager_agent = Agent(
+        role="Manager",
+        goal="Complete the user's GUI automation task by calling tools in the correct sequence.",
+        backstory=(
+            "You are a GUI automation manager. You MUST call tools to complete tasks — never simulate or imagine tool results.\n\n"
+            "MANDATORY WORKFLOW — call tools in this exact order:\n"
+            "1. classify_intent(user_query) — always call this first.\n"
+            "2. generate_plan() — call after classify_intent succeeds.\n"
+            "3. translate_plan() — call after generate_plan succeeds. It returns the execution steps.\n"
+            "4. Execute each step from translate_plan IN ORDER using check_visibility, find_coordinates, and execute_action.\n"
+            "5. verify_result() — call ONCE after ALL execution steps are done. Never call it mid-workflow.\n\n"
+            "RULES:\n"
+            "- You MUST actually call each tool. Do NOT write fake Observations or invent results.\n"
+            "- If check_visibility returns NO, still call execute_action with scout_result='NO' and coordinates=''.\n"
+            "- After verify_result returns, respond with Final Answer."
+        ),
+        llm=intention_llm,
+        tools=[],
+        allow_delegation=False,
+        verbose=True,
+    )
+
     scout_agent = ScoutAgent(vlm_model_name=vlm_model)
     vision_agent = VisionAgent(vlm_model_name=vlm_model)
     qa_agent = QAAgent(vlm_model_name=vlm_model)
-
-    #Importamos el agente execturo de código puro, sin LLM.
     executor_agent = ExecutorAgent()
-
-    #Creamos el agente traductor de PDDL a python.
     translator_agent = PDDLTranslatorAgent()
-
-    #agente PDDL planificacor
     planner_agent = PDDLPlannerAgent()
 
     return {
         "intention": intention_agent,
+        "manager": manager_agent,
         "scout": scout_agent,
         "vision": vision_agent,
-        "qa": qa_agent, 
+        "qa": qa_agent,
         "executor": executor_agent,
-        "translator": translator_agent, 
-        "planner": planner_agent
+        "translator": translator_agent,
+        "planner": planner_agent,
     }

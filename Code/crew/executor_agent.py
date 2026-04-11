@@ -1,7 +1,7 @@
 import json
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import Optional, Any
-from utils.tools import click, fallback_search_tool, type_text, format_text
+from tools.tools import click, win_search, type_text, format_text
 import pyautogui as py
 import time
 
@@ -20,35 +20,62 @@ class ExecutorAgent(BaseAgent):
             backstory="You are a deterministic executor. You receive an intent and act on it directly without reasoning.",
         )
 
-    def execute_task(self, task, context=None, tools=None, intent="", target="", item_type="", scout_result="", state=None) -> str:
-        intent = (task.config or {}).get("intent", intent)
-        target = (task.config or {}).get("target", target)
-        item_type = (task.config or {}).get("item_type", item_type)
+    def _parse_coords(self, coordinates) -> tuple | None:
+        if not coordinates:
+            return None
+        if isinstance(coordinates, dict):
+            x, y = coordinates.get("x"), coordinates.get("y")
+            if x is not None and y is not None:
+                return (int(x), int(y))
+        if isinstance(coordinates, str):
+            try:
+                d = json.loads(coordinates.replace("'", '"'))
+                if d.get("x") is not None and d.get("y") is not None:
+                    return (int(d["x"]), int(d["y"]))
+            except (json.JSONDecodeError, TypeError):
+                pass
+        return None
+
+    def execute_task(self, task, context=None, tools=None, intent="", target="", scout_result="", coordinates="", state=None, **kwargs):
+        config = task.config or {}
+        intent = intent or config.get("intent", "")
+        target = target or config.get("target", "")
+        scout_result = scout_result or config.get("scout_result", "")
+        state = state or config.get("state", {})
         
-        coords = self._extract_coords(context)
-        scout_found = "YES" in scout_result.upper()
+        coords = self._parse_coords(coordinates or config.get("coordinates", ""))
+        scout_found = "YES" in (scout_result or "").upper()
 
         if intent in ("open", "navigate", "open_file", "click_new", "select_type"):
             if coords and scout_found:
                 return click(coords[0], coords[1], intent=intent)
             
-            # Fallback solo para navegación
             if intent in ("navigate", "open_file", "open"):
                 file_name = target or (state or {}).get("file_name") or (state or {}).get("folder_name") or ""
-                fallback_search_tool(file_name, intent=intent)
+                win_search(file_name)
                 
-                # Solo saltar hasta 'search_text' si el fallback fue para el documento final
                 if intent == "open_file":
                     return "FALLBACK_SKIP"
                 else:
                     return "FALLBACK_SUCCESS"
             
-            # Para click_new, select_type no hay fallback
             return f"FAILED: Could not find '{target}' on screen."
 
         elif intent == "search_text":
+            time.sleep(1)
             print(f"DEBUG executor search_text — target: '{target}'")
-            return fallback_search_tool(target, intent="search_text")
+            time.sleep(1)
+            py.keyDown('ctrlleft')
+            time.sleep(0.3)
+            py.press('f')
+            time.sleep(0.2)
+            py.keyUp('ctrlleft')
+            time.sleep(1)
+            py.write(target, interval=0.05)
+            py.press('enter')
+            time.sleep(1)
+            py.press('esc')
+            return "SUCCESS: Search executed."
 
         elif intent == "change_text":
             print(f"Changing text style to '{target}'.")
@@ -117,3 +144,6 @@ class ExecutorAgent(BaseAgent):
 
     def get_platform_tools(self):
         return []
+    
+    async def aexecute_task(self, task, context=None, tools=None):
+        return self.execute_task(task, context, tools)
