@@ -44,7 +44,7 @@ class VLMBaseAgent(BaseAgent):
 
     def _save_screenshot(self, img: bytes) -> None:
             self.step_count += 1
-            nombre_archivo = f"logs/crew-ai-plain/search/v3/{self.agent_tag}_{self.step_count:02d}.png"
+            nombre_archivo = f"logs/crew-ai-plain/search/v1/{self.agent_tag}_{self.step_count:02d}.png"
             with open(nombre_archivo, "wb") as f:
                 f.write(img)
             print(f"[{self.agent_tag}] screenshot guardado en: {nombre_archivo}")

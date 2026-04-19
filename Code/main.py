@@ -18,7 +18,7 @@ class Tee:
             s.flush()
 
 os.makedirs("logs", exist_ok=True)
-log_file = open(f"logs/crew-ai-plain/search/v3/search_v3{datetime.now():%Y%m%d_%H%M%S}.log", "w", encoding="utf-8")
+log_file = open(f"logs/crew-ai-plain/search/v1/search_v1{datetime.now():%Y%m%d_%H%M%S}.log", "w", encoding="utf-8")
 sys.stdout = Tee(sys.stdout, log_file)
 sys.stderr = Tee(sys.stderr, log_file)
 
@@ -50,7 +50,7 @@ planner_model = model_dict['e4bk']
 vlm_model = model_dict['qwen2k-vl']
 intention_model = model_dict['e4bk']
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 8 pm in Tokyo please." #write
-#user_input = 'Create a folder named "GTS" in the Documents folder.' #create
+#user_input = 'Create a text file named "GTS" in the Documents folder.' #create
 #user_input = "Open the file Entrevista_Reli.pdf which is in Documents > INCO > Prueba." #open
 user_input = 'Open my Entrevista_Reli.odt in Desktop and search for the text Gonzalo Torras Serrano.' #search
 #user_input = 'Open my Entrevista_Reli.odt in Desktop and delete the text Gonzalo Torras Serrano.' #delete

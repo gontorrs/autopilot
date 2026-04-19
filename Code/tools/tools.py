@@ -7,7 +7,7 @@ import time
 from crewai.tools import tool
 from crewai import Task
 from typing import Any, List
-from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste
+from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste, verification_prompt_search
 from functools import wraps
 
 _last_tool_end = {"t": None}
@@ -367,6 +367,9 @@ def create_manager_tools(agents: dict, config: dict) -> list:
             prompt = verification_prompt_delete(task_state.get("content", ""))
         elif "pasted" in goal:
             prompt = verification_prompt_copy_paste(task_state.get("file_name", ""), task_state.get("path_to_paste", [""])[-1])
+        elif "text_searched" in goal:
+            prompt = verification_prompt_search(task_state.get("content", ""))
+            print(f"[verify_result] Search verification prompt: {prompt}")
         else:
             prompt = verification_prompt_file(task_state.get("prompt", ""))
 

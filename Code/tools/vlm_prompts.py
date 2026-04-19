@@ -96,6 +96,17 @@ def verification_prompt_copy_paste(file_name, dest_folder):
         f"Is the file '{file_name}' visible in the screen?"
         "Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
+
+def verification_prompt_search(text):
+    return (
+        f"Observe the screenshot. Look ONLY at the content inside the open document window. "
+        f"The task was to SEARCH for the text '{text}' in the document. "
+        f"The search is successful if the text is visible in the document.\n\n"
+        f"You MUST format your response exactly like this:\n"
+        f"OBSERVATION: [Write a detailed description of what text you see in the document]\n"
+        f"DECISION: [Write only YES if the text '{text}' is visible (search succeeded), "
+        f"or NO if the text is not visible (search failed)]"
+    )
     
 def _collect_tools():
     tools = []
