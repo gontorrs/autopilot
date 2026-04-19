@@ -6,7 +6,6 @@ __pycache__/
 *.env
 **/OLD/
 *.aux
-*.log
 *.out
 *.toc
 *.lof

@@ -27,7 +27,7 @@ def get_coordinates_prompt(goal):
 def verification_prompt_file(goal):
     return (
         f"Observe the screenshot. Task: {goal}. "
-        "Has the objective been achieved? Respond ONLY with 'YES' or 'NO' followed by a brief observation. Make sure to check if it is achevied completely and not partially."
+        "Has the objective been achieved? Respond ONLY with 'YES' or 'NO' followed by a brief observation. Make sure to check if it is achieved completely and not partially."
     )
 
 def check_item_prompt(item, type='item'):
@@ -82,10 +82,12 @@ def verification_prompt_formatting(text, style):
 def verification_prompt_delete(text):
     return (
         f"Observe the screenshot. Look ONLY at the content inside the open document window. "
-        f"Your task is to check if the exact text '{text}' is visible as content WITHIN the open document.\n\n"
+        f"The task was to DELETE the text '{text}' from the document. "
+        f"The task is successful if the text is NOT visible in the document.\n\n"
         f"You MUST format your response exactly like this:\n"
         f"OBSERVATION: [Write a detailed description of what text you see in the document]\n"
-        f"DECISION: [Write only YES if the text is visible, or NO if the text is not visible]"
+        f"DECISION: [Write only YES if the text '{text}' is NO LONGER visible (deletion succeeded), "
+        f"or NO if the text is still visible (deletion failed)]"
     )
 
 def verification_prompt_copy_paste(file_name, dest_folder):

@@ -4,6 +4,7 @@ from typing import Optional, Any
 from tools.tools import click, win_search, type_text, format_text
 import pyautogui as py
 import time
+import keyboard
 
 class ExecutorAgent(BaseAgent):
 
@@ -25,14 +26,17 @@ class ExecutorAgent(BaseAgent):
             return None
         if isinstance(coordinates, dict):
             x, y = coordinates.get("x"), coordinates.get("y")
-            if x is not None and y is not None:
+            if x not in (None, "", " ") and y not in (None, "", " "):
                 return (int(x), int(y))
         if isinstance(coordinates, str):
             try:
                 d = json.loads(coordinates.replace("'", '"'))
-                if d.get("x") is not None and d.get("y") is not None:
-                    return (int(d["x"]), int(d["y"]))
-            except (json.JSONDecodeError, TypeError):
+                if not isinstance(d, dict):
+                    return None
+                x, y = d.get("x"), d.get("y")
+                if x not in (None, "", " ") and y not in (None, "", " "):
+                    return (int(x), int(y))
+            except (json.JSONDecodeError, TypeError, ValueError):
                 pass
         return None
 
@@ -65,11 +69,12 @@ class ExecutorAgent(BaseAgent):
             time.sleep(1)
             print(f"DEBUG executor search_text — target: '{target}'")
             time.sleep(1)
-            py.keyDown('ctrlleft')
-            time.sleep(0.3)
-            py.press('f')
-            time.sleep(0.2)
-            py.keyUp('ctrlleft')
+            keyboard.send('ctrl+f')
+            # py.keyDown('ctrlleft')
+            # time.sleep(0.5)
+            # py.press('f')
+            # time.sleep(0.5)
+            # py.keyUp('ctrlleft')
             time.sleep(1)
             py.write(target, interval=0.05)
             py.press('enter')

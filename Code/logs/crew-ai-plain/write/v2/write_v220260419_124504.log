@@ -1,0 +1,294 @@
+[33m╭─[0m[33m──────────────────────────────────────────────[0m[33m ✨ Update Available ✨ [0m[33m──────────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  A new version of CrewAI is available!                                                                               [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  Current version: 1.14.1                                                                                             [33m│[0m
+[33m│[0m  Latest version:  1.14.2                                                                                             [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  To update, run: uv sync --upgrade-package crewai                                                                    [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[36m╭─[0m[36m────────────────────────────────────────────[0m[36m 🚀 Crew Execution Started [0m[36m─────────────────────────────────────────────[0m[36m─╮[0m
+[36m│[0m                                                                                                                      [36m│[0m
+[36m│[0m  [1;36mCrew Execution Started[0m                                                                                              [36m│[0m
+[36m│[0m  [37mName: [0m[36mcrew[0m                                                                                                          [36m│[0m
+[36m│[0m  [37mID: [0m[36mf3096455-81f4-4b1b-8f6a-e3d5879f37ec[0m                                                                            [36m│[0m
+[36m│[0m                                                                                                                      [36m│[0m
+[36m│[0m                                                                                                                      [36m│[0m
+[36m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[33m╭─[0m[33m─────────────────────────────────────────────────[0m[33m 📋 Task Started [0m[33m──────────────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  [1;33mTask Started[0m                                                                                                        [33m│[0m
+[33m│[0m  [37mName: [0m[33mComplete this GUI automation request: 'Take a quick note saying that I have a meeting tommorrow at 8 pm in [0m   [33m│[0m
+[33m│[0m  [33mTokyo please.'[0m                                                                                                      [33m│[0m
+[33m│[0m  [37mID: [0m[33me9ca95bb-d59c-4c20-bc3a-cf71bb08549b[0m                                                                            [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[35m╭─[0m[35m─────────────────────────────────────────────────[0m[35m 🤖 Agent Started [0m[35m─────────────────────────────────────────────────[0m[35m─╮[0m
+[35m│[0m                                                                                                                      [35m│[0m
+[35m│[0m  [37mAgent: [0m[1;92mManager[0m                                                                                                      [35m│[0m
+[35m│[0m                                                                                                                      [35m│[0m
+[35m│[0m  [37mTask: [0m[92mComplete this GUI automation request: 'Take a quick note saying that I have a meeting tommorrow at 8 pm in [0m   [35m│[0m
+[35m│[0m  [92mTokyo please.'[0m                                                                                                      [35m│[0m
+[35m│[0m                                                                                                                      [35m│[0m
+[35m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[TIMING] manager_thinking → Intent Classification: 11.62s[33m╭─[0m[33m──────────────────────────────────────────[0m[33m 🔧 Tool Execution Started (#1) [0m[33m──────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  [37mTool: [0m[1;33mclassify_intent[0m                                                                                               [33m│[0m
+[33m│[0m  [37mArgs: [0m[33m{'user_query': 'Take a quick note saying that I have a meeting tommorrow at 8 pm in Tokyo please.'}[0m           [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[35m╭─[0m[35m─────────────────────────────────────────────────[0m[35m 🤖 Agent Started [0m[35m─────────────────────────────────────────────────[0m[35m─╮[0m
+[35m│[0m                                                                                                                      [35m│[0m
+[35m│[0m  [37mAgent: [0m[1;92mIntention Agent[0m                                                                                              [35m│[0m
+[35m│[0m                                                                                                                      [35m│[0m
+[35m│[0m  [37mTask: [0m[92mAnalyze this query using the available intention tools: 'Take a quick note saying that I have a meeting [0m      [35m│[0m
+[35m│[0m  [92mtommorrow at 8 pm in Tokyo please.'[0m                                                                                 [35m│[0m
+[35m│[0m                                                                                                                      [35m│[0m
+[35m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[32m╭─[0m[32m──────────────────────────────────────────────[0m[32m ✅ Agent Final Answer [0m[32m───────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [37mAgent: [0m[1;92mIntention Agent[0m                                                                                              [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [37mFinal Answer:[0m                                                                                                       [32m│[0m
+[32m│[0m  [92m```json[0m                                                                                                             [32m│[0m
+[32m│[0m  [92m{[0m                                                                                                                   [32m│[0m
+[32m│[0m  [92m  "intent": "write_tool",[0m                                                                                           [32m│[0m
+[32m│[0m  [92m  "args": {[0m                                                                                                         [32m│[0m
+[32m│[0m  [92m    "application": "notepad",[0m                                                                                       [32m│[0m
+[32m│[0m  [92m    "text": "I have a meeting tomorrow at 8 pm in Tokyo."[0m                                                           [32m│[0m
+[32m│[0m  [92m  }[0m                                                                                                                 [32m│[0m
+[32m│[0m  [92m}[0m                                                                                                                   [32m│[0m
+[32m│[0m  [92m```[0m                                                                                                                 [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[classify_intent] Intent: write_tool, Args: {'application': 'notepad', 'text': 'I have a meeting tomorrow at 8 pm in Tokyo.'}
+[TIMING] Intent Classification: 25.78s
+[32mTool classify_intent executed with result: SUCCESS: Intent classified as 'write_tool'. Now call generate_plan....[0m[32m╭─[0m[32m─────────────────────────────────────────[0m[32m ✅ Tool Execution Completed (#1) [0m[32m─────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mTool Completed[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mTool: [0m[1;32mclassify_intent[0m                                                                                               [32m│[0m
+[32m│[0m  [37mOutput: [0m[32mSUCCESS: Intent classified as 'write_tool'. Now call generate_plan.[0m                                         [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[TIMING] manager_thinking → PDDL Planning: 1.46s[33m╭─[0m[33m──────────────────────────────────────────[0m[33m 🔧 Tool Execution Started (#1) [0m[33m──────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  [37mTool: [0m[1;33mgenerate_plan[0m                                                                                                 [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[DEBUG PLANNER] state_dict keys: ['prompt', 'status', 'attempts', 'app_name', 'content', 'goal']
+
+[DEBUG PLANNER] state_dict: {'prompt': 'Take a quick note saying that I have a meeting tommorrow at 8 pm in Tokyo please.', 'status': 'start', 'attempts': 0, 'app_name': 'notepad', 'content': 'I have a meeting tomorrow at 8 pm in Tokyo.', 'goal': '(typed_text i_have_a_meeting_tomorrow_at_8_pm_in_tokyo_)'}
+(define (problem problem)
+            (:domain gui)
+            (:objects
+ notepad - app
+i_have_a_meeting_tomorrow_at_8_pm_in_tokyo_ - text
+)
+            (:init
+                (empty)
+            )
+            (:goal (typed_text i_have_a_meeting_tomorrow_at_8_pm_in_tokyo_))
+            )
+Plan generated successfully
+==================================================
+(open notepad)
+(type notepad i_have_a_meeting_tomorrow_at_8_pm_in_tokyo_)
+; cost = 2 (unit cost)
+
+==================================================
+
+[TIMING] PDDL Planning: 0.42s
+[32mTool generate_plan executed with result: SUCCESS: Plan generated. Now call translate_plan....[0m[32m╭─[0m[32m─────────────────────────────────────────[0m[32m ✅ Tool Execution Completed (#1) [0m[32m─────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mTool Completed[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mTool: [0m[1;32mgenerate_plan[0m                                                                                                 [32m│[0m
+[32m│[0m  [37mOutput: [0m[32mSUCCESS: Plan generated. Now call translate_plan.[0m                                                           [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[TIMING] manager_thinking → Plan Translation: 3.59s
+[33m╭─[0m[33m──────────────────────────────────────────[0m[33m 🔧 Tool Execution Started (#1) [0m[33m──────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  [37mTool: [0m[1;33mtranslate_plan[0m                                                                                                [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[translate_plan] 2 steps translated.
+
+[TIMING] Plan Translation: 0.00s
+[32mTool translate_plan executed with result: SUCCESS: Execute these steps IN ORDER:
+Step 1: VISUAL — (1) call check_visibility(target='notepad', item_type='application'). (2a) If it returns NO → call execute_action(intent='open', target='notepad...[0m[32m╭─[0m[32m─────────────────────────────────────────[0m[32m ✅ Tool Execution Completed (#1) [0m[32m─────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mTool Completed[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mTool: [0m[1;32mtranslate_plan[0m                                                                                                [32m│[0m
+[32m│[0m  [37mOutput: [0m[32mSUCCESS: Execute these steps IN ORDER:[0m                                                                      [32m│[0m
+[32m│[0m  [32mStep 1: VISUAL — (1) call check_visibility(target='notepad', item_type='application'). (2a) If it returns NO → [0m     [32m│[0m
+[32m│[0m  [32mcall execute_action(intent='open', target='notepad', scout_result='NO', coordinates='') ONCE and go to next step. [0m  [32m│[0m
+[32m│[0m  [32mDO NOT call find_coordinates. (2b) If it returns YES → call find_coordinates(target='notepad'), then [0m               [32m│[0m
+[32m│[0m  [32mexecute_action(intent='open', target='notepad', scout_result='YES', coordinates=<result>) ONCE.[0m                     [32m│[0m
+[32m│[0m  [32mStep 2: KEYBOARD — execute_action(intent='type', target='I have a meeting tomorrow at 8 pm in Tokyo.')[0m              [32m│[0m
+[32m│[0m  [32mAfter ALL steps are done, call verify_result.[0m                                                                       [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[TIMING] manager_thinking → Check Visibility: 9.36s[33m╭─[0m[33m──────────────────────────────────────────[0m[33m 🔧 Tool Execution Started (#1) [0m[33m──────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  [37mTool: [0m[1;33mcheck_visibility[0m                                                                                              [33m│[0m
+[33m│[0m  [37mArgs: [0m[33m{'item_type': 'application', 'target': 'notepad'}[0m                                                             [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+app
+
+[scout] screenshot guardado en: logs/crew-ai-plain/write/v2/scout_01.png
+scout response: 'NO'
+[TIMING] Check Visibility: 2.33s
+[32mTool check_visibility executed with result: NO...[0m[32m╭─[0m[32m─────────────────────────────────────────[0m[32m ✅ Tool Execution Completed (#1) [0m[32m─────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mTool Completed[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mTool: [0m[1;32mcheck_visibility[0m                                                                                              [32m│[0m
+[32m│[0m  [37mOutput: [0m[32mNO[0m                                                                                                          [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[TIMING] manager_thinking → Execute Action: 2.19s[33m╭─[0m[33m──────────────────────────────────────────[0m[33m 🔧 Tool Execution Started (#1) [0m[33m──────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  [37mTool: [0m[1;33mexecute_action[0m                                                                                                [33m│[0m
+[33m│[0m  [37mArgs: [0m[33m{'coordinates': '', 'intent': 'open', 'scout_result': 'NO', 'target': 'notepad'}[0m                              [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[TIMING] Execute Action: 3.74s
+[32mTool execute_action executed with result: FALLBACK_SUCCESS...[0m[32m╭─[0m[32m─────────────────────────────────────────[0m[32m ✅ Tool Execution Completed (#1) [0m[32m─────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mTool Completed[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mTool: [0m[1;32mexecute_action[0m                                                                                                [32m│[0m
+[32m│[0m  [37mOutput: [0m[32mFALLBACK_SUCCESS[0m                                                                                            [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[TIMING] manager_thinking → Execute Action: 8.92s
+[33m╭─[0m[33m──────────────────────────────────────────[0m[33m 🔧 Tool Execution Started (#2) [0m[33m──────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  [37mTool: [0m[1;33mexecute_action[0m                                                                                                [33m│[0m
+[33m│[0m  [37mArgs: [0m[33m{'coordinates': '', 'intent': 'type', 'scout_result': '', 'target': 'I have a meeting tomorrow at 8 pm in [0m    [33m│[0m
+[33m│[0m  [33mTokyo.'}[0m                                                                                                            [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[TIMING] Execute Action: 3.63s
+[32mTool execute_action executed with result: SUCCESS: Content written....[0m
+[32m╭─[0m[32m─────────────────────────────────────────[0m[32m ✅ Tool Execution Completed (#2) [0m[32m─────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mTool Completed[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mTool: [0m[1;32mexecute_action[0m                                                                                                [32m│[0m
+[32m│[0m  [37mOutput: [0m[32mSUCCESS: Content written.[0m                                                                                   [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[TIMING] manager_thinking → Verify Result: 1.06s[33m╭─[0m[33m──────────────────────────────────────────[0m[33m 🔧 Tool Execution Started (#1) [0m[33m──────────────────────────────────────────[0m[33m─╮[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m  [37mTool: [0m[1;33mverify_result[0m                                                                                                 [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m│[0m                                                                                                                      [33m│[0m
+[33m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[qa] screenshot guardado en: logs/crew-ai-plain/write/v2/qa_01.png
+Observe the screenshot. Task: Take a quick note saying that I have a meeting tommorrow at 8 pm in Tokyo please.. Has the objective been achieved? Respond ONLY with 'YES' or 'NO' followed by a brief observation. Make sure to check if it is achieved completely and not partially.
+qa response: 'YES, the objective has been achieved. The note "I have a meeting tomorrow at 8 pm in Tokyo." is clearly visible in the text editor, indicating that the task has been completed accurately.'
+[verify_result] QA result: YES, the objective has been achieved. The note "I have a meeting tomorrow at 8 pm in Tokyo." is clearly visible in the text editor, indicating that the task has been completed accurately.
+[TIMING] Verify Result: 4.34s
+[32mTool verify_result executed with result: YES, the objective has been achieved. The note "I have a meeting tomorrow at 8 pm in Tokyo." is clearly visible in the text editor, indicating that the task has been completed accurately....[0m[32m╭─[0m[32m─────────────────────────────────────────[0m[32m ✅ Tool Execution Completed (#1) [0m[32m─────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mTool Completed[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mTool: [0m[1;32mverify_result[0m                                                                                                 [32m│[0m
+[32m│[0m  [37mOutput: [0m[32mYES, the objective has been achieved. The note "I have a meeting tomorrow at 8 pm in Tokyo." is clearly [0m    [32m│[0m
+[32m│[0m  [32mvisible in the text editor, indicating that the task has been completed accurately.[0m                                 [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+
+[32m╭─[0m[32m──────────────────────────────────────────────[0m[32m ✅ Agent Final Answer [0m[32m───────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [37mAgent: [0m[1;92mManager[0m                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [37mFinal Answer:[0m                                                                                                       [32m│[0m
+[32m│[0m  [92mFinal Answer: YES[0m                                                                                                   [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[32m╭─[0m[32m────────────────────────────────────────────────[0m[32m 📋 Task Completion [0m[32m────────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mTask Completed[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mName: [0m[32mComplete this GUI automation request: 'Take a quick note saying that I have a meeting tommorrow at 8 pm in [0m   [32m│[0m
+[32m│[0m  [32mTokyo please.'[0m                                                                                                      [32m│[0m
+[32m│[0m  [37mAgent: [0m[32mManager[0m                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[32m╭─[0m[32m─────────────────────────────────────────────────[0m[32m Crew Completion [0m[32m──────────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m  [1;32mCrew Execution Completed[0m                                                                                            [32m│[0m
+[32m│[0m  [37mName: [0m[32mcrew[0m                                                                                                          [32m│[0m
+[32m│[0m  [37mID: [0m[32mf3096455-81f4-4b1b-8f6a-e3d5879f37ec[0m                                                                            [32m│[0m
+[32m│[0m  [37mFinal Output: Final Answer: YES[0m                                                                                     [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m│[0m                                                                                                                      [32m│[0m
+[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+[34m╭─[0m[34m──────────────────────────────────────────────────[0m[34m Tracing Status [0m[34m──────────────────────────────────────────────────[0m[34m─╮[0m
+[34m│[0m                                                                                                                      [34m│[0m
+[34m│[0m  Info: Tracing is disabled.                                                                                          [34m│[0m
+[34m│[0m                                                                                                                      [34m│[0m
+[34m│[0m  To enable tracing, do any one of these:                                                                             [34m│[0m
+[34m│[0m  • Set tracing=True in your Crew/Flow code                                                                           [34m│[0m
+[34m│[0m  • Set CREWAI_TRACING_ENABLED=true in your project's .env file                                                       [34m│[0m
+[34m│[0m  • Run: crewai traces enable                                                                                         [34m│[0m
+[34m│[0m                                                                                                                      [34m│[0m
+[34m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+==================================================
+RESOURCE USAGE SUMMARY
+==================================================
+CPU      avg: 25.9%   peak: 34.2%
+RAM      avg: 70.5%   peak: 71.0%
+GPU util avg: 22.1%   peak: 100.0%
+GPU mem  avg: 81.0%   peak: 81.0%
+Time     total: 1 min 19.78 s
+==================================================
+
+==================================================
+FINAL RESULT: Final Answer: YES
+==================================================

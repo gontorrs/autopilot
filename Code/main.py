@@ -1,6 +1,26 @@
 from crewai import Crew, Process, Task
 from crew.agents import create_agents
-from tools.tools import create_manager_tools
+from tools.tools import create_manager_tools, start_timing
+from tools.monitor import Monitor
+import sys
+import os
+from datetime import datetime
+
+class Tee:
+    def __init__(self, *streams):
+        self.streams = streams
+    def write(self, data):
+        for s in self.streams:
+            s.write(data)
+            s.flush()
+    def flush(self):
+        for s in self.streams:
+            s.flush()
+
+os.makedirs("logs", exist_ok=True)
+log_file = open(f"logs/crew-ai-plain/search/v3/search_v3{datetime.now():%Y%m%d_%H%M%S}.log", "w", encoding="utf-8")
+sys.stdout = Tee(sys.stdout, log_file)
+sys.stderr = Tee(sys.stderr, log_file)
 
 model_dict = {
     'gemma4k': 'gemma3:4b-it-qat',
@@ -17,7 +37,7 @@ model_dict = {
     'qwen2-vl': 'qwen3-vl:2b-instruct',
     'e2b': 'gemma4:e2b',
     'e4b': 'gemma4:e4b',
-    'e4bk': 'gemma4:e4b-it-q4_K_M ',
+    'e4bk': 'gemma4:e4b-it-q4_K_M',
     'e2bk': 'gemma4:e2b-it-q4_K_M',
     'qwen3.52b': 'qwen3.5:2b',
     'qwen3.54b': 'qwen3.5:4b',
@@ -29,14 +49,13 @@ model_dict = {
 planner_model = model_dict['e4bk']
 vlm_model = model_dict['qwen2k-vl']
 intention_model = model_dict['e4bk']
-
-#user_input = "Open the file Gonzalo_Anteproyecto.pdf which is in Documents, then TFG folder and then Docs folder."
-#user_input = "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please."
-#user_input = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic."
-#user_input = 'Create a folder named "GTS" in the Documents folder.'
-#user_input = 'Open my Entrevista_Reli.odt in Desktop and delete the text Gonzalo Torras Serrano.'
-#user_input = 'Open my Entrevista_Reli.odt in Desktop and search for the text Gonzalo Torras Serrano.'
-user_input = 'Copy my claude.docx in my Downloads folder and paste it in my Documents folder.'
+#user_input = "Take a quick note saying that I have a meeting tommorrow at 8 pm in Tokyo please." #write
+#user_input = 'Create a folder named "GTS" in the Documents folder.' #create
+#user_input = "Open the file Entrevista_Reli.pdf which is in Documents > INCO > Prueba." #open
+user_input = 'Open my Entrevista_Reli.odt in Desktop and search for the text Gonzalo Torras Serrano.' #search
+#user_input = 'Open my Entrevista_Reli.odt in Desktop and delete the text Gonzalo Torras Serrano.' #delete
+#user_input = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic." #format
+#user_input = 'Copy my prueba.txt in my Downloads folder and paste it in my Documents folder.' #copy
 
 # 1. Create all agents
 agents = create_agents(planner_model, vlm_model, intention_model)
@@ -65,8 +84,14 @@ crew = Crew(
     process=Process.sequential,
     verbose=True,
 )
+monitor = Monitor(interval=0.5)
+monitor.start()
+start_timing()
 
 result = crew.kickoff()
+
+monitor.stop()
+
 print(f"\n{'='*50}")
 print(f"FINAL RESULT: {result.raw}")
 print(f"{'='*50}")

@@ -166,6 +166,9 @@ class PDDLPlannerAgent(BaseAgent):
                 shutil.move('sas_plan', plan_path)
             with open(plan_path, 'r') as f:
                 plan_content = f.read()
+            print("="*50)
+            print(plan_content)
+            print("="*50 + "\n")
             return {
                 "plan": plan_content,
                 "mapping": self.object_mapping

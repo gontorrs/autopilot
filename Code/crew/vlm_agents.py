@@ -1,11 +1,12 @@
 import json
 import re
+import os
 import ollama
 import time
 from crewai import Task, tools
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import Optional, Any
-from tools.tools import take_screenshot, parse_coordinates
+from tools.tools import take_screenshot, parse_coordinates, correct_coord
 from tools.vlm_prompts import vlm_tools
 
 class VLMBaseAgent(BaseAgent):
@@ -13,6 +14,8 @@ class VLMBaseAgent(BaseAgent):
     function_calling_llm: Optional[Any] = None
     step_callback: Optional[Any] = None
     last_messages: list = []
+    agent_tag: str = "agent"
+    step_count: int = 0
 
     def __init__(self, vlm_model_name: str, **kwargs):
         super().__init__(
@@ -38,6 +41,13 @@ class VLMBaseAgent(BaseAgent):
             #keep_alive=0
         )
         return response
+
+    def _save_screenshot(self, img: bytes) -> None:
+            self.step_count += 1
+            nombre_archivo = f"logs/crew-ai-plain/search/v3/{self.agent_tag}_{self.step_count:02d}.png"
+            with open(nombre_archivo, "wb") as f:
+                f.write(img)
+            print(f"[{self.agent_tag}] screenshot guardado en: {nombre_archivo}")
 
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         raise NotImplementedError
@@ -78,6 +88,7 @@ class VLMBaseAgent(BaseAgent):
 
 
 class ScoutAgent(VLMBaseAgent):
+    agent_tag: str = "scout"
     def __init__(self, vlm_model_name: str):
         super().__init__(
             vlm_model_name=vlm_model_name,
@@ -88,6 +99,7 @@ class ScoutAgent(VLMBaseAgent):
 
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         img = take_screenshot()
+        self._save_screenshot(img)
         prompt = task.description
         response = self._call_ollama(prompt, img)
         result = response["message"]["content"].strip()
@@ -96,6 +108,7 @@ class ScoutAgent(VLMBaseAgent):
 
 
 class VisionAgent(VLMBaseAgent):
+    agent_tag: str = "vision"
     def __init__(self, vlm_model_name: str):
         super().__init__(
             vlm_model_name=vlm_model_name,
@@ -106,6 +119,7 @@ class VisionAgent(VLMBaseAgent):
 
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         img = take_screenshot()
+        self._save_screenshot(img)
         prompt = task.description
         response = self._call_ollama(prompt, img)
         content = response["message"]["content"].strip()
@@ -114,11 +128,13 @@ class VisionAgent(VLMBaseAgent):
             coords = [int(match.group(1)), int(match.group(2))]
             result = parse_coordinates(coords)
             if result:
-                return json.dumps({"x": result[0], "y": result[1]})
+                x, y = correct_coord(result[0], result[1])
+                return json.dumps({"x": x, "y": y})
         return json.dumps({"x": None, "y": None})
 
 
 class QAAgent(VLMBaseAgent):
+    agent_tag: str = "qa"
     def __init__(self, vlm_model_name: str):
         super().__init__(
             vlm_model_name=vlm_model_name,
@@ -130,6 +146,7 @@ class QAAgent(VLMBaseAgent):
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         time.sleep(2)
         img = take_screenshot()
+        self._save_screenshot(img)
         prompt = task.description
         print(prompt)
         response = self._call_ollama(prompt, img)

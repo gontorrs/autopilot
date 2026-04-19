@@ -78,6 +78,9 @@ Code/
 │   ├── planner_agent.py       # PDDL problem generator + Fast Downward runner
 │   ├── pddl_translator.py     # Converts PDDL plans to executable step dicts
 │   └── vlm_agents.py          # Scout, Vision, and QA agents (Ollama VLM wrappers)
+├── logs/
+│   └── crew-ai-plain          # Logs for all the tests done, with the base version. 
+|
 ├── tools/
 │   ├── tools.py               # All CrewAI tools (orchestration + execution + intent tools)
 │   └── vlm_prompts.py         # Prompt templates for VLM agents
@@ -99,7 +102,7 @@ Code/
 | Role | Default Model | Purpose |
 |------|--------------|---------|
 | Manager (planner LLM) | `gemma4:e4b-it-q4_K_M` | Orchestrates the pipeline via tool-calling |
-| Intention classifier | `qwen3:4b-instruct` | Classifies user intent |
+| Intention classifier | `gemma4:e4b-it-q4_K_M` | Classifies user intent |
 | VLM (scout/vision/QA) | `qwen3-vl:2b-instruct-q4_K_M` | Screenshot analysis and coordinate detection |
 
 ## Installation

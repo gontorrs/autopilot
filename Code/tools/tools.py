@@ -8,6 +8,30 @@ from crewai.tools import tool
 from crewai import Task
 from typing import Any, List
 from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste
+from functools import wraps
+
+_last_tool_end = {"t": None}
+
+def start_timing():
+    _last_tool_end["t"] = time.perf_counter()
+
+def timed(phase_name: str):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            if _last_tool_end["t"] is not None:
+                thinking = time.perf_counter() - _last_tool_end["t"]
+                print(f"[TIMING] manager_thinking → {phase_name}: {thinking:.2f}s")
+
+            start = time.perf_counter()
+            result = fn(*args, **kwargs)
+            elapsed = time.perf_counter() - start
+            print(f"[TIMING] {phase_name}: {elapsed:.2f}s")
+
+            _last_tool_end["t"] = time.perf_counter()
+            return result
+        return wrapper
+    return decorator
 
 def take_screenshot() -> bytes:
     screenshot = py.screenshot()
@@ -15,6 +39,8 @@ def take_screenshot() -> bytes:
     screenshot.save(buffer, format="PNG")
     return buffer.getvalue()
 
+def correct_coord(x: int, y: int, offset_x: int = 25) -> tuple[int, int]:
+    return (x + offset_x, y)
 
 def parse_coordinates(coords):
     screen_w, screen_h = py.size()
@@ -124,9 +150,11 @@ def parse_intent_json(raw_text: str) -> dict | None:
         try:
             candidate = json.loads(match.group(0).replace("'", '"'))
             # Accept either "intent" or "tool_name" as the key
-            if "intent" in candidate or "tool_name" in candidate:
+            if "intent" in candidate or "tool_name" in candidate or "tool" in candidate:
                 if "tool_name" in candidate and "intent" not in candidate:
                     candidate["intent"] = candidate.pop("tool_name")
+                elif "tool" in candidate and "intent" not in candidate:
+                    candidate["intent"] = candidate.pop("tool")
                 return candidate
         except (json.JSONDecodeError, ValueError):
             continue
@@ -142,6 +170,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
     shared_state = {"task_state": None, "plan_result": None}
 
     @tool("classify_intent")
+    @timed("Intent Classification")
     def classify_intent(user_query: str) -> str:
         """
         STEP 1 of the workflow. Classify the user's natural language request into a structured intent.
@@ -180,6 +209,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
     # --- PHASE 2: PDDL Planning --- #
 
     @tool("generate_plan")
+    @timed("PDDL Planning")
     def generate_plan() -> str:
         """
         STEP 2 of the workflow. Generate a PDDL plan using Fast Downward based on the classified intent.
@@ -206,6 +236,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
     # --- PHASE 3: Translate plan --- #
 
     @tool("translate_plan")
+    @timed("Plan Translation")
     def translate_plan() -> str:
         """
         STEP 3 of the workflow. Translate the PDDL plan into executable GUI steps.
@@ -233,14 +264,19 @@ def create_manager_tools(agents: dict, config: dict) -> list:
             if s["action"] in ("paste", "navigate_back", "type", "type_name", "search_text", "change_text", "delete_text"):
                 lines.append(f"Step {i}: KEYBOARD — execute_action(intent='{s['action']}', target='{s['target']}')")
             else:
-                lines.append(f"Step {i}: VISUAL — check_visibility(target='{s['target']}', item_type='{s['item_type']}') then find_coordinates(target='{s['target']}') then execute_action(intent='{s['action']}', target='{s['target']}', scout_result=<r>, coordinates=<coords>)")
-
+                lines.append(
+                    f"Step {i}: VISUAL — "
+                    f"(1) call check_visibility(target='{s['target']}', item_type='{s['item_type']}'). "
+                    f"(2a) If it returns NO → call execute_action(intent='{s['action']}', target='{s['target']}', scout_result='NO', coordinates='') ONCE and go to next step. DO NOT call find_coordinates. "
+                    f"(2b) If it returns YES → call find_coordinates(target='{s['target']}'), then execute_action(intent='{s['action']}', target='{s['target']}', scout_result='YES', coordinates=<result>) ONCE."
+                )
         print(f"[translate_plan] {len(steps)} steps translated.")
         return f"SUCCESS: Execute these steps IN ORDER:\n" + "\n".join(lines) + "\nAfter ALL steps are done, call verify_result."
 
     # --- PHASE 4: Execution tools --- #
 
     @tool("check_visibility")
+    @timed("Check Visibility")
     def check_visibility(target: str, item_type: str = "item") -> str:
         """
         STEP 4a — Check if a UI element is visible on screen by taking a screenshot. Returns YES or NO.
@@ -256,6 +292,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         return agents["scout"].execute_task(t)
 
     @tool("find_coordinates")
+    @timed("Find Coordinates")
     def find_coordinates(target: str) -> str:
         """
         STEP 4b — Find the exact pixel coordinates of a visible UI element by taking a screenshot.
@@ -270,6 +307,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         return agents["vision"].execute_task(t)
 
     @tool("execute_action")
+    @timed("Execute Action")
     def execute_action(intent: str, target: str = "", scout_result: str = "", coordinates: Any = "") -> str:
         """
         STEP 4c — Execute a GUI action (click, type, keyboard shortcut, etc).
@@ -311,6 +349,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
     # --- PHASE 5: QA Verification --- #
 
     @tool("verify_result")
+    @timed("Verify Result")
     def verify_result() -> str:
         """
         STEP 5 — Final verification. Takes a screenshot and checks if the task was completed successfully.
@@ -329,7 +368,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         elif "pasted" in goal:
             prompt = verification_prompt_copy_paste(task_state.get("file_name", ""), task_state.get("path_to_paste", [""])[-1])
         else:
-            prompt = verification_prompt_file(task_state.get("file_name", ""))
+            prompt = verification_prompt_file(task_state.get("prompt", ""))
 
         t = Task(description=prompt, expected_output="YES or NO", agent=agents["qa"])
         result = agents["qa"].execute_task(t)
