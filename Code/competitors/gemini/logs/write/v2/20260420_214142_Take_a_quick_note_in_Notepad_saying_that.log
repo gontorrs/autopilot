@@ -1,0 +1,42 @@
+
+============================================================
+TASK: Take a quick note in Notepad saying that I have a meeting tommorrow at 8 pm in Tokyo please.
+LOGS: ./logs/write/v2
+============================================================
+
+Step 1: Searching for Notepad in the Start menu.
+
+[TIMING] thinking -> hotkey: 2.02s
+  -> Pressed hotkey: win+s
+[TIMING] hotkey execution: 0.11s
+Step 2: Typing "Notepad" into the search bar.
+
+[TIMING] thinking -> type_text: 1.16s
+  -> Typed: Notepad
+[TIMING] type_text execution: 0.49s
+Step 3: Pressing Enter to open Notepad.
+
+[TIMING] thinking -> hotkey: 1.04s
+  -> Pressed hotkey: enter
+[TIMING] hotkey execution: 0.11s
+Step 4: Typing the note into Notepad.
+
+[TIMING] thinking -> type_text: 7.37s
+  -> Typed: I have a meeting tomorrow at 8 pm in Tokyo.
+[TIMING] type_text execution: 2.62s
+Step 5: Taking a screenshot to confirm the note is written.
+
+[TIMING] thinking -> take_screenshot: 1.06s
+[SCREENSHOT] Saved: step_05_20260420_214158.png
+  -> Screenshot taken
+[TIMING] take_screenshot execution: 0.23s
+Step 6: Task complete.
+
+[TIMING] thinking -> done: 2.36s
+  -> DONE: I have successfully opened Notepad and typed the note about your meeting in Tokyo tomorrow at 8 pm.
+[TIMING] done execution: 0.00s
+
+============================================================
+Total steps executed: 6
+[TIMING] Total end-to-end: 18.58s
+============================================================

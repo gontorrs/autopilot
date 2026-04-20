@@ -1,0 +1,73 @@
+
+============================================================
+TASK: Copy my prueba.txt in my Downloads folder and paste it in my Documents folder.
+LOGS: ./copy_paste/v2
+MODEL: gemini-3-flash-preview
+============================================================
+
+[SCREENSHOT] Saved: step_00_20260420_220640.png
+Step 1: Opening File Explorer from the taskbar.
+
+[TIMING] thinking -> left_click: 5.02s
+  -> Left-clicked at (1344, 1558)
+[TIMING] left_click execution: 0.10s
+[SCREENSHOT] Saved: step_01_20260420_220646.png
+Step 2: Clicking on "Downloads" in the left sidebar.
+
+[TIMING] thinking -> left_click: 5.34s
+  -> Left-clicked at (678, 819)
+[TIMING] left_click execution: 0.11s
+[SCREENSHOT] Saved: step_02_20260420_220653.png
+Step 3: Right-clicking "prueba.txt" to open the context menu.
+
+[TIMING] thinking -> right_click: 6.86s
+  -> Right-clicked at (1049, 648)
+[TIMING] right_click execution: 0.21s
+[SCREENSHOT] Saved: step_03_20260420_220701.png
+Step 4: Right-clicking the "prueba.txt" file.
+
+[TIMING] thinking -> right_click: 4.38s
+  -> Right-clicked at (970, 648)
+[TIMING] right_click execution: 0.21s
+[SCREENSHOT] Saved: step_04_20260420_220706.png
+Step 5: Clicking on "Copy" from the context menu.
+
+[TIMING] thinking -> left_click: 4.06s
+  -> Left-clicked at (1123, 632)
+[TIMING] left_click execution: 0.11s
+[SCREENSHOT] Saved: step_05_20260420_220711.png
+Step 6: Clicking on "Documents" in the left sidebar.
+
+[TIMING] thinking -> left_click: 5.88s
+  -> Left-clicked at (678, 868)
+[TIMING] left_click execution: 0.10s
+[SCREENSHOT] Saved: step_06_20260420_220718.png
+Step 7: Right-clicking on an empty area in the Documents folder to open the context menu.
+
+[TIMING] thinking -> right_click: 3.93s
+  -> Right-clicked at (1584, 532)
+[TIMING] right_click execution: 0.21s
+[SCREENSHOT] Saved: step_07_20260420_220723.png
+Step 8: Right-clicking on an empty area of the Documents folder to open the context menu.
+
+[TIMING] thinking -> right_click: 4.24s
+  -> Right-clicked at (1233, 1374)
+[TIMING] right_click execution: 0.21s
+[SCREENSHOT] Saved: step_08_20260420_220729.png
+Step 9: Pasting the copied file using the 'ctrl+v' keyboard shortcut.
+
+[TIMING] thinking -> hotkey: 4.37s
+  -> Pressed hotkey: ctrl+v
+[TIMING] hotkey execution: 0.11s
+[SCREENSHOT] Saved: step_09_20260420_220734.png
+The file "prueba.txt" has been successfully copied from the Downloads folder and pasted into the Documents folder.
+
+
+[TIMING] thinking -> done: 5.12s
+  -> DONE: The file "prueba.txt" has been successfully copied from the Downloads folder and pasted into the Documents folder.
+[TIMING] done execution: 0.00s
+
+============================================================
+Total steps executed: 10
+[TIMING] Total end-to-end: 59.59s
+============================================================

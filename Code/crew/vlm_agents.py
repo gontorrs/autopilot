@@ -44,7 +44,7 @@ class VLMBaseAgent(BaseAgent):
 
     def _save_screenshot(self, img: bytes) -> None:
             self.step_count += 1
-            nombre_archivo = f"logs/crew-ai-plain/search/v1/{self.agent_tag}_{self.step_count:02d}.png"
+            nombre_archivo = f"logs/crew-ai-plain/create/v3/{self.agent_tag}_{self.step_count:02d}.png"
             with open(nombre_archivo, "wb") as f:
                 f.write(img)
             print(f"[{self.agent_tag}] screenshot guardado en: {nombre_archivo}")
@@ -99,7 +99,8 @@ class ScoutAgent(VLMBaseAgent):
 
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         img = take_screenshot()
-        self._save_screenshot(img)
+        #self._save_screenshot(img)
+        print(f"scout prompt: '{task.description}'")
         prompt = task.description
         response = self._call_ollama(prompt, img)
         result = response["message"]["content"].strip()
@@ -119,7 +120,8 @@ class VisionAgent(VLMBaseAgent):
 
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         img = take_screenshot()
-        self._save_screenshot(img)
+        #self._save_screenshot(img)
+        print(f"vision prompt: '{task.description}'")
         prompt = task.description
         response = self._call_ollama(prompt, img)
         content = response["message"]["content"].strip()
@@ -146,7 +148,7 @@ class QAAgent(VLMBaseAgent):
     def execute_task(self, task: Task, context: Optional[str] = None, tools: Optional[list] = None) -> str:
         time.sleep(2)
         img = take_screenshot()
-        self._save_screenshot(img)
+        #self._save_screenshot(img)
         prompt = task.description
         print(prompt)
         response = self._call_ollama(prompt, img)

@@ -1,0 +1,28 @@
+
+============================================================
+TASK: Copy my prueba.txt in my Downloads folder and paste it in my Documents folder.
+LOGS: ./logs/copy_paste/v2
+============================================================
+
+Step 1: Opening File Explorer.
+
+[TIMING] thinking -> hotkey: 1.59s
+  -> Pressed hotkey: win+e
+[TIMING] hotkey execution: 0.11s
+Step 2: Clicking on the "Downloads" folder in the sidebar.
+
+[TIMING] thinking -> left_click: 7.37s
+  -> Left-clicked at (261, 382)
+[TIMING] left_click execution: 0.11s
+Step 3: Clicking on the "Downloads" folder icon in the main view.
+
+[TIMING] thinking -> double_click: 1.62s
+  -> Double-clicked at (926, 227)
+[TIMING] double_click execution: 0.11s
+
+[ERROR] API call failed after 1.93s: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}
+
+============================================================
+Total steps executed: 3
+[TIMING] Total end-to-end: 12.85s
+============================================================

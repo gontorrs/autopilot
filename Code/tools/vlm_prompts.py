@@ -20,7 +20,7 @@ tool_click = {
 
 def get_coordinates_prompt(goal):
     return (
-        f"Observe the screenshot and identify where to click to find: '{goal}' (folder, file, application, button or area). "
+        f"Observe the screenshot and identify where to click to find: '{goal}'. "
         "Respond ONLY with the coordinates in this exact format: [x, y] in 0-1000 scale. Nothing else."
     )
 
@@ -28,6 +28,12 @@ def verification_prompt_file(goal):
     return (
         f"Observe the screenshot. Task: {goal}. "
         "Has the objective been achieved? Respond ONLY with 'YES' or 'NO' followed by a brief observation. Make sure to check if it is achieved completely and not partially."
+    )
+
+def verification_prompt_create(goal):
+    return (
+        "Observe the screenshot."
+        f"Is there a folder or file with the name: {goal}? Respond ONLY with 'YES' or 'NO' followed by a brief observation. If it's a file, ignore the extension."
     )
 
 def check_item_prompt(item, type='item'):

@@ -7,7 +7,7 @@ import time
 from crewai.tools import tool
 from crewai import Task
 from typing import Any, List
-from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste, verification_prompt_search
+from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste, verification_prompt_search, verification_prompt_create
 from functools import wraps
 
 _last_tool_end = {"t": None}
@@ -140,9 +140,9 @@ def build_task_state(intent_name, intent_args, user_input, sanitize_fn):
     return None
 
 
-# ================================================================== #
-#  Intent JSON parser                                                 #
-# ================================================================== #
+# ==================================================================
+#  Intent JSON parser                                                
+# ==================================================================
 
 def parse_intent_json(raw_text: str) -> dict | None:
     """Extract intent JSON from LLM output. Handles 'intent' or 'tool_name' keys."""
@@ -161,9 +161,9 @@ def parse_intent_json(raw_text: str) -> dict | None:
     return None
 
 
-# ================================================================== #
-#  Manager tools                                                      #
-# ================================================================== #
+# ==================================================================
+#  Manager tools                                                     
+# ==================================================================
 
 def create_manager_tools(agents: dict, config: dict) -> list:
 
@@ -370,6 +370,8 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         elif "text_searched" in goal:
             prompt = verification_prompt_search(task_state.get("content", ""))
             print(f"[verify_result] Search verification prompt: {prompt}")
+        elif "created" in goal:
+            prompt = verification_prompt_create(task_state.get("name", ""))
         else:
             prompt = verification_prompt_file(task_state.get("prompt", ""))
 
@@ -381,9 +383,9 @@ def create_manager_tools(agents: dict, config: dict) -> list:
     return [classify_intent, generate_plan, translate_plan, check_visibility, find_coordinates, execute_action, verify_result]
 
 
-# ================================================================== #
-#  Intention tools (used by the intention agent)                      #
-# ================================================================== #
+# ==================================================================
+#  Intention tools (used by the intention agent)                    
+# ==================================================================
 
 def create_tools() -> dict:
 
