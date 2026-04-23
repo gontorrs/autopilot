@@ -9,6 +9,7 @@ from crewai import Task
 from typing import Any, List
 from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste, verification_prompt_search, verification_prompt_create
 from functools import wraps
+import keyboard
 
 _last_tool_end = {"t": None}
 
@@ -51,6 +52,8 @@ def parse_coordinates(coords):
 
 def win_search(target: str):
     """Open Windows search, type target, press Enter."""
+    keyboard.send('ctrl+w')
+    time.sleep(1)
     py.press('win')
     time.sleep(1)
     py.write(target, interval=0.05)

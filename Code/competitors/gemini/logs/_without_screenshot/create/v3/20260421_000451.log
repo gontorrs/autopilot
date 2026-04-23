@@ -1,0 +1,46 @@
+
+============================================================
+TASK: Create a text file named "GTS" in the Documents folder.
+LOGS: ./create/v3
+MODEL: gemini-3-flash-preview
+============================================================
+
+[SCREENSHOT] Saved: step_00_20260421_000452.png
+Step 1: Opening File Explorer.
+
+[TIMING] thinking -> left_click: 11.31s
+  -> Left-clicked at (1349, 1558)
+[TIMING] left_click execution: 0.11s
+[SCREENSHOT] Saved: step_01_20260421_000504.png
+Step 2: Clicking on the Documents folder in the sidebar.
+
+[TIMING] thinking -> left_click: 2.82s
+  -> Left-clicked at (701, 865)
+[TIMING] left_click execution: 0.10s
+[SCREENSHOT] Saved: step_02_20260421_000508.png
+Step 3: Clicking on the New button to create a new file.
+
+[TIMING] thinking -> left_click: 2.64s
+  -> Left-clicked at (642, 460)
+[TIMING] left_click execution: 0.11s
+[SCREENSHOT] Saved: step_03_20260421_000512.png
+Step 4: Selecting "Text Document" from the list.
+
+[TIMING] thinking -> left_click: 2.91s
+  -> Left-clicked at (775, 907)
+[TIMING] left_click execution: 0.11s
+[SCREENSHOT] Saved: step_04_20260421_000516.png
+Step 5: Typing the name "GTS" and pressing Enter.
+
+[TIMING] thinking -> type_text: 2.92s
+  -> Typed: GTS
+
+[TIMING] type_text execution: 0.34s
+[SCREENSHOT] Saved: step_05_20260421_000520.png
+
+[ERROR] API call failed after 4.14s: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}
+
+============================================================
+Total steps executed: 5
+[TIMING] Total end-to-end: 32.78s
+============================================================

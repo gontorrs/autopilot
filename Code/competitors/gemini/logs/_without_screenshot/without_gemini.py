@@ -10,7 +10,7 @@ from google.genai import types
 
 load_dotenv()
 
-LOG_DIR = "./copy_paste/v3"
+LOG_DIR = "./create/v3"
 
 # Logging
 class Tee:
@@ -38,8 +38,7 @@ def parse_coordinates(coords):
 
 def setup(task: str) -> None:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    safe_task = task[:40].replace(" ", "_").replace("'", "")
-    log_file = open(os.path.join(LOG_DIR, f"{timestamp}_{safe_task}.log"), "w", encoding="utf-8")
+    log_file = open(os.path.join(LOG_DIR, f"{timestamp}.log"), "w", encoding="utf-8")
     sys.stdout = Tee(sys.stdout, log_file)
     sys.stderr = Tee(sys.stderr, log_file)
 
@@ -280,12 +279,12 @@ def run_agent(task: str):
     print(f"{'='*60}")
 
 #TASK = "Take a quick note in Notepad saying that I have a meeting tommorrow at 8 pm in Tokyo please." #write
-#TASK = 'Create a text file named "GTS" in the Documents folder.' #create
+TASK = 'Create a text file named "GTS" in the Documents folder.' #create
 #TASK = "Open the file Entrevista_Reli.pdf which is in Documents > INCO > Prueba." #open
 #TASK = 'Open my Entrevista_Reli.odt in Desktop and search for the text Gonzalo Torras Serrano.' #search
 #TASK = 'Open my Entrevista_Reli.odt in Desktop and delete the text Gonzalo Torras Serrano.' #delete
 #TASK = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic." #format
-TASK = 'Copy my prueba.txt in my Downloads folder and paste it in my Documents folder.' #copy
+#TASK = 'Copy my prueba.txt in my Downloads folder and paste it in my Documents folder.' #copy
 
 if __name__ == "__main__":
     run_agent(TASK)

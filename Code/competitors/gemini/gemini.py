@@ -10,7 +10,7 @@ from google.genai import types
 
 load_dotenv()
 
-LOG_DIR = "./logs/copy_paste/v3"
+LOG_DIR = "./logs/copy_paste/v2"
 
 # Logging
 class Tee:
@@ -38,8 +38,7 @@ def parse_coordinates(coords):
 
 def setup(task: str) -> None:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    safe_task = task[:40].replace(" ", "_").replace("'", "")
-    log_file = open(os.path.join(LOG_DIR, f"{timestamp}_{safe_task}.log"), "w", encoding="utf-8")
+    log_file = open(os.path.join(LOG_DIR, f"{timestamp}.log"), "w", encoding="utf-8")
     sys.stdout = Tee(sys.stdout, log_file)
     sys.stderr = Tee(sys.stderr, log_file)
 
