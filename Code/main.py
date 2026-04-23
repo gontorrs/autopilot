@@ -49,11 +49,11 @@ planner_model = model_dict['e4bk']
 vlm_model = model_dict['qwen2k-vl']
 intention_model = model_dict['e4bk']
 #user_input = "Take a quick note saying that I have a meeting tommorrow at 8 pm in Tokyo please." #write
-user_input = 'Create a text file named "GTS" in the Documents folder.' #create
+#user_input = 'Create a text file named "GTS" in the Documents folder.' #create
 #user_input = "Open the file Entrevista_Reli.pdf which is in Documents > INCO > Prueba." #open
 #user_input = 'Open my Entrevista_Reli.odt in Desktop and search for the text Gonzalo Torras Serrano.' #search
 #user_input = 'Open my Entrevista_Reli.odt in Desktop and delete the text Gonzalo Torras Serrano.' #delete
-#user_input = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic." #format
+user_input = "Open my Entrevista_Reli.odt in Desktop folder and make the text Gonzalo Torras Serrano in italic." #format
 #user_input = 'Copy my prueba.txt in my Downloads folder and paste it in my Documents folder.' #copy
 
 # 1. Create all agents

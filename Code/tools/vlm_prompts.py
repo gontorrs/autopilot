@@ -17,10 +17,22 @@ tool_click = {
     }
 }
 
+def _collect_tools():
+    tools = []
+    g = globals()
+    for name, value in g.items():
+        if isinstance(value, dict):
+            if (value.get('type') == 'function' and 
+                'function' in value and 
+                isinstance(value['function'], dict)):
+                tools.append(value)
+    return tools
+
+vlm_tools = _collect_tools()
 
 def get_coordinates_prompt(goal):
     return (
-        f"Observe the screenshot and identify where to click to find: '{goal}'. "
+        f"Observe the screenshot and identify where to click to find: '{goal}'. If it's an app do not minimise or close the app."
         "Respond ONLY with the coordinates in this exact format: [x, y] in 0-1000 scale. Nothing else."
     )
 
@@ -113,16 +125,36 @@ def verification_prompt_search(text):
         f"DECISION: [Write only YES if the text '{text}' is visible (search succeeded), "
         f"or NO if the text is not visible (search failed)]"
     )
-    
-def _collect_tools():
-    tools = []
-    g = globals()
-    for name, value in g.items():
-        if isinstance(value, dict):
-            if (value.get('type') == 'function' and 
-                'function' in value and 
-                isinstance(value['function'], dict)):
-                tools.append(value)
-    return tools
 
-vlm_tools = _collect_tools()
+
+MODULAR_PROMPTS = {
+    # Group 1: navigate, create, copy_paste
+    "navigate_tool": (
+        "Look at this screenshot and answer ONLY in this exact JSON format, no other text:\n"
+        '{"file_explorer_open": true/false, "current_folder": "<folder name or null>"}\n'
+        "- file_explorer_open: is File Explorer the active window right now?\n"
+        "- current_folder: if File Explorer is open, what is the LAST folder name shown in the address bar? If not open, null."
+    ),
+
+    # write
+    "write_tool": (
+        "Look at this screenshot and answer ONLY in this exact JSON format, no other text:\n"
+        '{"notepad_open": true/false, "has_text": true/false}\n'
+        "- notepad_open: is Notepad currently open as the active window?\n"
+        "- has_text: if Notepad is open, is there any text already written in it? If not open, false."
+    ),
+
+    # Group 3: change, delete, search
+    "change_tool": (
+        "Look at this screenshot and answer ONLY in this exact JSON format, no other text:\n"
+        '{"active_app": "<file_explorer/word/libreoffice/none>", "current_folder": "<folder name or null>"}\n'
+        "- active_app: what is the active window? Answer 'file_explorer', 'word', 'libreoffice', or 'none'.\n"
+        "- current_folder: if active_app is file_explorer, what is the LAST folder name in the address bar? Otherwise null."
+    ),
+}
+
+# Aliases
+MODULAR_PROMPTS["create_tool"] = MODULAR_PROMPTS["navigate_tool"]
+MODULAR_PROMPTS["copy_paste_tool"] = MODULAR_PROMPTS["navigate_tool"]
+MODULAR_PROMPTS["delete_tool"] = MODULAR_PROMPTS["change_tool"]
+MODULAR_PROMPTS["search_tool"] = MODULAR_PROMPTS["change_tool"]
