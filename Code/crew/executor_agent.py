@@ -87,6 +87,10 @@ class ExecutorAgent(BaseAgent):
             return format_text(target)  # target is the style
 
         elif intent == "type":
+            screen = (state or {}).get("screen_state", {})
+            if screen.get("notepad_open") and screen.get("has_text"):
+                keyboard.send('ctrl+t')
+                time.sleep(0.5)
             return type_text((state or {}).get("app_name", ""), target)
         
         elif intent == "navigate_back":

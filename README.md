@@ -6,9 +6,7 @@ Autopilot is a fully local, multi-agent desktop automation system that translate
 
 Built as a Final Degree Project (FDP) in Computer Engineering.
 
-## Repository Branches
-
-Each branch in this repository represents a different phase in the project's evolution. Rather than overwriting previous work, each stage has been preserved in its own branch so you can see how the architecture evolved over time — from early prototypes to the current manager-agent orchestration approach.
+> **This branch introduces modular state detection.** Before planning, a VLM analyzes the current screen state (open apps, active folder, file status) and injects it into the PDDL init, allowing the planner to skip steps that are already completed (e.g., if Notepad is already open, skip the open action). Each intent template (navigate, write, create, change, delete, search, copy/paste) uses a tailored VLM prompt to detect only what it needs.
 
 ## How It Works
 
@@ -71,6 +69,7 @@ The manager calls 7 tools in sequence:
 ```
 Code/
 ├── main.py                    # Entry point
+├── competitors/               # Evidence for the execution of all templates, for the different competitors.
 ├── crew/
 │   ├── agents.py              # Agent factory (manager, intention, VLM agents, etc.)
 │   ├── manager_agent.py       # Custom BaseLLM for Ollama with CrewAI 1.14+ support

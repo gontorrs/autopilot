@@ -7,7 +7,7 @@ import time
 from crewai.tools import tool
 from crewai import Task
 from typing import Any, List
-from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste, verification_prompt_search, verification_prompt_create
+from tools.vlm_prompts import check_item_prompt, get_coordinates_prompt, verification_prompt_file, verification_prompt_formatting, verification_prompt_delete, verification_prompt_copy_paste, verification_prompt_search, verification_prompt_create, MODULAR_PROMPTS
 from functools import wraps
 import keyboard
 
@@ -22,7 +22,7 @@ def timed(phase_name: str):
         def wrapper(*args, **kwargs):
             if _last_tool_end["t"] is not None:
                 thinking = time.perf_counter() - _last_tool_end["t"]
-                print(f"[TIMING] manager_thinking → {phase_name}: {thinking:.2f}s")
+                print(f"[TIMING] manager_thinking -> {phase_name}: {thinking:.2f}s")
 
             start = time.perf_counter()
             result = fn(*args, **kwargs)
@@ -81,14 +81,14 @@ def type_text(app_name, content):
 
 
 def format_text(style: str) -> str:
-    time.sleep(2)
+    time.sleep(1.5)
     shortcuts = {'bold': 'b', 'italic': 'i', 'under': 'u'}
     for key, char in shortcuts.items():
         if key in style:
             py.hotkey('ctrl', char)
             break
     py.press('left')
-    time.sleep(3)
+    time.sleep(1.5)
     return "SUCCESS: Text formatted."
 
 def build_task_state(intent_name, intent_args, user_input, sanitize_fn):
@@ -209,7 +209,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         print(f"[classify_intent] Intent: {intent_name}, Args: {intent_args}")
         return f"SUCCESS: Intent classified as '{intent_name}'. Now call generate_plan."
 
-    # --- PHASE 2: PDDL Planning --- #
+    # PHASE 2: PDDL Planning
 
     @tool("generate_plan")
     @timed("PDDL Planning")
@@ -217,7 +217,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         """
         STEP 2 of the workflow. Generate a PDDL plan using Fast Downward based on the classified intent.
         Call this AFTER classify_intent has returned SUCCESS.
-        Takes no arguments — uses the internal state from classify_intent.
+        Takes no arguments - uses the internal state from classify_intent.
         After this returns SUCCESS, call translate_plan.
         """
         task_state = shared_state.get("task_state")
@@ -229,6 +229,9 @@ def create_manager_tools(agents: dict, config: dict) -> list:
             expected_output="Plan result or None.",
             agent=agents["planner"],
         )
+        screen_state = shared_state.get("screen_state", {})
+        if screen_state:
+            task_state["screen_state"] = screen_state
         result = agents["planner"].execute_task(t, state_dict=task_state)
         if not result:
             return "FAILED: PDDL planner could not generate a plan."
@@ -236,7 +239,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         shared_state["plan_result"] = result
         return "SUCCESS: Plan generated. Now call translate_plan."
 
-    # --- PHASE 3: Translate plan --- #
+    # PHASE 3: Translate plan
 
     @tool("translate_plan")
     @timed("Plan Translation")
@@ -244,9 +247,9 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         """
         STEP 3 of the workflow. Translate the PDDL plan into executable GUI steps.
         Call this AFTER generate_plan has returned SUCCESS.
-        Takes no arguments — uses the internal plan from generate_plan.
+        Takes no arguments - uses the internal plan from generate_plan.
         Returns a numbered list of steps. Execute each step IN ORDER using the execution tools.
-        VISUAL steps require: check_visibility → find_coordinates → execute_action.
+        VISUAL steps require: check_visibility -> find_coordinates -> execute_action.
         KEYBOARD steps require: execute_action directly (no coordinates needed).
         After ALL steps are done, call verify_result.
         """
@@ -265,26 +268,26 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         lines = []
         for i, s in enumerate(steps, 1):
             if s["action"] in ("paste", "navigate_back", "type", "type_name", "search_text", "change_text", "delete_text"):
-                lines.append(f"Step {i}: KEYBOARD — execute_action(intent='{s['action']}', target='{s['target']}')")
+                lines.append(f"Step {i}: KEYBOARD - execute_action(intent='{s['action']}', target='{s['target']}')")
             else:
                 lines.append(
-                    f"Step {i}: VISUAL — "
+                    f"Step {i}: VISUAL - "
                     f"(1) call check_visibility(target='{s['target']}', item_type='{s['item_type']}'). "
-                    f"(2a) If it returns NO → call execute_action(intent='{s['action']}', target='{s['target']}', scout_result='NO', coordinates='') ONCE and go to next step. DO NOT call find_coordinates. "
-                    f"(2b) If it returns YES → call find_coordinates(target='{s['target']}'), then execute_action(intent='{s['action']}', target='{s['target']}', scout_result='YES', coordinates=<result>) ONCE."
+                    f"(2a) If it returns NO -> call execute_action(intent='{s['action']}', target='{s['target']}', scout_result='NO', coordinates='') ONCE and go to next step. DO NOT call find_coordinates. "
+                    f"(2b) If it returns YES -> call find_coordinates(target='{s['target']}'), then execute_action(intent='{s['action']}', target='{s['target']}', scout_result='YES', coordinates=<result>) ONCE."
                 )
         print(f"[translate_plan] {len(steps)} steps translated.")
         return f"SUCCESS: Execute these steps IN ORDER:\n" + "\n".join(lines) + "\nAfter ALL steps are done, call verify_result."
 
-    # --- PHASE 4: Execution tools --- #
+    # PHASE 4: Execution tools
 
     @tool("check_visibility")
     @timed("Check Visibility")
     def check_visibility(target: str, item_type: str = "item") -> str:
         """
-        STEP 4a — Check if a UI element is visible on screen by taking a screenshot. Returns YES or NO.
+        STEP 4a - Check if a UI element is visible on screen by taking a screenshot. Returns YES or NO.
         Use this as the FIRST step for each VISUAL action before calling find_coordinates.
-        If this returns NO, you must STILL call execute_action with scout_result='NO' and coordinates='' — the executor has a fallback.
+        If this returns NO, you must STILL call execute_action with scout_result='NO' and coordinates='' - the executor has a fallback.
 
         Args:
             target: The name of the element to find (e.g., 'Downloads', 'file explorer', 'claude.docx').
@@ -298,7 +301,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
     @timed("Find Coordinates")
     def find_coordinates(target: str) -> str:
         """
-        STEP 4b — Find the exact pixel coordinates of a visible UI element by taking a screenshot.
+        STEP 4b - Find the exact pixel coordinates of a visible UI element by taking a screenshot.
         Only call this AFTER check_visibility returned YES for the same target.
         Returns a JSON string like {"x": 500, "y": 300}. Pass this to execute_action as coordinates.
 
@@ -313,27 +316,27 @@ def create_manager_tools(agents: dict, config: dict) -> list:
     @timed("Execute Action")
     def execute_action(intent: str, target: str = "", scout_result: str = "", coordinates: Any = "") -> str:
         """
-        STEP 4c — Execute a GUI action (click, type, keyboard shortcut, etc).
+        STEP 4c - Execute a GUI action (click, type, keyboard shortcut, etc).
         For VISUAL actions (open, navigate, open_file, click_new, select_type, copy):
             Pass scout_result from check_visibility and coordinates from find_coordinates.
         For KEYBOARD actions (paste, navigate_back, type, type_name, search_text, change_text, delete_text):
             No coordinates needed. Pass scout_result='' and coordinates=''.
 
         Visual intents:
-            open — click an application icon to launch it.
-            navigate — double-click a folder to enter it.
-            open_file — double-click a file to open it.
-            click_new — click the 'New' button to open a creation menu.
-            select_type — click a menu option (file type or folder).
-            copy — click a file to select it, then Ctrl+C (or Ctrl+X for cut).
+            open - click an application icon to launch it.
+            navigate - double-click a folder to enter it.
+            open_file - double-click a file to open it.
+            click_new - click the 'New' button to open a creation menu.
+            select_type - click a menu option (file type or folder).
+            copy - click a file to select it, then Ctrl+C (or Ctrl+X for cut).
         Keyboard intents:
-            paste — Ctrl+V.
-            navigate_back — Alt+Left to go back one folder.
-            type — type text content into the active application.
-            type_name — type a name and press Enter to confirm.
-            search_text — Ctrl+F and type the search query.
-            change_text — apply formatting. Target MUST be the style name ('bold', 'italic', 'underline'), NOT the text.
-            delete_text — press Backspace to delete selected text.
+            paste - Ctrl+V.
+            navigate_back - Alt+Left to go back one folder.
+            type - type text content into the active application.
+            type_name - type a name and press Enter to confirm.
+            search_text - Ctrl+F and type the search query.
+            change_text - apply formatting. Target MUST be the style name ('bold', 'italic', 'underline'), NOT the text.
+            delete_text - press Backspace to delete selected text.
 
         Args:
             intent: The action to perform. Must match one of the intents listed above.
@@ -349,16 +352,16 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         )
         return agents["executor"].execute_task(t, intent=intent, target=target, scout_result=scout_result, coordinates=coordinates, state=task_state)
 
-    # --- PHASE 5: QA Verification --- #
+    # PHASE 5: QA Verification
 
     @tool("verify_result")
     @timed("Verify Result")
     def verify_result() -> str:
         """
-        STEP 5 — Final verification. Takes a screenshot and checks if the task was completed successfully.
+        STEP 5 - Final verification. Takes a screenshot and checks if the task was completed successfully.
         Call this ONCE as the very LAST step, only after ALL execution steps from translate_plan are done.
         NEVER call this during intermediate steps.
-        Takes no arguments — automatically determines what to verify based on the task.
+        Takes no arguments,  automatically determines what to verify based on the task.
         Returns YES if the task succeeded, NO if it failed.
         """
         task_state = shared_state.get("task_state") or {}
@@ -382,8 +385,44 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         result = agents["qa"].execute_task(t)
         print(f"[verify_result] QA result: {result}")
         return result
+    
+    @tool("detect_current_state")
+    @timed("Detect State")
+    def detect_current_state(intent_name: str) -> str:
+        """
+        STEP 1.5 - Call AFTER classify_intent returns SUCCESS, BEFORE generate_plan.
+        Detects what is currently on screen to skip unnecessary steps.
 
-    return [classify_intent, generate_plan, translate_plan, check_visibility, find_coordinates, execute_action, verify_result]
+        Args:
+            intent_name: The intent returned by classify_intent (e.g., 'navigate_tool', 'write_tool').
+        """
+        prompt = MODULAR_PROMPTS.get(intent_name)
+        if not prompt:
+            shared_state["screen_state"] = {}
+            return "SUCCESS: No state detection needed. Now call generate_plan."
+
+        t = Task(description=prompt, expected_output="JSON only.", agent=agents["scout"])
+        result = agents["scout"].execute_task(t)
+
+        print(f"[detect_current_state] VLM response: {result}")
+
+        clean = result.strip()
+        if "```" in clean:
+            start = clean.find("{")
+            end = clean.rfind("}")
+            if start != -1 and end != -1:
+                clean = clean[start:end + 1]
+        try:
+            parsed = json.loads(clean)
+        except (json.JSONDecodeError, TypeError):
+            parsed = {}
+
+        print(f"[detect_current_state] Parsed: {parsed}")
+
+        shared_state["screen_state"] = parsed
+        return f"SUCCESS: Screen state detected. Now call generate_plan."
+
+    return [classify_intent, generate_plan, translate_plan, check_visibility, find_coordinates, execute_action, verify_result, detect_current_state]
 
 
 # ==================================================================
