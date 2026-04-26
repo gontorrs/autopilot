@@ -49,6 +49,16 @@ def parse_coordinates(coords):
         return int(coords[0] / 1000 * screen_w), int(coords[1] / 1000 * screen_h)
     return None
 
+def min_app():
+    py.keyDown('win')
+    py.press('down')
+    py.keyUp('win')
+
+    time.sleep(0.2)
+
+    py.keyDown('win')
+    py.press('down')
+    py.keyUp('win')
 
 def win_search(target: str):
     """Open Windows search, type target, press Enter."""
@@ -185,6 +195,8 @@ def create_manager_tools(agents: dict, config: dict) -> list:
             user_query: The user's original request exactly as given (e.g., 'Open my file.odt in Documents and make text bold').
         """
 
+        min_app()
+
         t = Task(
             description=f"Analyze this query using the available intention tools: '{user_query}'",
             expected_output="A valid JSON string with 'intent' and 'args' keys.",
@@ -257,6 +269,8 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         task_state = shared_state.get("task_state")
         if not plan_result or not task_state:
             return "FAILED: No plan available. Call generate_plan first."
+        
+        #lower the browser session.
 
         t = Task(
             description="Translate PDDL plan to steps.",

@@ -39,7 +39,7 @@ def get_coordinates_prompt(goal):
 def verification_prompt_file(goal):
     return (
         f"Observe the screenshot. Task: {goal}. "
-        "Has the objective been achieved? Respond ONLY with 'YES' or 'NO' followed by a brief observation. Make sure to check if it is achieved completely and not partially."
+        "Has the objective been achieved? Respond ONLY with 'YES' or 'NO' followed by a brief observation."
     )
 
 def verification_prompt_create(goal):
