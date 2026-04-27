@@ -6,13 +6,15 @@ from workflows.change_text_template import change_text
 planner_models = {
     'gemma3n': 'gemma3n:e2b',
     'gemma4k': 'gemma3:4b-it-qat',
+    'gemma4e4b': 'gemma4:e4b',
     'functiongemma': 'functiongemma:latest',
     'llama3k': 'llama3.2:3b-instruct-q4_K_M',
     'llama3': 'llama3.2:3b',
     'ministral3': 'ministral-3:3b',
     'ministral3k': 'ministral-3:3b-instruct-2512-q4_K_M',
     'qwen4k': 'qwen3:4b-instruct-2507-q4_K_M',
-    'qwen4instruct': 'qwen3:4b-instruct'
+    'qwen4instruct': 'qwen3:4b-instruct',
+    'qwen8k': 'qwen3:8b-q4_K_M'
 }
 
 vlm_models = {
@@ -26,7 +28,7 @@ vlm_models = {
     'phi3': 'llava-phi3:3.8b'
 }
 
-planner_model = planner_models['qwen4k']
+planner_model = planner_models['gemma4e4b']
 vlm_model = vlm_models['qwen4k-vl']
 
 #user_input = "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder."

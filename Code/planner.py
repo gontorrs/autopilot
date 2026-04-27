@@ -6,20 +6,12 @@ import time
 import subprocess
 
 planner_models = {
-    'gemma3n': 'gemma3n:e2b',
-    'gemma4k': 'gemma3:4b-it-qat',
-    'functiongemma': 'functiongemma:latest',
-    'llama3k': 'llama3.2:3b-instruct-q4_K_M',
-    'llama3': 'llama3.2:3b',
-    'ministral3': 'ministral-3:3b',
-    'ministral3k': 'ministral-3:3b-instruct-2512-q4_K_M',
-    'qwen4k': 'qwen3:4b-instruct-2507-q4_K_M',
-    'qwen4instruct': 'qwen3:4b-instruct'
+    'gemma4e4b': 'gemma4:e4b',
+    'qwen8k': 'qwen3:8b-q4_K_M'
 }
 
 user_inputs = [
     "Thsi is just for initialisation to see how much it consumes."
-    "Open Gonzalo_Anteproyecto.pdf which is in a folder Docs, which is in TFG folder, which is in Documents folder.",
     "Take a quick note saying that I have a meeting tommorrow at 3 pm in Tokyo please.",
     "Open my Entrevista_Reli.odt and make the text Gonzalo Torras Serrano in bold."
 ]
