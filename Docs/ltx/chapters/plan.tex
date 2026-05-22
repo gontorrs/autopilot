@@ -1,10 +1,57 @@
 \chapter{Methodology and Work Plan Overview}
 \setcounter{section}{0}
 
-\lipsum[1-2]
+This chapter describes the resources, technical methods, and development methodology that will guide the construction and validation of Autopilot. The constraints that bound the design space are also identified, as they directly shape every architectural decision made throughout the project.
 
 \section{Materials and Resources}
+
+\textbf{Hardware.} The project will be developed and evaluated on an OMEN Gaming Laptop 16 equipped with an AMD Ryzen AI 7 350 processor at 2 GHz, an NVIDIA RTX 5070 Laptop GPU with 8 GB of VRAM, and 32 GB of system RAM, running Windows 11 Home (build 25H2). This machine is representative of the target consumer hardware profile: a mid-range laptop with a discrete GPU capable of running quantised local models without cloud offloading.
+
+\textbf{Models.} Two model families will be used. Gemma4 E4B quantised to INT4 will serve as the Large Language Model, handling intent classification and pipeline orchestration. Qwen3 2B VL quantised to INT4 will serve as the Vision-Language Model, handling screen element detection, pixel coordinate grounding, and task completion verification. Both models will be served exclusively through Ollama and will run entirely on the local GPU. The selection of these models is justified through the benchmarking experiments presented in Chapter~6.
+
+\textbf{Software stack.} The system will be implemented in Python. Ollama will manage all local model inference, loading and unloading each model from VRAM on demand to keep peak memory usage within the hardware constraint. CrewAI will provide the agent orchestration framework, defining each agent's role and handling context passing across pipeline steps. Fast Downward will serve as the PDDL planning engine. The pyautogui library will handle all programmatic mouse and keyboard interactions with the desktop. OpenAI Whisper will perform local speech recognition, avoiding any dependency on cloud-based transcription. LaTeX will be used to produce this report.
+
 \section{Methods}
+
+\textbf{Symbolic planning.} Task planning will be performed using the Planning Domain Definition Language (PDDL). A domain file will define the set of available GUI actions as operators with preconditions and effects; a problem file will specify the initial desktop state and the goal conditions for each supported task. Fast Downward will solve each problem instance using the A* algorithm with the LM-cut heuristic. LM-cut identifies landmarks, facts that must become true in any valid plan, and computes a minimum cost through them, providing an admissible lower bound that guarantees the generated plan is optimal in terms of number of steps.
+
+\textbf{Neural perception.} Screen element detection will be performed by a Vision-Language Model that receives a screenshot and a textual description of a target element and returns a binary YES/NO verdict on whether the element is currently visible. Pixel coordinate grounding will be handled by the same model family in a dedicated role, returning normalised coordinates within a 1000×1000 resolution space that are then mapped to the actual screen resolution. Task completion verification will also rely on the VLM, receiving a final screenshot and confirming whether the goal state has been reached.
+
+\textbf{Natural language understanding and orchestration.} Intent classification will be handled by a local LLM that maps the transcribed voice input to a structured JSON object containing the task template identifier and its required arguments. Pipeline orchestration will also be handled by the same LLM family in a dedicated Manager role, which receives the translated action list and dispatches each specialised agent, branching on agent outputs to handle fallback actions and recovery steps.
+
+\textbf{Model quantisation.} All neural models will be deployed in INT4 precision using post-training quantisation as managed by Ollama. Reducing weight precision from 32-bit float to 4-bit integer cuts memory consumption by approximately 8×, enabling models that would otherwise require more than 20 GB of VRAM to run sequentially within the 7.71 GB available on the target GPU. The accuracy trade-off is verified to be negligible for the instruction-tuned models selected, as confirmed by the model selection benchmarks in Chapter~6.
+
+\textbf{Evaluation protocol.} System performance will be assessed across seven task templates, each executed over three independent runs starting from a clean desktop state with no applications pre-loaded, yielding 21 total evaluation runs. Eleven metrics will be measured across four categories: performance (task success rate, step accuracy, end-to-end latency), reliability (planning error rate, tool hallucination rate, visual hallucination rate, total error rate), consistency (standard deviation of steps and latency), and privacy (data exposure level and total steps). Autopilot will be benchmarked against four alternative systems: Windows Voice Access, Claude Cowork, OpenClaw, and Gemini Computer Use, all evaluated under identical conditions on the same hardware, task templates, and metric set.
+
 \section{Methodology}
+
+The project will follow an iterative and incremental development approach, structured in four sequential phases.
+
+\textbf{Phase 1 — Technology survey and model selection.} The first phase will involve a review of the relevant literature on symbolic planning, large language models, and vision-language models, followed by a practical benchmarking of candidate models for each agent role. Selection will be driven entirely by measured accuracy and resource usage under the hardware constraints of the project, rather than by model size or publication benchmarks.
+
+\textbf{Phase 2 — Pipeline design and implementation.} The neuro-symbolic pipeline will be designed and implemented incrementally, starting from the planning layer and progressively integrating the perception and execution agents. Each agent will be validated in isolation before being connected to the full pipeline. PDDL domain and problem files will be authored for each supported task template and verified against Fast Downward prior to integration.
+
+\textbf{Phase 3 — System evaluation and comparative benchmark.} The complete pipeline will be evaluated over the 21-run protocol described above, and the same evaluation will be applied to each competitor system. Results will be analysed to identify failure modes, architectural trade-offs, and opportunities for post-evaluation improvement.
+
+\textbf{Phase 4 — Report writing and consolidation.} All experimental findings, design decisions, and architectural justifications will be consolidated into this report. Insights from the evaluation may prompt targeted pipeline improvements, which will be incorporated and re-evaluated before the final submission.
+
 \section{Work Plan}
+
+% TODO: Gantt chart to be added here.
+% Two Gantt charts are required: the initial plan (drafted at project start) and the final plan
+% (reflecting actual completion), with any deviations explained.
+
 \section{Constraints and Limitations}
+\label{sec:constraints}
+
+The following constraints are treated as hard boundaries on the system design.
+
+\textbf{VRAM budget.} No more than one model may be resident in GPU memory at any time, and each model must fit within the available VRAM of the target device. This constraint directly drives the choice of quantised models and the sequential loading strategy managed by Ollama.
+
+\textbf{Local-only execution.} No component of the pipeline may invoke an external API or transmit any data over a network connection. All inference, planning, and execution must be performable with no internet access. This is the primary differentiator of the system with respect to cloud-based alternatives and is non-negotiable.
+
+\textbf{Operating system.} The system targets Windows 11 exclusively. All GUI automation relies on the Windows graphical interface, and portability to other operating systems is out of scope.
+
+\textbf{Task template coverage.} The system operates on a predefined set of PDDL task templates. Tasks outside this set cannot be planned by the symbolic layer without authoring a new domain and problem pair.
+
+\textbf{End-to-end latency.} Every task execution must complete within 300 seconds from voice input to verified completion on the target hardware. Runs exceeding this threshold are counted as failures regardless of the desktop state at timeout.

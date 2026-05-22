@@ -1,21 +1,21 @@
 (define (problem change) (:domain gui)
 (:objects
     File_Explorer - app
-    Hola_me_llamo_Gonzalo - text
-    bold - style
-    Default Downloads - folder
-    gonzalo_doc - file
+    Hola - text
+    italic - style
+    Default Desktop - folder
+    hello_odt - file
 )
 
 (:init
     (empty)
     (current Default)
-    (inside Downloads Default)
-    (file_to gonzalo_doc Downloads)
+    (inside Desktop Default)
+    (file_to hello_odt Desktop)
 )
 
 (:goal (and
-    (changed_text bold)
+    (changed_text italic)
 ))
 
 )

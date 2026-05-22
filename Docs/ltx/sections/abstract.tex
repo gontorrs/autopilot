@@ -1,6 +1,10 @@
 \chapter*{Abstract}
 
-\lipsum[1-2]
+Autopilot is a fully autonomous desktop automation system for Windows that enables users with limited motor function to operate a computer using only their voice. The system accepts a single free-form spoken command and executes the described task end-to-end on the local device, with no further human interaction, no internet connection, and no data leaving the machine at any point.
+
+The system is built on a neuro-symbolic pipeline. A local speech recognition model transcribes the user's prompt. A large language model classifies the intent and extracts the task arguments. A symbolic planner based on Fast Downward generates the optimal action sequence, guaranteeing a minimal and reproducible execution path. Specialised vision-language agents then execute each step by visually grounding interface elements on screen and interacting with them through standard mouse and keyboard actions. A final agent verifies task completion without human review. All inference runs locally via Ollama using INT4-quantised models, keeping peak VRAM usage within 8 GB.
+
+The system is evaluated across seven task templates over 21 runs and benchmarked against four alternative systems. Autopilot achieves a task success rate of 100\%, zero planning errors, and zero data exposure, outperforming all evaluated alternatives on autonomy, accuracy, and privacy simultaneously.
 
 \begin{keywords}{Keywords}
   \mykeywords{}

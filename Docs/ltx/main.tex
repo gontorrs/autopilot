@@ -22,6 +22,7 @@
 \pgfplotsset{compat=1.18}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\graphicspath{{./images/}}
 \usepackage{color}
 \usepackage{float, multirow, rotating}
 \usepackage[autolanguage]{numprint}
@@ -36,9 +37,14 @@
 \usepackage{appendix}
 \usepackage{units}
 \usepackage{setspace}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
 \usepackage{fancyhdr}
 \usepackage{lipsum}
 \usepackage{csquotes}
+\usepackage{titlesec}
+\titleformat{\paragraph}[hang]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{0.5em}
 % \usepackage[
 %   backend=biber,
 %   style=authoryear,
@@ -160,9 +166,9 @@
 \newcommand{\myname}{Gonzalo Torras Serrano}
 \newcommand{\tutor}{Mois{\'e}s Mart{\'i}nez}
 \newcommand{\subject}{Final Degree Project (FDP)}
-\newcommand{\mykeywords}{keyword1, keyword2, keyword3, ...}
-\newcommand{\mykeywordses}{keyword1, keyword2, keyword3, ...}
-\newcommand{\mytitle}{On-Device AI Desktop Agent for Hands-Free and Accessible Windows Automation}
+\newcommand{\mykeywords}{desktop automation, neuro-symbolic AI, PDDL planning, vision-language models, accessibility, local inference}
+\newcommand{\mykeywordses}{automatización de escritorio, IA neuro-simbólica, planificación PDDL, modelos visión-lenguaje, accesibilidad, inferencia local}
+\newcommand{\mytitle}{Autopilot: On-Device AI Desktop Agent for Hands-Free and Accessible Windows Automation}
 
 \hypersetup{pdfauthor={\myname{}},%
             pdftitle={\mytitle{}},%

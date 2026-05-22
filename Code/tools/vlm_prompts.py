@@ -132,8 +132,9 @@ MODULAR_PROMPTS = {
     "navigate_tool": (
         "Look at this screenshot and answer ONLY in this exact JSON format, no other text:\n"
         '{"file_explorer_open": true/false, "current_folder": "<folder name or null>"}\n'
-        "- file_explorer_open: is File Explorer the active window right now?\n"
-        "- current_folder: if File Explorer is open, what is the LAST folder name shown in the address bar? If not open, null."
+        "- file_explorer_open: is File Explorer OPEN right now?\n"
+        "- current_folder: if File Explorer is open, what is the LAST folder name shown in the address bar? File Explorer MUST be OPENED for this to be valid, otherwise just answer null."
+        "If you can see the desktop clean with no open windows, answer false for file_explorer_open and null for current_folder."
     ),
 
     # write

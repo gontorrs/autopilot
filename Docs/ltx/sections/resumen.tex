@@ -1,7 +1,11 @@
 \chapter*{Resumen}
 
-\lipsum[1-2]
+Autopilot es un sistema de automatización de escritorio completamente autónomo para Windows que permite a usuarios con movilidad reducida operar un ordenador utilizando únicamente su voz. El sistema acepta un único comando hablado en lenguaje natural y ejecuta la tarea descrita de principio a fin en el dispositivo local, sin interacción humana adicional, sin conexión a internet y sin que ningún dato abandone el equipo en ningún momento.
 
-\begin{keywords}{Palabras claves}
+El sistema se construye sobre un pipeline neuro-simbólico. Un modelo de reconocimiento de voz transcribe el comando localmente. Un modelo de lenguaje clasifica la intención y extrae los argumentos de la tarea. Un planificador simbólico basado en Fast Downward genera la secuencia de acciones óptima, garantizando un camino de ejecución mínimo y reproducible. Agentes especializados de visión y lenguaje ejecutan cada paso localizando visualmente los elementos de la interfaz en pantalla e interactuando con ellos mediante acciones estándar de ratón y teclado. Un agente final verifica la finalización de la tarea sin revisión humana. Toda la inferencia se ejecuta localmente mediante Ollama con modelos cuantizados a INT4, manteniendo el uso máximo de VRAM por debajo de 8 GB.
+
+El sistema es evaluado sobre siete plantillas de tareas en 21 ejecuciones y comparado con cuatro sistemas alternativos. Autopilot alcanza una tasa de éxito del 100\%, cero errores de planificación y exposición de datos cero, superando a todas las alternativas en autonomía, precisión y privacidad de forma simultánea.
+
+\begin{keywords}{Palabras clave}
   \mykeywordses{}
 \end{keywords}

@@ -436,7 +436,7 @@ def create_manager_tools(agents: dict, config: dict) -> list:
         shared_state["screen_state"] = parsed
         return f"SUCCESS: Screen state detected. Now call generate_plan."
 
-    return [classify_intent, generate_plan, translate_plan, check_visibility, find_coordinates, execute_action, verify_result, detect_current_state]
+    return [classify_intent, generate_plan, translate_plan, check_visibility, find_coordinates, execute_action, detect_current_state, verify_result]
 
 
 # ==================================================================
