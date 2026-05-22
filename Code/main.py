@@ -113,4 +113,8 @@ with gr.Blocks(title="Autopilot") as demo:
     )
 
 if __name__ == "__main__":
-    demo.launch(inbrowser=True)
+    demo.launch(
+        server_name=os.getenv("GRADIO_SERVER_NAME", "127.0.0.1"),
+        server_port=int(os.getenv("GRADIO_SERVER_PORT", "7860")),
+        inbrowser=os.getenv("GRADIO_INBROWSER", "true").lower() == "true",
+    )

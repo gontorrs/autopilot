@@ -3,9 +3,8 @@ import soundfile as sf
 import numpy as np
 import tempfile
 import os
-import torch
-from faster_whisper import WhisperModel
 import time
+import requests
 
 SAMPLERATE = 16000
 SILENCE_THRESHOLD = 0.01
@@ -13,6 +12,23 @@ SILENCE_DURATION = 1.5
 MAX_DURATION = 15
 
 def listen() -> str:
+    whisper_url = os.getenv("WHISPER_URL")
+    if whisper_url:
+        return _listen_remote(whisper_url)
+    return listen_local()
+
+
+def _listen_remote(base_url: str) -> str:
+    response = requests.post(f"{base_url.rstrip('/')}/listen", timeout=MAX_DURATION + 300)
+    response.raise_for_status()
+    data = response.json()
+    return data.get("text", "")
+
+
+def listen_local() -> str:
+    import torch
+    from faster_whisper import WhisperModel
+
     model = WhisperModel(
         "small",
         device="cuda",

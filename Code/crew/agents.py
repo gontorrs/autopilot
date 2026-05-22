@@ -4,6 +4,7 @@ from crew.vlm_agents import ScoutAgent, VisionAgent, QAAgent
 from crew.executor_agent import ExecutorAgent
 from crew.pddl_translator import PDDLTranslatorAgent
 from crew.planner_agent import PDDLPlannerAgent
+import os
 
 
 def create_agents(planner_model: str, vlm_model: str, intention_model: str) -> dict:
@@ -15,7 +16,7 @@ def create_agents(planner_model: str, vlm_model: str, intention_model: str) -> d
 
     intention_llm = LLM(
         model=f"ollama/{intention_model}",
-        base_url="http://localhost:11434"
+        base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     )
 
     tools_dict = create_tools()

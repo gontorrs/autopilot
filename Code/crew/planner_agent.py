@@ -193,7 +193,12 @@ class PDDLPlannerAgent(BaseAgent):
     def clear_results(self):
         results_dir = 'pddl/results'
         if os.path.exists(results_dir):
-            shutil.rmtree(results_dir)
+            for entry in os.listdir(results_dir):
+                path = os.path.join(results_dir, entry)
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.remove(path)
         os.makedirs(results_dir, exist_ok=True)
 
     def generate_problem(self, state_dict, output_filename):
@@ -222,6 +227,10 @@ class PDDLPlannerAgent(BaseAgent):
         return output_path
 
     def to_goal(self, state_dict, output_filename):
+        planner_url = os.getenv("PLANNER_URL")
+        if planner_url:
+            return self._to_goal_remote(planner_url, state_dict, output_filename)
+
         self.object_mapping.clear()
         self.sanitize("Default")
         self.clear_results()
@@ -232,7 +241,7 @@ class PDDLPlannerAgent(BaseAgent):
         plan_filename = output_filename.replace('.pddl', '_plan.txt')
         plan_path = os.path.join(results_dir, plan_filename)
         
-        fd = "C:\\Users\\gonza\\fastdownward\\fast-downward.py"
+        fd = os.getenv("FAST_DOWNWARD_PATH", "C:\\Users\\gonza\\fastdownward\\fast-downward.py")
         
         cmd = ['python', fd, domain_path, problem_path, '--search', 'astar(lmcut())']
         
@@ -256,6 +265,27 @@ class PDDLPlannerAgent(BaseAgent):
             print(result.stdout)
             print(result.stderr)
             return None
+
+    def _to_goal_remote(self, planner_url, state_dict, output_filename):
+        import requests
+
+        response = requests.post(
+            f"{planner_url.rstrip('/')}/plan",
+            json={"state_dict": state_dict, "output_filename": output_filename},
+            timeout=300,
+        )
+        response.raise_for_status()
+        result = response.json().get("result")
+
+        if result and result.get("plan"):
+            self.clear_results()
+            plan_filename = output_filename.replace('.pddl', '_plan.txt')
+            plan_path = os.path.join('pddl/results', plan_filename)
+            with open(plan_path, 'w') as f:
+                f.write(result["plan"])
+            self.object_mapping = result.get("mapping", {})
+
+        return result
 
     def execute_task(self, task, state_dict=None, output_filename="problem.pddl", **kwargs):
         if state_dict is None:
