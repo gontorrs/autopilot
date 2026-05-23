@@ -1,69 +1,87 @@
-\chapter{Goals}
+\chapter{Objectives}
 \setcounter{section}{0}
 
-\section{General Goal}
+\section{Main Objective}
 
-The general goal of this project is to develop a fully autonomous desktop automation system that enables users with limited mobility to use a Windows computer using only their voice, without requiring any manual intervention in the process.
+The main goal of this project is to develop a fully autonomous desktop automation system that allows users to operate a Windows computer through free-form spoken natural language. The system must interpret a single voice request, plan and execute the required desktop actions through the graphical interface, and verify task completion without further human intervention, while keeping the entire processing pipeline on the local device.
 
-This system is intended for users affected by conditions such as reduced motor impairment, due to their innability to operate traditional input devices, without learning a new interaction and without selling their data. Existing accessibility tools either demand step-by-step voice commands from the user, shifting the cognitive challenge back to them, or rely on cloud-based services that transmit sensitive data to external servers, where that data is used to train their own models, which may not be acceptable for users with privacy concerns.
+\textbf{Hypothesis:} a Windows computer can be controlled autonomously from spoken natural language by combining local speech transcription, language-based intent interpretation, automated planning, visual desktop perception, and closed-loop verification. If these components are integrated into a local pipeline, then common desktop tasks can be completed without manual input, fixed command syntax, or external data transmission.
 
-This project addresses both limitations by delivering a system that accepts a single natural language voice prompt and executes the described task end-to-end on the local device, with no data leaving the machine at any point. The objective is not to build a faster or more convenient automation tool for technical users, but to ease the path of independent computer use for people who cannot rely on a keyboard and mouse, making any desktop genuinely accessible through natural speech.
+\section{Specific Objectives}
 
-\section{List of specific goals}
-
-The following specific goals divide the general objective into concrete, measurable targets. Each goal addresses a distinct requirement that the system must satisfy to be considered a valid accessible automation solution.
+The following specific objectives use the SO convention and divide the main objective into six concrete targets aligned with the project presentation, while using the formal terminology required by the review feedback. Each objective addresses a distinct requirement that the system must satisfy to be considered a valid autonomous desktop automation solution.
 
 \begin{enumerate}
 
-    \item \textbf{Goal 1: Accept voice natural language prompts.} The user must be able to fully describe any task using only a spoken natural language prompt, with no keyboard, mouse, or touch input required from the user at any point. Additionally, the system must not impose a fixed command vocabulary or syntax, meaning it must be a free-form system where the same task can be expressible in different ways and still be correctly understood. This allows the user to interact with the system in a more flexible way, without needing to learn specific commands or phrasing, which is essential for users with cognitive or motor impairments.
+    \item \textbf{SO1: Data Sovereignty and Privacy.} This objective requires the entire processing pipeline to run on the user's own computer, without relying on external services, remote models, or cloud APIs. Voice recordings, screenshots, task descriptions, file names, and intermediate outputs must remain on the device at all times. This is important because desktop automation may involve sensitive personal information, and the system must remain usable even without internet access, third-party availability, or remote infrastructure.
 
-    \item \textbf{Goal 2: Make the system fully autonomous.} Once the initial voice prompt has been received, the system must complete the task without any further human input. This autonomy extends beyond simple execution, the system must be capable of detecting when a step has not produced the expected result and act accordingly, without requiring the user to inspect the screen or provide feedback. A system that completes tasks but cannot tell whether it has succeeded is not a reliable accessibility tool.
+    \item \textbf{SO2: Robustness, Predictability, and Determinism in the Planning Layer.} This objective requires the planning layer to produce predictable and deterministic action sequences from the interpreted user intention. The same or equivalent task descriptions should lead to the same valid plan, without missing, incorrect, or redundant actions. This objective is important because the planner acts as the bridge between uncertain language input and concrete desktop execution, so its behaviour must be explainable, inspectable, and stable across repeated runs.
 
-    \item \textbf{Goal 3: Make the planning layer robust and reproducible.} The planning layer is perhaps the most important component, as it must generate correct, minimal action sequences for every task, with no mistaked, nor any redundancy. Therefore, the same or similar task descriptions must always produce the same correct plan, with no variation across runs. This is not just a quality requirement but a safety requirement, a user who cannot verify the screen or has severe issues to do so must be able to trust that the system always takes the shortest and most predictable path to the goal, without any unexpected detours or mistakes.
+    \item \textbf{SO3: Closed-Loop Autonomy.} This objective requires the system to execute the planned actions without further human input after the initial voice request has been received. Autonomy must include closed-loop verification: the system has to observe the desktop state, detect whether each relevant step produced the expected effect, and decide whether the task has been completed. This is important because a system that performs actions but cannot verify their result cannot be considered reliable autonomous control.
 
-    \item \textbf{Goal 4: Achieve a task success rate of 90\%.} It is crucial that the system successfully completes every task it is designed to handle, with no partial executions or unresolved failures, making it precise and reliable.
+    \item \textbf{SO4: Benchmarking with Other Solutions.} This objective requires the proposed system to be evaluated against other local and cloud-based desktop automation alternatives under comparable conditions. The comparison must consider task completion, execution reliability, number of actions, latency, and data exposure. This is important because the system is not only intended to work in isolation, but to demonstrate that a local neuro-symbolic approach can be competitive with existing solutions while preserving privacy.
 
-    \item \textbf{Goal 5: Outperform other local and cloud-based competitors.} The system must not only achieve the highest task success rate among all benchmarked alternatives, both local and cloud-based, but it must do so without any trade-offs, making this system the clear choice on privacy and performance. It must use fewer steps, produce fewer errors, and expose no user data, all at the same time.
+    \item \textbf{SO5: Spoken Natural Language User Interface (Hands-Free Interaction).} This objective defines the system as a spoken natural language user interface for hands-free interaction. The user must be able to describe a task through a single free-form voice prompt, without using a keyboard, mouse, touch input, or a fixed command vocabulary. This is important because the system should adapt to natural user phrasing instead of forcing users to learn rigid command syntax before they can operate the computer.
 
-    \item \textbf{Goal 6: Complete every task within five minutes on consumer-grade hardware.} Every evaluation run must finish within 300 seconds from the moment the voice prompt is received, running on a standard consumer GPU without any hardware modifications or cloud offloading. A system that is theoretically accessible but takes an impractical amount of time to respond is not usable in practice. The five-minute limit is the threshold above which a user waiting for a result would reasonably abandon the interaction, try to intervene or look for an alternative solution.
-
-    \item \textbf{Goal 7: Run the entire pipeline on local hardware.} The system must operate entirely on the user's own machine, with no external service, remote model, or cloud API involved at any point in the pipeline. All inference must run locally, making the system functional without an internet connection and independent of third-party availability, rate limits, or service outages. This ensures that the system remains usable in any environment, regardless of network access.
-
-    \item \textbf{Goal 8: Guarantee full data privacy with zero data leaving the device.} No user data, including voice recordings, screenshots, task descriptions, file names, or intermediate outputs, are to be transmitted outside the device at any point during execution. The system may manage sensitive data and therefore, it must ensure that all information is stored and processed locally.
-
-    \item \textbf{Goal 9: Interact with the desktop exclusively through standard graphical interface.} The system must operate the computer using only mouse clicks and keyboard on visible graphical elements, the same actions a human user would take. It must never open a terminal  or any other technical interface that would make a non-technical user uncomfortable. A system that solves tasks through the terminal may be functionally correct but minmises the trust of the user, who has no way to understand or verify what the hidden commands are doing.
+    \item \textbf{SO6: Graphical User Interface for Desktop Automation.} This objective requires the system to include a graphical interface that allows a non-technical user to provide the initial voice request and observe the automation process without interacting with technical tools such as terminals. It is placed after the autonomy, planning, benchmarking, and input objectives because the interface depends on the underlying system being able to interpret, plan, execute, and verify tasks. This is important because the final system should be usable as an application, not only as an internal prototype.
 
 \end{enumerate}
 
 \section{Validation methods}
+\label{sec:validation_methods}
 
-Each specific goal is validated through a concrete, measurable method applied during the experimental evaluation described in Chapter~\ref{chap:experiments}.
+Each specific objective is validated through concrete qualitative and quantitative evidence collected during the experimental evaluation described in Chapter~\ref{chap:experiments}. The validation framework combines quantitative metrics and qualitative inspection methods. Quantitative validation is based on measurable indicators such as task success rate, latency, error rates, privacy exposure, and execution variability. Qualitative validation is based on manual review of generated plans, execution traces, screenshots, GUI behaviour, and prompt interpretation. Before mapping each objective to its corresponding validation process, Table~\ref{tab:validation_metrics} defines the metrics and formulas used throughout the evaluation.
+
+\input{tables/validation_metrics.tex}
 
 \begin{enumerate}
 
-    \item \textbf{Goal 1: Accept voice natural language prompts.} All 21 evaluation runs are prompted through a free-form spoken natural language prompt, using Whisper. No keyboard or mouse interaction is performed by the evaluator during task execution.
+    \item \textbf{SO1: Data Sovereignty and Privacy.}
+    The acceptance criterion for this objective is that no voice recordings, screenshots, task descriptions, file names, or intermediate outputs leave the device at any point.
 
-    \item \textbf{Goal 2: Make the system fully autonomous.} The system organises the execution steps, thanks to Crew AI which helps orchestrate the entire workflow. In the system, the Manager Agent is responsible to orchestrate the entire process, placing each agent in charge of a specific atomic task, and depending on the output of each step to decide the next one. Finally, the Manager Agent, uses the QA Agent for self-verification, which is responsible to check if the task has been completed correctly, without any human feedback, additionally, all runs where evaluated by a human reviewer.
-    
-    \item \textbf{Goal 3: Make the planning layer robust and reproducible.} Each step across all 21 runs is inspected against the expected PDDL action sequence. Any wrong, missing, or redundant action is counted as a planning error. The validation criterion is \textit{M-04 Planning Error Rate}, which has to be 0. Reproducibility is validated by \textit{M-08 Standard Deviation of Steps}, which has to be 0, confirming that the same template always produces the same number of steps across all three runs.
+    \begin{itemize}
+        \item \textit{Quantitative validation:} The objective is measured through \textit{M-10 Data Exposure Level}, which must be 0.
+        \item \textit{Qualitative validation:} The execution setup must show that the system runs with WiFi and Ethernet disabled, and the architecture must show that no cloud service, remote model, or external API is required.
+    \end{itemize}
 
-    \item \textbf{Goal 4: Achieve a task success rate of 90\%.} The system is evaluated over 7 task templates with 3 runs each, for a total of 21 runs. A run is marked successful if the task is completed correctly as confirmed by a human review. The validation criterion is \textit{M-01 Task Success Rate}, which has to be 1 in at least 19 out of 21 runs.
+    \item \textbf{SO2: Robustness, Predictability, and Determinism in the Planning Layer.}
+    The acceptance criterion for this objective is that \textit{M-04 Planning Error Rate} must be 0 and repeated executions of the same task template must preserve the same planned step structure.
 
-    \item \textbf{Goal 5: Outperform other local and cloud-based competitors.} The system is benchmarked against five alternative systems in a common evaluation table covering all defined metrics. The validation criterion is that the proposed system achieves the best or joint-best value across M-01 TSR, M-04 Planning Error Rate, M-07 Total Error Rate, M-10 Data Exposure Level, and M-11 Total Steps simultaneously, with no metric where it is outperformed by any alternative.
+    \begin{itemize}
+        \item \textit{Quantitative validation:} Planning correctness is measured through \textit{M-04 Planning Error Rate}, and reproducibility is measured through \textit{M-08 Standard Deviation of Steps}. The supporting execution quality is also observed through \textit{M-02 Step Accuracy}.
+        \item \textit{Qualitative validation:} Each generated PDDL action sequence is inspected to identify wrong, missing, or redundant actions.
+    \end{itemize}
 
-    \item \textbf{Goal 6: Complete every task within five minutes on consumer-grade hardware.} End-to-end latency is measured for each of the 21 runs from the moment the prompt is received to task completion. The validation criterion is \textit{M-03 End-to-End Latency}, which has to be below 300 seconds for every individual run, with no exceptions.
+    \item \textbf{SO3: Closed-Loop Autonomy.}
+    The acceptance criterion for this objective is that at least 19 out of 21 runs must be successful, and each run must remain below 300 seconds on consumer-level hardware without cloud offloading.
 
-    \item \textbf{Goal 7: Run the entire pipeline on local hardware.} The system is validated by confirming with each run that WiFi and Ethernet connections are disabled, ensuring that no network access is available. Additionally, the system uses all free, local and open-source tools and models.
+    \begin{itemize}
+        \item \textit{Quantitative validation:} Autonomous execution is measured through \textit{M-01 Task Success Rate} and \textit{M-03 End-to-End Latency}.
+        \item \textit{Qualitative validation:} Each run is reviewed to confirm that, after the initial voice prompt, no additional keyboard, mouse, touch, or verbal input is provided by the evaluator. Self-verification is assessed through the Manager Agent and QA Agent workflow, where the system checks whether the final desktop state satisfies the requested task.
+    \end{itemize}
 
-    \item \textbf{Goal 8: Guarantee full data privacy with zero data leaving the device.} Privacy is validated with each run by ensuring that WiFi and Ethernet connections are disabled, confirming that no data leaves the device, not even after the execution is done. This is reported as \textit{M-10 Data Exposure Level}, where:
-        \begin{itemize}
-            \item 0: No data leaves the device.
-            \item 1: Metadata or task text sent externally.
-            \item 2: Sensitive data sent externally.
-            \item 3: Sensitive data used to train models.
-        \end{itemize}
-        The validation criterion is a score of 0.
+    \item \textbf{SO4: Benchmarking with Other Solutions.}
+    The acceptance criterion for this objective is that Autopilot must be competitive across the quantitative metrics while preserving the local and privacy requirements defined in SO1.
 
-    \item \textbf{Goal 9: Interact with the desktop exclusively through standard graphical interface.} There is evidence for each run that the system only uses mouse clicks and keyboard inputs on visible graphical elements, with no terminal commands or other technical interfaces involved. This is confirmed by the logs automatically generated, alongside the screenshots taken throughout the process and a final human reviewer.
+    \begin{itemize}
+        \item \textit{Quantitative validation:} The benchmark compares Autopilot against the selected alternatives using \textit{M-01 Task Success Rate}, \textit{M-03 End-to-End Latency}, \textit{M-04 Planning Error Rate}, \textit{M-07 Total Error Rate}, \textit{M-10 Data Exposure Level}, and \textit{M-11 Total Steps}.
+        \item \textit{Qualitative validation:} The comparison also considers restrictions that cannot be fully reduced to a numeric value, such as cloud dependency, command rigidity, or exposure of user data.
+    \end{itemize}
+
+    \item \textbf{SO5: Spoken Natural Language User Interface (Hands-Free Interaction).}
+    The acceptance criterion for this objective is that every evaluated task must be initiated from a spoken natural language prompt, with no physical peripheral used to describe the task.
+
+    \begin{itemize}
+        \item \textit{Quantitative validation:} The objective is indirectly reflected in \textit{M-01 Task Success Rate}, because every evaluation run begins from a spoken free-form prompt.
+        \item \textit{Qualitative validation:} The accepted prompts are reviewed to confirm that the system does not depend on a fixed command vocabulary, rigid syntax, keyboard input, mouse input, or touch interaction.
+    \end{itemize}
+
+    \item \textbf{SO6: Graphical User Interface for Desktop Automation.}
+    The acceptance criterion for this objective is that the system must be usable as an application without requiring the user to operate terminal commands directly.
+
+    \begin{itemize}
+        \item \textit{Quantitative validation:} This objective is not measured by a standalone numerical metric, because it concerns the existence and usability role of the user-facing interface.
+        \item \textit{Qualitative validation:} The implemented GUI, execution logs, and screenshots generated during the runs are reviewed to confirm that the system provides a user-facing entry point for the initial request and for observing the automation process.
+    \end{itemize}
 
 \end{enumerate}

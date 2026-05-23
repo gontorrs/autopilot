@@ -1,57 +1,194 @@
-\chapter{Methodology and Work Plan Overview}
+﻿\chapter{Methodology and Work Plan Overview}
 \setcounter{section}{0}
 
 This chapter describes the resources, technical methods, and development methodology that will guide the construction and validation of Autopilot. The constraints that bound the design space are also identified, as they directly shape every architectural decision made throughout the project.
 
 \section{Materials and Resources}
+\label{sec:materials_and_resources}
 
-\textbf{Hardware.} The project will be developed and evaluated on an OMEN Gaming Laptop 16 equipped with an AMD Ryzen AI 7 350 processor at 2 GHz, an NVIDIA RTX 5070 Laptop GPU with 8 GB of VRAM, and 32 GB of system RAM, running Windows 11 Home (build 25H2). This machine is representative of the target consumer hardware profile: a mid-range laptop with a discrete GPU capable of running quantised local models without cloud offloading.
+\subsection{Hardware}
 
-\textbf{Models.} Two model families will be used. Gemma4 E4B quantised to INT4 will serve as the Large Language Model, handling intent classification and pipeline orchestration. Qwen3 2B VL quantised to INT4 will serve as the Vision-Language Model, handling screen element detection, pixel coordinate grounding, and task completion verification. Both models will be served exclusively through Ollama and will run entirely on the local GPU. The selection of these models is justified through the benchmarking experiments presented in Chapter~6.
+The system was developed and evaluated on a single consumer laptop, representative of the mid-range hardware profile the project targets: a machine with a discrete GPU capable of running quantised local models without cloud offloading.
 
-\textbf{Software stack.} The system will be implemented in Python. Ollama will manage all local model inference, loading and unloading each model from VRAM on demand to keep peak memory usage within the hardware constraint. CrewAI will provide the agent orchestration framework, defining each agent's role and handling context passing across pipeline steps. Fast Downward will serve as the PDDL planning engine. The pyautogui library will handle all programmatic mouse and keyboard interactions with the desktop. OpenAI Whisper will perform local speech recognition, avoiding any dependency on cloud-based transcription. LaTeX will be used to produce this report.
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Component} & \textbf{Specification} \\
+\hline
+Processor & AMD Ryzen AI 7 350 @ 2 GHz \\
+\hline
+GPU & NVIDIA RTX 5070 Laptop GPU (7.71 GB VRAM) \\
+\hline
+RAM & 32 GB \\
+\hline
+Operating System & Windows 11 Home (Build 25H2) \\
+\hline
+\end{tabular}
+\caption{Development and evaluation hardware specifications.}
+\label{tab:hardware}
+\end{table}
+
+\subsection{Models}
+
+Three types of neural model are used in the pipeline. A Large Language Model (LLM) is a Transformer pre-trained on large text corpora that maps natural language inputs to structured outputs; it handles intent classification and pipeline orchestration. In Gemma4 E4B, the ``E'' denotes effective parameters: the model has a larger total parameter count, but the edge variant is described in terms of the effective parameter budget used for local deployment. A Vision-Language Model (VLM) couples a visual encoder with a language decoder to reason jointly over screenshots and text; it handles element detection, pixel grounding, and task verification. A Speech-to-Text (STT) model converts raw audio into a text transcription; it provides the voice interface to the system. Full descriptions of each model family are given in Chapter~\ref{chap:state_of_the_art}.
+
+Candidate LLM and VLM models were restricted for models that could fit within the hardware constraints, with Q4 quantisation preferred because it keeps the models within the available VRAM when loaded sequentially. Whisper small was kept in FP16 because it is already small enough for the target hardware, so an additional quantised version was not necessary. The benchmarking experiments that justify the final model choices are presented in Chapter~6.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{2.2cm}|p{1.1cm}|p{2.0cm}|p{1.5cm}|p{1.3cm}|p{2.8cm}|}
+\hline
+\textbf{Model} & \textbf{Type} & \textbf{Params} & \textbf{Quant.} & \textbf{Size} & \textbf{Source} \\
+\hline
+Gemma4 E4B & LLM & 4.5B effective (8B total) & Q4\_K\_M & 9.6 GB & \href{https://ollama.com/library/gemma4:e4b}{Gemma4 E4B page} \\
+\hline
+Qwen3-VL 2B & VLM & 2.13B & Q4\_K\_M & 1.9 GB & \href{https://ollama.com/library/qwen3-vl:2b}{Qwen3-VL 2B page} \\
+\hline
+Whisper small & STT & 244M & FP16 & 967 MB & \href{https://huggingface.co/openai/whisper-small}{Whisper small page} \\
+\hline
+\end{tabular}
+\caption{Neural models used in the pipeline.}
+\label{tab:models}
+\end{table}
+
+\subsection{Software Stack}
+
+The system is implemented in Python 3.11. Table~\ref{tab:software} lists all libraries and external tools used across the pipeline, organised by functional role.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{Library / Tool} & \textbf{Version} & \textbf{Purpose} \\
+\hline
+\multicolumn{3}{|l|}{\textit{Core pipeline}} \\
+\hline
+CrewAI         & 1.14.1          & Agent orchestration framework \\
+Ollama         & 0.6.1           & Local model inference server \\
+Fast Downward  & --              & PDDL planning engine \\
+PyAutoGUI      & 0.9.54          & Mouse and keyboard automation \\
+faster-whisper & 1.2.1           & Local speech-to-text transcription \\
+keyboard       & 0.13.5          & Low-level keyboard event injection \\
+\hline
+\multicolumn{3}{|l|}{\textit{Audio input}} \\
+\hline
+sounddevice    & 0.5.1           & Microphone audio capture \\
+soundfile      & 0.13.1          & Audio file I/O \\
+torch          & 2.6.0+cu124     & Deep learning runtime (Whisper backend) \\
+\hline
+\multicolumn{3}{|l|}{\textit{Monitoring}} \\
+\hline
+psutil         & 7.2.2           & CPU and RAM usage measurement \\
+nvidia-ml-py   & 13.580.82       & NVIDIA VRAM monitoring via NVML \\
+\hline
+\multicolumn{3}{|l|}{\textit{Supporting utilities}} \\
+\hline
+Gradio         & 6.12.0          & Web-based demo interface \\
+\hline
+\end{tabular}
+\caption{Python libraries and external tools used in the project.}
+\label{tab:software}
+\end{table}
 
 \section{Methods}
 
-\textbf{Symbolic planning.} Task planning will be performed using the Planning Domain Definition Language (PDDL). A domain file will define the set of available GUI actions as operators with preconditions and effects; a problem file will specify the initial desktop state and the goal conditions for each supported task. Fast Downward will solve each problem instance using the A* algorithm with the LM-cut heuristic. LM-cut identifies landmarks, facts that must become true in any valid plan, and computes a minimum cost through them, providing an admissible lower bound that guarantees the generated plan is optimal in terms of number of steps.
+\textbf{Automated planning.} Task planning will be performed using the Planning Domain Definition Language (PDDL), separating the representation language from the planner, the search algorithm, and the heuristic. The PDDL domain file defines the available GUI actions as operators with preconditions and effects, while the PDDL problem file specifies the initial desktop state and the goal conditions for each supported task. Fast Downward then solves each problem instance using the A* search algorithm with the LM-cut heuristic. LM-cut identifies landmarks, facts that must become true in any valid plan, and computes a minimum cost through them, providing an admissible lower bound that guarantees the generated plan is optimal in terms of number of steps.
 
-\textbf{Neural perception.} Screen element detection will be performed by a Vision-Language Model that receives a screenshot and a textual description of a target element and returns a binary YES/NO verdict on whether the element is currently visible. Pixel coordinate grounding will be handled by the same model family in a dedicated role, returning normalised coordinates within a 1000×1000 resolution space that are then mapped to the actual screen resolution. Task completion verification will also rely on the VLM, receiving a final screenshot and confirming whether the goal state has been reached.
+\textbf{Visual perception and verification.} Screen element detection will be performed by a Vision-Language Model that receives a screenshot and a textual description of a target element and returns a binary YES/NO verdict on whether the element is currently visible. Coordinate grounding will be handled by the same model family in a dedicated role, returning normalised coordinates within a 1000x1000 resolution space that are then mapped to the actual screen resolution. Task completion verification will also rely on the VLM, receiving a final screenshot and confirming whether the goal state has been reached.
 
-\textbf{Natural language understanding and orchestration.} Intent classification will be handled by a local LLM that maps the transcribed voice input to a structured JSON object containing the task template identifier and its required arguments. Pipeline orchestration will also be handled by the same LLM family in a dedicated Manager role, which receives the translated action list and dispatches each specialised agent, branching on agent outputs to handle fallback actions and recovery steps.
+\textbf{Language understanding.} Intent classification will be handled by a local LLM that maps the transcribed voice input to a structured JSON object containing the task template identifier and its required arguments.
 
-\textbf{Model quantisation.} All neural models will be deployed in INT4 precision using post-training quantisation as managed by Ollama. Reducing weight precision from 32-bit float to 4-bit integer cuts memory consumption by approximately 8×, enabling models that would otherwise require more than 20 GB of VRAM to run sequentially within the 7.71 GB available on the target GPU. The accuracy trade-off is verified to be negligible for the instruction-tuned models selected, as confirmed by the model selection benchmarks in Chapter~6.
+\textbf{Multi-modal orchestration.} Pipeline orchestration will also be handled by the same LLM family in a dedicated Manager role, which receives the translated action list and dispatches each specialised agent. The resulting interaction is multi-modal because the system combines spoken natural language, visual screen interpretation, automated plans, and GUI actions inside the same execution loop.
 
 \textbf{Evaluation protocol.} System performance will be assessed across seven task templates, each executed over three independent runs starting from a clean desktop state with no applications pre-loaded, yielding 21 total evaluation runs. Eleven metrics will be measured across four categories: performance (task success rate, step accuracy, end-to-end latency), reliability (planning error rate, tool hallucination rate, visual hallucination rate, total error rate), consistency (standard deviation of steps and latency), and privacy (data exposure level and total steps). Autopilot will be benchmarked against four alternative systems: Windows Voice Access, Claude Cowork, OpenClaw, and Gemini Computer Use, all evaluated under identical conditions on the same hardware, task templates, and metric set.
 
 \section{Methodology}
 
-The project will follow an iterative and incremental development approach, structured in four sequential phases.
+The project follows a Lean Research methodology inspired by the Lean Startup approach. Instead of assuming the final architecture from the beginning, the work is organised around short validation cycles in which each technical decision is treated as a hypothesis, tested through a concrete experiment, and accepted or revised according to the evidence obtained. This methodology is appropriate for Autopilot because the project combines uncertain components, such as local LLMs, VLMs, desktop automation tools, and automated planning, whose behaviour can only be assessed reliably through empirical testing on the target hardware.
 
-\textbf{Phase 1 — Technology survey and model selection.} The first phase will involve a review of the relevant literature on symbolic planning, large language models, and vision-language models, followed by a practical benchmarking of candidate models for each agent role. Selection will be driven entirely by measured accuracy and resource usage under the hardware constraints of the project, rather than by model size or publication benchmarks.
+\textbf{Hypothesis.} Each development cycle begins with a technical assumption linked to one of the project objectives. Examples include the assumption that local models can provide sufficient transcription, reasoning, and visual grounding accuracy; that automated planning can produce reproducible desktop action sequences; or that a multi-agent pipeline can recover from intermediate GUI failures. These hypotheses define what needs to be validated before the system can progress to the next architectural decision.
 
-\textbf{Phase 2 — Pipeline design and implementation.} The neuro-symbolic pipeline will be designed and implemented incrementally, starting from the planning layer and progressively integrating the perception and execution agents. Each agent will be validated in isolation before being connected to the full pipeline. PDDL domain and problem files will be authored for each supported task template and verified against Fast Downward prior to integration.
+\textbf{Experiment.} Each hypothesis is tested through a bounded experiment with a clear setup, input conditions, and success criteria. Experiments include model benchmarking, planner validation with PDDL domain and problem files, isolated agent tests, end-to-end task executions, and comparisons against alternative systems. This keeps development grounded in observable behaviour rather than in expected model capabilities.
 
-\textbf{Phase 3 — System evaluation and comparative benchmark.} The complete pipeline will be evaluated over the 21-run protocol described above, and the same evaluation will be applied to each competitor system. Results will be analysed to identify failure modes, architectural trade-offs, and opportunities for post-evaluation improvement.
-
-\textbf{Phase 4 — Report writing and consolidation.} All experimental findings, design decisions, and architectural justifications will be consolidated into this report. Insights from the evaluation may prompt targeted pipeline improvements, which will be incorporated and re-evaluated before the final submission.
+\textbf{Evidence.} The outcome of each experiment is converted into evidence through quantitative metrics, qualitative inspection, and failure analysis. Successful results support the current design decision, while weak or inconsistent results trigger a redesign, model replacement, prompt revision, or architectural adjustment. The final system is therefore the result of repeated Hypothesis--Experiment--Evidence cycles rather than a single linear implementation plan.
 
 \section{Work Plan}
 
-% TODO: Gantt chart to be added here.
-% Two Gantt charts are required: the initial plan (drafted at project start) and the final plan
-% (reflecting actual completion), with any deviations explained.
+The work plan was organised into seven work packages distributed from January to May: project definition, five implementation iterations, and continuous documentation. This structure follows the Lean Research methodology described above, since each iteration produced a concrete technical outcome that was evaluated before deciding the next step.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/Gantt_FDP.png}
+\caption{Final work plan and Gantt chart for the project. Source: self-created.}
+\label{fig:work_plan_gantt}
+\end{figure}
+
+\textbf{Project definition.} This initial package defined the project scope, objectives, technical risks, and evaluation direction. It established the local-only execution requirement, the Windows desktop automation context, and the initial feasibility questions to be answered during the following iterations.
+
+\textbf{Iteration 1: Monolithic prototypes.} The first development iteration produced three task templates using a monolithic architecture. Its purpose was to verify whether an end-to-end voice-to-action pipeline could execute basic desktop tasks before introducing a more structured architecture.
+
+\textbf{Iteration 2: Modular architecture and planning pivot.} The second iteration introduced the main architectural pivot of the project: moving from the initial monolithic approach to a modular pipeline based on PDDL and specialised components. During this stage, different LLM and VLM candidates were also evaluated to determine which models were viable under the local hardware constraints.
+
+\textbf{Iteration 3: MVP.} The third iteration completed the seven task templates and integrated agentic tools for the first minimum viable product. The MVP represented the first version of the system capable of executing the planned task set with the neuro-symbolic pipeline.
+
+\textbf{Iteration 4: Experimental evaluation.} The fourth iteration focused on recording and analysing experiments for Autopilot and the competitor systems. Its deliverable was the evidence base used to compare task success, latency, reliability, consistency, and privacy across all evaluated solutions.
+
+\textbf{Iteration 5: Final product.} The final implementation iteration added dynamic planning, integrated Whisper for speech-to-text input, and introduced the graphical user interface. This produced the final product version evaluated and documented in the report.
+
+\textbf{Documentation.} Documentation was carried out in parallel with the technical work, especially from February onward. This package consolidated the design decisions, methodology, experiments, results, and final conclusions into the written report.
+
 
 \section{Constraints and Limitations}
 \label{sec:constraints}
 
-The following constraints are treated as hard boundaries on the system design.
+This section distinguishes between constraints and limitations. Constraints are design decisions deliberately imposed on the project, while limitations are boundaries discovered during development or capabilities that the current system does not provide.
 
-\textbf{VRAM budget.} No more than one model may be resident in GPU memory at any time, and each model must fit within the available VRAM of the target device. This constraint directly drives the choice of quantised models and the sequential loading strategy managed by Ollama.
+\subsection{Constraints}
 
-\textbf{Local-only execution.} No component of the pipeline may invoke an external API or transmit any data over a network connection. All inference, planning, and execution must be performable with no internet access. This is the primary differentiator of the system with respect to cloud-based alternatives and is non-negotiable.
+\textbf{Local-only execution.} No component of the pipeline may invoke an external API or transmit voice recordings, screenshots, task descriptions, file names, or intermediate outputs to a cloud service. All inference, planning, and execution must be performable with no internet access. This constraint directly supports SO1, because privacy and data sovereignty are core objectives of the project.
 
 \textbf{Operating system.} The system targets Windows 11 exclusively. All GUI automation relies on the Windows graphical interface, and portability to other operating systems is out of scope.
 
-\textbf{Task template coverage.} The system operates on a predefined set of PDDL task templates. Tasks outside this set cannot be planned by the symbolic layer without authoring a new domain and problem pair.
+\textbf{Hands-free interaction.} The user must be able to start the automation process through a spoken natural language prompt, without requiring keyboard, mouse, or terminal interaction. This constraint supports SO5 and also conditions SO6, since the GUI must expose the system as a usable voice-based application rather than as a developer-only prototype.
 
-\textbf{End-to-end latency.} Every task execution must complete within 300 seconds from voice input to verified completion on the target hardware. Runs exceeding this threshold are counted as failures regardless of the desktop state at timeout.
+\textbf{Evaluation comparability.} Autopilot and the competitor systems must be evaluated under the same hardware, task templates, and metric set whenever possible. This constraint supports SO4 by making the comparative benchmark meaningful and reducing experimental bias.
+
+\subsection{Limitations}
+
+\textbf{Limited GPU Memory.} The development laptop provides 7.71 GB of available VRAM. This hardware limitation restricts the size of the local models that can be executed and forces the pipeline to load models sequentially rather than keeping all models resident in GPU memory at the same time. It mainly impacts SO1, SO3, and SO4, because privacy-preserving local execution must remain feasible without exceeding consumer-level hardware resources.
+
+\textbf{Task template coverage.} The system operates on a predefined set of PDDL task templates. Tasks outside this set cannot be planned by the automated planning layer without authoring a new domain and problem pair. This limitation impacts SO2 and SO3, since determinism and autonomy are guaranteed only within the supported task space.
+
+\textbf{End-to-end latency.} Every task execution must complete within 300 seconds from voice input to verified completion on the target hardware. Runs exceeding this threshold are counted as failures regardless of the desktop state at timeout. This limitation affects SO3 and SO4 because slow local inference may reduce autonomous usability and comparative performance.
+
+\textbf{Application and interface variability.} GUI automation depends on the visual state of Windows applications, which may change due to screen resolution, interface updates, unexpected pop-ups, or non-deterministic loading times. This limitation affects SO3 and SO6, because the system must observe and react to desktop state changes but cannot control every external interface condition.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{3.2cm}|p{2.2cm}|p{5.8cm}|}
+\hline
+\textbf{Item} & \textbf{Related objectives} & \textbf{Impact} \\
+\hline
+Local-only execution & SO1, SO4 & Preserves privacy and enables comparison against cloud-based alternatives using data exposure as a metric. \\
+\hline
+Operating system & SO3, SO6 & Defines the desktop environment where automation and the GUI are implemented. \\
+\hline
+Hands-free interaction & SO5, SO6 & Shapes the input method and final user-facing interface. \\
+\hline
+Evaluation comparability & SO4 & Keeps Autopilot and competitor systems comparable by using the same hardware, task templates, and metric set whenever possible. \\
+\hline
+Limited GPU Memory & SO1, SO3, SO4 & Limits model size and affects latency, autonomy, and local competitiveness. \\
+\hline
+Task template coverage & SO2, SO3 & Restricts deterministic planning and autonomy to the supported PDDL task set. \\
+\hline
+End-to-end latency & SO3, SO4 & Defines the maximum acceptable execution time for local autonomous task completion. \\
+\hline
+Application and interface variability & SO3, SO6 & Introduces uncertainty in visual grounding, execution, and user-facing robustness. \\
+\hline
+\end{tabular}
+\caption{Relationship between constraints, limitations, and specific objectives. Source: self-created.}
+\label{tab:constraints_limitations}
+\end{table}

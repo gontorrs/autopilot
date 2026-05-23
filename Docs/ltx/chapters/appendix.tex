@@ -1,0 +1,98 @@
+\appendix
+\chapter{Competitor Systems}
+\label{app:competitors}
+
+This appendix provides detailed descriptions of the desktop automation systems evaluated against Autopilot in Chapter~\ref{chap:experiments}. Each system is described in terms of its architecture, operational requirements, and relevant limitations observed during evaluation.
+
+\section{Windows Voice Access}
+\label{app:wva}
+
+Windows Voice Access is a built-in accessibility feature in Windows 11 that allows users to control their computer using voice commands. It provides up to 80 commands for various actions, such as opening applications, clicking buttons and typing, which are the core actions required to complete the task templates. The system was tested with the laptop's built-in microphone, and the command execution was verified through audio recordings to ensure that the correct commands were issued for each step in the task templates. Here the main disadvantage of this system is that the user is the planner and WVA is the executor, meaning that the user cannot give a full prompt at the beginning of the task, but must give commands step by step, which fails to meet the requirement of a single prompt and fully autonomous execution. Moreover, the user must be familiar with the specific commands and their syntax, which can be a barrier for non-technical users.
+
+\section{Claude Cowork}
+\label{app:cowork}
+
+Claude Cowork is a collaborative cloud based AI system developed by Anthropic, designed to assist users in various tasks through natural language interactions. One of its functionalities (still in Beta) is computer use. It allows the user to give a single prompt describing the task they want to accomplish, and then the system takes care of executing it, using the GUI, terminal or any available tool. The system provides a visible thought process, where it explains the steps it is taking to complete the task, which allows for a detailed evaluation of its performance and the reasoning behind its actions.
+
+Claude Cowork's main objective is to serve as an accessible alternative to Claude Code for non-technical users, providing a dedicated Windows application with a more intuitive interface. However, during computer use sessions, the system uses other tools, such as opening the terminal or calling the Windows Run dialog (Win+R), actions that despite being effective, they may generate distrust in users who are not familiar.
+
+Unlike Autopilot's PDDL architecture, Claude Cowork operates reactively, meaning that it captures a screenshot, decides an action, executes it, and repeats the cycle until the goal is completed, with no first planning stage. This approach is great for simple tasks, which are very straightforward and do not require any long and complex reasoning, however, as evidenced in the recorded runs and later reflected in the comparative metrics, it also leads to non-optimal execution paths in more complex tasks, where the system becomes repetitive after reaching dead ends or fails to identify the most direct route to the objective.
+
+A recurring pattern observed across templates is that Claude Cowork opens a target file or window and immediately minimises it, as documented in Run 3 of the \textit{Search \& Open} template, meaning that in the next step, Claude thinks the task was not completed, despite being completed. Although, the system's fast actions allow it to recover and complete most tasks within a competitive time.
+
+\section{OpenClaw}
+\label{app:openclaw}
+
+OpenClaw is an open-source desktop automation system designed for the model to use various tools at hand to comply with user demands, without providing a dedicated GUI. It was evaluated using Gemma4 E4B INT4 and Qwen3.5 8B INT4 across two tool integration approaches: skills and MCPs, tested independently.
+
+Two skills were evaluated: Desktop Control, which covers mouse, keyboard, screen capture, and clipboard management via OpenCV, and Windows UI Automation, which automates Windows GUI interactions through native APIs and PowerShell. Two MCPs were also tested: PyAutoGUI MCP, which exposes mouse, keyboard, and screen control as model-callable tools, and Windows-MCP by CursorTouch, which combines PyAutoGUI with the Windows UIAutomation framework for native element interaction without computer vision. None of these configurations was sufficient for the model to reliably plan and execute the task templates.
+
+\section{Gemini Computer Use}
+\label{app:gemini}
+
+Gemini Computer Use (Gemini CU) is a cloud-based desktop automation system developed by Google, that allows users to control the desktop through natural language commands. However, it currently only offers an API with no dedicated user interface, which makes it less accessible for non-technical users. Thus, a Python script had to be developed in order to interact with the model. Both variants used \textit{gemini-3-flash-preview} as the underlying model.
+
+Two variants were implemented and evaluated, due to the specific recommendation in the Google documentation, which states it is better for the developer to provide a screenshot after each action, rather than leaving the model to decide when to capture the screen. Although, this goes against the core principle of fully autonomous execution, therefore, both approaches were implemented and evaluated to determine the best integration pattern for this system.
+
+In the first variant, Gemini CU, \textit{take\_screenshot} is exposed as one of the available tools, the model decides autonomously when to observe the screen, calling it only when it deems necessary. In the second variant, Gemini Screenshot (Gemini SS), the screenshot tool is removed entirely and the orchestration script automatically captures and injects a screenshot into the conversation after every action, ensuring the model always has an up-to-date view of the desktop state before its next decision.
+
+A significant practical limitation observed throughout both evaluations was API availability. Out of 42 total runs, 22 had to be repeated due to the API returning resource exhaustion errors, indicating that the service was under heavy load. This instability introduces a substantial reliability concern for any deployment that depends on consistent response times.
+
+\chapter{Qualitative Evaluation Form}
+\label{app:qualitative_form}
+
+This appendix contains the questionnaire used for the qualitative user study described in Chapter~\ref{chap:experiments}. The original Google Forms questionnaire is available at: \url{https://forms.gle/MGDXsSzRdwB53svv7}.
+
+\section{Questionnaire Items}
+
+The form contained the following questions:
+
+\begin{enumerate}
+    \item Which task did you tell the system to do?
+    \item Did the system correctly complete the task you requested?
+    \item How would you rate the system's ability to recover from errors? 1 = Worst, 5 = Best.
+    \item Did the system detour in any way or take any unexpected actions? 1 = Worst, 5 = Best.
+    \item How would you rate the importance of local processing (no data leaving the device)? 1 = Worst, 5 = Best.
+    \item How suitable do you think this system is for users with motor difficulties? 1 = Worst, 5 = Best.
+    \item How likely are you to use this system on a daily basis (if fully developed)? 1 = Worst, 5 = Best.
+    \item How likely are you to choose this system over other alternatives? 1 = Worst, 5 = Best.
+    \item Tell us any additional comments you want to share.
+\end{enumerate}
+
+\section{User Study Responses}
+
+Table~\ref{tab:appendix_qualitative_responses} reports the complete set of responses exported from the Google Forms spreadsheet.
+
+\begin{sidewaystable}
+\centering
+\scriptsize
+\resizebox{\textheight}{!}{%
+\begin{tabular}{|c|p{3.2cm}|c|c|c|c|c|c|c|p{7.2cm}|}
+\hline
+\textbf{\#} & \textbf{Task} & \textbf{Completed} & \textbf{Recovery} & \textbf{Behaviour} & \textbf{Privacy} & \textbf{Accessibility} & \textbf{Daily Use} & \textbf{vs Others} & \textbf{Additional Comment} \\
+\hline
+1 & Open a file & Yes & 5 & 2 & 4 & 4 & 4 & 4 & Very impressive how despite identifying wrong certain elements in the screen it detects that and is able to continue to next step. \\
+\hline
+2 & Change the format of a specific text in a Word document & Yes & 4 & 2 & 5 & 5 & 3 & 3 & I needed a few attempts to repeat myself because the system did not understand my voice well. \\
+\hline
+3 & Change the format of a specific text in a Word document & Yes & 3 & 4 & 2 & 2 & 2 & 4 & The transcription is not exactly what I intended to say, such as a folder, although it still opened the file correctly. \\
+\hline
+4 & Open a file & Yes & 5 & 5 & 5 & 5 & 4 & 4 & I opened the file and everything was fine. \\
+\hline
+5 & Copy and paste a file & Yes & 5 & 4 & 2 & 4 & 4 & 3 & It is not very important to me the data in my device, but it is still very impressive. \\
+\hline
+6 & Create a folder or text file in a specific path & Yes & 4 & 5 & 5 & 4 & 4 & 3 & It took a while, it was not quick. \\
+\hline
+7 & Write a note in notepad & Yes & 5 & 5 & 4 & 4 & 4 & 4 & Very nice and I can use it in business meetings where I have to be cautious with the data. \\
+\hline
+8 & Search for a specific text in a Word document & Yes & 4 & 4 & 4 & 4 & 3 & 4 & Very good idea, one small improvement is that I should not have to specify where the document is, but very good initiative. \\
+\hline
+9 & Write a note in notepad & Yes & 5 & 4 & 4 & 5 & 5 & 4 & It works better in quiet places, and it is quite easy to use. \\
+\hline
+10 & Copy and paste a file & Yes & 5 & 5 & 5 & 4 & 5 & 3 & It worked without issues. \\
+\hline
+\end{tabular}
+}
+\caption{Complete qualitative user study responses exported from the Google Forms spreadsheet.}
+\label{tab:appendix_qualitative_responses}
+\end{sidewaystable}

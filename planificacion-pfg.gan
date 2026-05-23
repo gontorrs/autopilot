@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="PFG 2026" company="" webLink="" view-date="2026-05-11" view-index="0" gantt-divider-location="452" resource-divider-location="300" version="3.3.3322" locale="en_GB">
+    <description/>
+    <view zooming-state="default:0" id="gantt-chart">
+        <field id="tpd3" name="Name" width="208" order="0"/>
+        <field id="tpd4" name="Begin date" width="86" order="1"/>
+        <field id="tpd5" name="End date" width="86" order="2"/>
+        <field id="tpd6" name="Duration" width="71" order="3"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Name" width="174" order="0"/>
+        <field id="1" name="Default role" width="122" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="0" mon="0" tue="0" wed="0" thu="0" fri="0" sat="0"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="1" uid="72ba31c04fa04539bf4aeef3c1039cc7" name="Project Scope" color="#9fc5e8" meeting="false" start="2026-01-04" duration="14" complete="100" expand="true"/>
+        <task id="2" uid="8ca9b1d1091648658e6fa9e4ae8802ef" name="Iteration 1" color="#9fc5e8" meeting="false" start="2026-01-18" duration="14" complete="100" expand="true"/>
+        <task id="3" uid="67e5785bcd3e4642ba3e3f923d1afe7f" name="Iteration 2" color="#9fc5e8" meeting="false" start="2026-02-01" duration="22" complete="100" expand="true"/>
+        <task id="4" uid="182778349bc9421da4762c7f83281aab" name="Iteration 3" color="#9fc5e8" meeting="false" start="2026-02-23" duration="30" complete="100" expand="true"/>
+        <task id="5" uid="a714ac926a104a8197f888c8aee88296" name="MVP" color="#6d9eeb" meeting="true" start="2026-03-25" duration="0" complete="100" expand="true"/>
+        <task id="6" uid="8e1a0697040244c4a3754bd15a0aa7f4" name="Iteration 4" color="#9fc5e8" meeting="false" start="2026-03-25" duration="27" complete="100" expand="true"/>
+        <task id="7" uid="c0cfc9eeab3f4b1db5a4534fe5d9a9b3" name="Iteration 5" color="#9fc5e8" meeting="false" start="2026-04-21" duration="30" complete="100" expand="true"/>
+        <task id="8" uid="bd63523bf1784ad4a0dbd8a2b29e88be" name="Final Product" color="#f1c232" meeting="true" start="2026-05-21" duration="0" complete="100" expand="true"/>
+        <task id="9" uid="0898e917c4db4805a43e537ccc50a665" name="Documentacion" color="#cfe2f3" meeting="false" start="2026-02-12" duration="102" complete="100" expand="true"/>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>

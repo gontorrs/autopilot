@@ -1,0 +1,37 @@
+\begin{table}[H]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.8}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|p{0.8cm}|p{3.0cm}|p{5.9cm}|p{4.3cm}|}
+\hline
+\textbf{ID} & \textbf{Name} & \textbf{Definition} & \textbf{Formula} \\
+\hline
+M-01 & Task Success Rate (TSR) & Proportion of evaluation runs completed successfully. & TSR = successful runs / total runs \\
+\hline
+M-02 & Step Accuracy & Proportion of executed steps that were completed without errors. & error-free steps / total executed steps \\
+\hline
+M-03 & End-to-End Latency & Time elapsed from the accepted voice prompt to task completion. Runs above 300 seconds are considered outside the usability threshold. & completion time - prompt time \\
+\hline
+M-04 & Planning Error Rate & Proportion of planned actions that are wrong, missing, or redundant. & planning errors / total planned actions \\
+\hline
+M-05 & Tool Hallucination Rate & Proportion of tool calls that invoke an incorrect or non-existent tool. & tool hallucinations / total tool calls \\
+\hline
+M-06 & Visual Hallucination Rate & Proportion of visual checks where the model misidentifies on-screen elements. & visual hallucinations / total visual checks \\
+\hline
+M-07 & Total Error Rate & Combined error rate across planning, tool, and visual failures. & M-04 + M-05 + M-06 \\
+\hline
+M-08 & Standard Deviation of Steps & Variability of the number of executed steps across repeated runs of the same task template. & standard deviation of steps \\
+\hline
+M-09 & Standard Deviation of Latency & Variability of end-to-end latency across repeated runs of the same task template. & standard deviation of latency \\
+\hline
+M-10 & Data Exposure Level & Ordinal privacy score representing how much user data leaves the device. & 0: no data leaves the device; 1: metadata or task text leaves the device; 2: sensitive data leaves the device; 3: sensitive data is used to train external models. \\
+\hline
+M-11 & Total Steps & Total number of actions executed to complete a run. & number of executed actions \\
+\hline
+\end{tabular}
+}
+\renewcommand{\arraystretch}{1}
+\caption{Validation metrics used to evaluate the specific objectives. Source: self-created.}
+\label{tab:validation_metrics}
+\end{table}

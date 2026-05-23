@@ -12,7 +12,7 @@
 \makeatother
 
 \usepackage{tikz}
-\usetikzlibrary{positioning, arrows.meta} 
+\usetikzlibrary{positioning, arrows.meta, fit} 
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc} % For spanish characters
 \usepackage[T1]{fontenc} % For special characters
@@ -164,11 +164,11 @@
 
 \setcounter{tocdepth}{1}
 \newcommand{\myname}{Gonzalo Torras Serrano}
-\newcommand{\tutor}{Mois{\'e}s Mart{\'i}nez}
+\newcommand{\tutor}{Dr. Mois{\'e}s Mart{\'i}nez Mu{\~n}oz}
 \newcommand{\subject}{Final Degree Project (FDP)}
-\newcommand{\mykeywords}{desktop automation, neuro-symbolic AI, PDDL planning, vision-language models, accessibility, local inference}
-\newcommand{\mykeywordses}{automatización de escritorio, IA neuro-simbólica, planificación PDDL, modelos visión-lenguaje, accesibilidad, inferencia local}
-\newcommand{\mytitle}{Autopilot: On-Device AI Desktop Agent for Hands-Free and Accessible Windows Automation}
+\newcommand{\mykeywords}{Artificial Intelligence, Speech to Text Models, Vision-Language Models, Automated Planning, Desktop Automation, Accessibility}
+\newcommand{\mykeywordses}{Inteligencia Artificial, modelos de voz a texto, modelos de visión-lenguaje, planificación automatizada, automatización de escritorio, accesibilidad.}
+\newcommand{\mytitle}{Autopilot: Local Windows GUI Autonomous System}
 
 \hypersetup{pdfauthor={\myname{}},%
             pdftitle={\mytitle{}},%
@@ -204,6 +204,7 @@
 \tableofcontents{}
 \listoffigures{}
 \listoftables{}
+\input{./sections/acronyms}
 %%\listofalgorithms{}
 
 \pagestyle{fancy}
@@ -221,6 +222,8 @@
 \input{./chapters/ethical_evaluation}
 \input{./chapters/journey}
 \input{./chapters/conclusions}
+
+\input{./chapters/appendix}
 
 \printbibliography[heading=bibintoc]
 

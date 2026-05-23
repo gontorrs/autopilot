@@ -1,35 +1,26 @@
 \chapter{State of the Art}
 \label{chap:state_of_the_art}
 \setcounter{section}{0}
-\setlength{\parskip}{0.6em}
+
+This chapter reviews the artificial intelligence foundations required to understand the proposed system. It is organised around three complementary approaches: symbolic AI, which represents knowledge explicitly and reasons through formal rules; sub-symbolic AI, which learns representations from data; and neuro-symbolic AI, which combines both. This distinction is important because desktop automation requires formal action planning, language and visual perception, and a mechanism to connect abstract plans with real graphical interfaces.
+
 \section{Symbolic Artificial Intelligence}
 \label{sec:symbolic_ai}
 
-Symbolic Artificial Intelligence, began in the \textit{Physical Symbol System Hypothesis} paper by Newell and Simon \cite{NewellSimon1976}, represents knowledge as explicit symbols manipulated through logical rules. Unlike sub-symbolic AI that learns from massive amounts of data, developers must manually input domain rules, making the \textit{reasoning process} fully transparent, every decision is traceable to its origin state.
+Symbolic Artificial Intelligence began with early work such as the \textit{Physical Symbol System Hypothesis} by Newell and Simon \cite{NewellSimon1976}. It represents knowledge as explicit symbols manipulated through logical rules. In this project, its most relevant branch is Automated Planning: the synthesis of action sequences that transform an initial state of the world into a desired goal state. A planning system is characterised by three interconnected components: the \textit{representation language} used to model the world and its actions, the \textit{search algorithm} that navigates the state space, and the \textit{heuristic function} that guides the search efficiently.
 
-In this project, symbolic AI provides a deterministic advantage for reasoning over the sequence of GUI actions required to complete a task, from opening an application to pasting a file. By using PDDL (Planning Domain Definition Language), the system generates a structured and traceable action sequences, ensuring the agent's behaviour is goal-directed and deterministic.
+\subsection{Representation Languages}
+\label{subsec:planning_representations}
 
-Automated Planning is the sub-field dedicated to generating these action sequences. Its foundation is the STRIPS system \cite{FikesNilsson1971}, which introduced actions defined via preconditions and effects. Formally, if the preconditions of an action $a$ are satisfied in state $s$ ($Pre(a) \subseteq s$), the new state is:
+\noindent\textbf{STRIPS.} The Stanford Research Institute Problem Solver (STRIPS) \cite{FikesNilsson1971} introduced one of the first formal languages for planning. A state is represented as a set of ground propositions, and an action is defined by preconditions that must hold before execution, delete effects that become false afterwards, and add effects that become true. This simple structure remains influential because it describes actions through explicit and inspectable state transitions.
 
-\begin{equation}
-    \gamma(s, a) = (s \setminus Del(a)) \cup Add(a)
-\end{equation}
-
-\noindent This logic evolved into PDDL \cite{McDermott1998}, the standard research tool for AI planning. A classical planning task is formally defined as the 4-tuple:
+\noindent\textbf{PDDL.} The Planning Domain Definition Language (PDDL) \cite{McDermott1998} generalised STRIPS into a standardised file format that has become the lingua franca of planning research. PDDL separates the \textit{domain} (types, predicates, and action schemas) from the \textit{problem} (objects, initial state, and goal), enabling a single domain to be reused across many problem instances. A classical planning task can be defined as:
 
 \begin{equation}
     \Pi = \langle \mathcal{F}, \mathcal{A}, \mathcal{I}, \mathcal{G} \rangle
 \end{equation}
 
-\noindent Where:
-\begin{itemize}
-    \item $\mathcal{F}$ is a finite set of facts describing the state of the world (e.g. \textit{window\_open}).
-    \item $\mathcal{A}$ is a finite set of deterministic actions the agent can perform (e.g. \textit{type\_text}).
-    \item $\mathcal{I} \subseteq \mathcal{F}$ represents the Initial State, defining what is true at the start.
-    \item $\mathcal{G} \subseteq \mathcal{F}$ represents the Goal State, defining the conditions that must be true to finish.
-\end{itemize}
-
-The domain declares the set of actions $\mathcal{A}$, such as clicking, typing, or opening an app, while the problem defines the initial objects and the desired goal. This process is visualized in Figure~\ref{fig:pddl_workflow}.
+\noindent where $\mathcal{F}$ is a finite set of facts, $\mathcal{A}$ a set of deterministic actions, $\mathcal{I}$ the initial state, and $\mathcal{G}$ the goal state. In a desktop automation domain, actions may correspond to opening an application, clicking an element, typing text, or closing a window. The relationship between domain, problem, and planner output is summarised in Figure~\ref{fig:pddl_workflow}.
 
 \begin{figure}[H]
 \centering
@@ -48,7 +39,6 @@ The domain declares the set of actions $\mathcal{A}$, such as clicking, typing, 
     lbl/.style={font=\footnotesize, inner sep=2pt}
 ]
 
-%% Row 1: Domain and Problem
 \node[box] (domain) at (1.5, 0) {
     \textbf{Domain}\\[2pt]
     Actions $\mathcal{A}$\\
@@ -59,24 +49,19 @@ The domain declares the set of actions $\mathcal{A}$, such as clicking, typing, 
     $\mathcal{I}$: Initial State\\
     $\mathcal{G}$: Goal State};
 
-%% Row 2: Planner (centered between domain and problem)
 \node[box, fill=gray!10, minimum width=3.5cm] (planner) at (3.5, -2.2) {
     \textbf{Planner}};
 
 \draw[arr] (domain.south)  -- ++(0, -0.5) -| (planner.north);
 \draw[arr] (problem.south) -- ++(0, -0.5) -| (planner.north);
 
-%% Row 3: State chain
 \node[wstate, fill=blue!10] (s0) at (0,   -4.2) {$s_0 = \mathcal{I}$};
 \node[state]                (s1) at (2.4, -4.2) {$s_1$};
 \node[state]                (s2) at (4.4, -4.2) {$s_2$};
 \node[font=\small]          (dt) at (5.8, -4.2) {$\cdots$};
 \node[wstate, fill=green!15](sn) at (7.4, -4.2) {$s_n = \mathcal{G}$};
 
-%% Planner -> state chain
 \draw[arr] (planner.south) -- node[right, lbl]{plan} ++(0, -0.6) -| (s0.north);
-
-%% State transitions
 \draw[arr] (s0) -- node[above, lbl]{$a_1$} (s1);
 \draw[arr] (s1) -- node[above, lbl]{$a_2$} (s2);
 \draw[arr] (s2.east) -- (dt.west);
@@ -88,45 +73,78 @@ The domain declares the set of actions $\mathcal{A}$, such as clicking, typing, 
 \label{fig:pddl_workflow}
 \end{figure}
 
-Finding the optimal plan requires searching through a state space that grows exponentially in complex GUI domains. \textbf{Breadth-First Search} ($f(n) = g(n)$) guarantees optimality but expands every state blindly, making it computationally useless, then \textbf{Greedy Best-First} ($f(n) = h(n)$) is faster but does not guarantee an optimal solution. \textbf{A*} \cite{Hart1968} combines both by minimising:
+\noindent\textbf{SAS+.} Modern planners commonly compile PDDL into the SAS+ formalism \cite{Backstrom1995}. Instead of binary propositions, SAS+ represents each world state as a vector of multi-valued variables. This compact representation exposes implicit constraints, reduces the branching factor, and enables \textit{mutex reasoning}: the detection of facts that cannot be true at the same time. This is useful in GUI automation because many interface states are mutually exclusive, such as a window being both open and closed.
+
+\subsection{Search Algorithms and Heuristics}
+\label{subsec:planning_search}
+
+Finding a plan requires searching through a state space that can grow exponentially. Breadth-First Search guarantees optimality but expands states blindly, while Greedy Best-First Search is faster but does not guarantee an optimal solution. A* \cite{Hart1968} combines the accumulated cost $g(n)$ and the estimated remaining cost $h(n)$:
 
 \begin{equation}
     f(n) = g(n) + h(n)
 \end{equation}
 
-\noindent Where $g(n)$ is the actual cost from the start to node $n$, and $h(n)$ is the heuristic estimate of the remaining cost to the goal. Ensuring that $h(n)$ never overestimates the true remaining cost (admissibility), A* is guaranteed to find the optimal plan. This property is critical in GUI automation, where any unnecessary click, keystroke, or window opening increases the risk of error propagation across subsequent steps.
+\noindent If $h(n)$ never overestimates the remaining cost, A* is guaranteed to find an optimal plan. This property matters in GUI automation because unnecessary actions increase latency and create more opportunities for visual or execution errors.
 
-This project uses A* via Fast Downward \cite{Helmert2006}, a state-of-the-art planner consistently ranked at International Planning Competitions \cite{Taitler2024}. It implements the LM-cut heuristic, which identifies landmarks, these are facts that must become true at any valid plan (such as navigating to \textit{Documents} before accessing a file within it). By computing the minimum cost through these landmarks, LM-cut provides an admissible heuristic that guarantees plan optimality.
+The quality of the heuristic determines how practical the search is. Delete-relaxation heuristics, such as $h^{\mathrm{FF}}$ \cite{Hoffmann2001}, estimate goal distance by ignoring delete effects, which makes planning graphs easier to compute. LM-cut \cite{Helmert2009} instead identifies landmark cuts: sets of actions where every valid plan must include at least one action. Its admissibility makes it especially suitable for optimal planning configurations such as A*+LM-cut.
 
-Despite these strengths, Symbolic AI suffers from the \textit{Symbol Grounding Problem} \cite{Harnad1990}, the planner knows what to do (such as click the Chrome icon) but cannot perceive where that element is on screen. This gap is what Sub-Symbolic AI addresses, which processes unstructured visual data to bridge the logical domain and the real interface.
+\subsection{Classical Planners}
+\label{subsec:planners}
 
+Several state-of-the-art systems implement these ideas. FF \cite{Hoffmann2001} popularised delete-relaxation heuristics for satisficing planning. LAMA \cite{Richter2010} combines landmark-based heuristics with iterated search and has performed strongly in International Planning Competitions. Fast Downward \cite{Helmert2006} is a modular, open-source framework that translates PDDL into SAS+ and supports many search algorithms and heuristics through a declarative configuration language. It has consistently ranked among the top systems in planning competitions \cite{Taitler2024}.
 
-\clearpage
+This project uses Fast Downward with the LM-cut heuristic because this configuration provides cost-optimal and reproducible GUI automation plans. However, symbolic planning alone cannot perceive the visual state of the desktop. This is the \textit{Symbol Grounding Problem} \cite{Harnad1990}: the planner may know that the next action is to click a specific icon, but it cannot determine where that icon appears on screen. This limitation motivates the use of sub-symbolic models.
+
 \section{Sub-Symbolic Artificial Intelligence}
 \label{sec:sub-symbolic_ai}
 
-Unlike symbolic AI, Sub-Symbolic AI does not rely on manually encoded rules. Instead, it learns representations directly from data, therfore, it doesn't rely on explicit logic. The fundamental unit is the artificial neuron \cite{Rosenblatt1958}, which computes a weighted sum of its inputs passed through a non-linear activation function $f$:
+Sub-symbolic AI does not rely on manually encoded rules. Instead, it learns numerical representations from data through the adjustment of model parameters. The basic unit is the artificial neuron \cite{Rosenblatt1958}, and stacking neurons into layers forms a Deep Neural Network (DNN), which can learn increasingly abstract patterns from raw input.
 
-\begin{equation}
-    \hat{y} = f \left( \sum_{i=1}^{n} w_i \cdot x_i + b \right)
-\end{equation}
+\subsection{Neural Network Architectures}
+\label{subsec:nn_architectures}
 
-\noindent Where $w_i$ are the learned weights, $x_i$ the input features, and $b$ the bias term. Then you can form layers with neurons, which forms a Deep Neural Network, capable of learning hierarchical representations from raw data. This capacity for hierarchical representation learning is the architectural foundation of all modern AI models in this field.
+\noindent\textbf{Convolutional Neural Networks.} Convolutional Neural Networks (CNNs) \cite{LeCun1998} specialise neural networks for grid-structured data such as images. Their convolutional filters detect local visual patterns and combine them into higher-level features. CNNs established deep learning as a dominant approach for image recognition and remain important in many vision systems.
 
-The breakthrough which enabled large-scale sub-symbolic models is the Transformer architecture \cite{Vaswani2017}, which replaces sequential recurrence with a self-attention mechanism. Given input projections as queries $Q$, keys $K$, and values $V$, attention is computed as:
+\noindent\textbf{Recurrent Neural Networks and LSTMs.} Recurrent Neural Networks (RNNs) process sequential data by carrying a hidden state from one timestep to the next. This made them suitable for early speech and language tasks, but vanilla RNNs struggle with long-range dependencies. Long Short-Term Memory networks (LSTMs) \cite{Hochreiter1997} address this through gates that decide what information is stored, forgotten, or exposed. Despite their effectiveness, RNNs and LSTMs process tokens sequentially, which limits parallelisation and scalability.
 
-\begin{equation}
-    \text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
-\end{equation}
+\noindent\textbf{Transformers.} Transformers \cite{Vaswani2017} replaced recurrence with self-attention, allowing every token to attend to every other token in the input sequence. This removes the main sequential bottleneck and makes it feasible to train models at very large scale. Transformers are therefore the foundation of most current large language, speech, and vision-language models.
 
-\noindent Where $d_k$ is the key dimension used for numerical scaling. Each token in the sequence can attend to every other token in a single operation, capturing long-range dependencies regardless of their distance in the input. This property eliminates the vanishing gradient problem of recurrent architectures and enables full parallelisation during training, making it feasible to scale models to billions of parameters on large corpora.
+\subsection{Large Foundation Models}
+\label{subsec:foundation_models}
 
-Scaling Transformers on large text datasets produces Large Language Models (LLMs), which develop emergent capabilities including general reasoning, instruction following, and structured output generation. LLMs can parse free-form natural language input and produce structured responses in formats such as JSON, making them suitable for task interpretation and high-level orchestration in automated pipelines. Their ability to maintain context across multiple steps and reason about sequential goals makes them a key component in systems that require planning and decision-making beyond simple pattern matching.
+Large Language Models (LLMs) are Transformer-based models trained on large text corpora. They can interpret free-form natural language, follow instructions, reason over multi-step tasks, and generate structured outputs such as JSON. These properties make them useful for task interpretation and orchestration in automation pipelines.
 
-Vision-Language Models (VLMs) extend the Transformer by coupling a visual encoder, typically a Vision Transformer (ViT), with a language decoder, enabling joint reasoning over image and text inputs simultaneously. The visual encoder divides the input image into a grid of patches, maps each patch to a token embedding, and concatenates this with the language token sequence before processing both through a shared Transformer. A particularly relevant capability is visual grounding: the ability to map a textual description of a user interface element to its precise pixel coordinates on screen. This bridges the gap between high-level semantic descriptions and the actual visual state of a display, enabling systems to interact with graphical interfaces without relying on predefined element identifiers or accessibility trees.
+Speech-to-Text (STT) models apply similar sequence modelling principles to audio. Whisper \cite{Radford2023}, for example, converts audio into text through an encoder-decoder architecture and is robust across languages, accents, and noise conditions. Vision-Language Models (VLMs) combine visual encoders with language models, enabling joint reasoning over images and text. Their most relevant capability for this project is visual grounding: mapping a textual description of a user interface element to its pixel coordinates on screen. Quantization reduces model memory requirements, often with limited accuracy degradation, making local deployment more feasible on consumer hardware.
 
-Running large neural models on consumer hardware requires model quantization: the process of reducing the numerical precision of a model's weights from 32-bit floating-point values to lower bit-widths such as INT4. A full-precision model storing each weight as a 32-bit float requires four times the memory of the same model stored in INT4, so quantization directly enables models that would otherwise exceed GPU memory to run on a single consumer device. The accuracy trade-off is typically negligible for instruction-tuned language and vision models when post-training quantization is applied carefully, and tools such as Ollama make it straightforward to deploy quantized models locally without cloud infrastructure.
+\subsection{AI Agents and Orchestration Frameworks}
+\label{subsec:agents}
 
-A growing ecosystem of orchestration frameworks has emerged to coordinate multiple AI agents within a single pipeline. CrewAI \cite{CrewAI2023} structures agents as roles within a crew, each assigned a specific goal and toolset, and routes outputs sequentially or in parallel according to a defined workflow. LangGraph \cite{LangGraph2024}, built on top of the LangChain ecosystem, represents agent workflows as directed graphs, where nodes are agent calls or tool invocations and edges define conditional transitions between them. Both frameworks abstract the communication protocol between agents, handling context passing, retry logic, and state persistence across steps. They share the same core insight: decomposing a complex task into specialised, composable agents consistently outperforms relying on a single general-purpose model.
+An AI agent is a software entity that perceives its environment, reasons about the current state, selects an action, and executes it through available tools. In desktop automation, the environment can be the screen, the reasoning core can be an LLM, and the tools can include screenshots, mouse control, keyboard input, or file operations. More capable agents extend this loop with memory, planning, and tool use.
 
-Symbolic and sub-symbolic methods are not mutually exclusive but complementary \cite{IlkouKoutraki2020}. The symbolic planner provides structured, deterministic action sequences with formal guarantees of optimality, while sub-symbolic models handle perception and natural language understanding, capabilities that no rule-based system can replicate. This hybrid architecture, often referred to as neuro-symbolic AI, combines the transparency and formal guarantees of classical planning with the perceptual and linguistic capabilities of deep learning, resolving the Symbol Grounding Problem that purely symbolic systems cannot overcome.
+Because a single agent can struggle with multi-step, multi-domain tasks, many modern systems use orchestration frameworks. CrewAI \cite{CrewAI2023} organises agents into roles, tasks, and crews, passing outputs from one task to the next. LangGraph \cite{LangGraph2024}, built on the LangChain ecosystem, represents workflows as directed graphs with nodes, conditional transitions, and shared state. These frameworks help modularise and inspect agent pipelines, although they do not by themselves guarantee correct planning or execution.
+
+\section{Neuro-Symbolic AI}
+\label{sec:neurosymbolic}
+
+Symbolic and sub-symbolic methods are not mutually exclusive but complementary \cite{IlkouKoutraki2020}. Three structural reasons motivate their combination in this project.
+
+\textbf{Complementary capabilities.} Symbolic planners provide structured, deterministic action sequences with formal guarantees, but they cannot perceive raw screen information. Sub-symbolic models excel at language understanding and visual grounding, but their outputs are stochastic and less formally constrained. A neuro-symbolic architecture assigns each part of the problem to the component best suited to it.
+
+\textbf{Resolving the Symbol Grounding Problem.} The planner can decide that an action such as clicking a browser icon is required, but it needs a perceptual component to locate that icon on screen. VLM-based grounding links symbolic action arguments to real pixel coordinates, allowing abstract plans to be executed on a graphical interface.
+
+\textbf{Structured search over a large action space.} A reactive LLM agent exploring a desktop by trial and error faces a large action space and may produce inconsistent execution paths. The symbolic layer restricts this space by generating a finite, goal-directed plan, while the sub-symbolic layer supports interpretation, perception, and verification. This combination provides the transparency of planning together with the flexibility of modern neural models.
+
+\section{Related Work}
+\label{sec:related_work}
+
+Several existing systems address desktop automation through different architectural choices. They can be compared along two axes: \textit{autonomy}, meaning whether the system requires step-by-step commands or accepts a single prompt, and \textit{locality}, meaning whether processing remains on-device or depends on cloud infrastructure.
+
+\noindent\textbf{Windows Voice Access} \cite{windows_voice_access} is a built-in Windows 11 accessibility feature that maps predefined voice commands to actions such as clicking, typing, and opening applications. It is local and useful for hands-free control, but it provides no planning layer: the user must issue each action individually and therefore remains responsible for decomposing the task.
+
+\noindent\textbf{Claude Cowork} \cite{claude_cowork} is a cloud-based AI assistant with computer-use capability. Given a single natural-language prompt, it operates reactively by capturing a screenshot, selecting an action, executing it, and repeating the loop until completion. This enables autonomy but can produce non-optimal paths, and screenshots and context are processed externally.
+
+\noindent\textbf{Gemini Computer Use} \cite{gemini_cu} is a cloud-based computer-use API with a similar reactive design. It supports autonomous screen capture in one mode and externally injected screenshots in another, which affects the level of autonomy of the evaluated system. Like Claude Cowork, it relies on cloud processing.
+
+\noindent\textbf{OpenClaw} \cite{openclaw} is an open-source local system that exposes desktop control tools directly to a general-purpose LLM. It accepts a single prompt and runs autonomously, but it has no dedicated deterministic planning layer, so the model must reason about the full task, select tools, and recover from errors inside a single unstructured loop.
+
+These systems show the main trade-off in current desktop automation. Local tools preserve privacy but often rely on fixed commands or lack formal planning, while cloud-based systems support flexible natural language interaction but expose screen and task data to external services. The proposed system is positioned between these approaches by combining local processing, spoken natural language input, deterministic planning, and visual grounding. A detailed description of the competitors and their evaluation setup is provided in Appendix~\ref{app:competitors}.
