@@ -1,0 +1,36 @@
+services:
+  planner:
+    build:
+      context: .
+      dockerfile: docker/planner/Dockerfile
+    container_name: planner
+    working_dir: /app/Code
+    command: ["python", "-u", "services/planner_service.py"]
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONPATH: "/app/Code"
+      FAST_DOWNWARD_PATH: "/opt/fast-downward/fast-downward.py"
+      PLANNER_HOST: "0.0.0.0"
+      PLANNER_PORT: "8000"
+    volumes:
+      - ./Code/pddl/results:/app/Code/pddl/results
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    gpus: all
+    restart: unless-stopped
+
+volumes:
+  ollama_models:
+
+networks:
+  default:
+    name: fdp-torras
