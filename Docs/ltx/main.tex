@@ -30,9 +30,11 @@
 \usepackage{mathtools, amsmath, amsthm, amssymb, enumerate}
 \usepackage{hyphenat}
 \usepackage{caption, subcaption}
+\usepackage{longtable}
 \usepackage{url}
 \usepackage{multirow} 
 \usepackage{rotating}
+\usepackage{pdflscape}
 \usepackage[ruled, vlined, linesnumbered, resetcount]{algorithm2e}
 \usepackage{appendix}
 \usepackage{units}
@@ -43,6 +45,16 @@
 \usepackage{lipsum}
 \usepackage{csquotes}
 \usepackage{titlesec}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single
+}
+\titlespacing*{\section}{0pt}{3.5ex plus 1ex minus .2ex}{1.2ex}
 \titleformat{\paragraph}[hang]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{0.5em}
 % \usepackage[
@@ -92,6 +104,9 @@
 \newcommand{\requirement}[3]{
 \begin{table}[h!]
 \centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{0.88}
 \input{#1}
 \caption{#2}
 \label{#3}
@@ -167,8 +182,8 @@
 \newcommand{\tutor}{Dr. Mois{\'e}s Mart{\'i}nez Mu{\~n}oz}
 \newcommand{\subject}{Final Degree Project (FDP)}
 \newcommand{\mykeywords}{Artificial Intelligence, Speech to Text Models, Vision-Language Models, Automated Planning, Desktop Automation, Accessibility}
-\newcommand{\mykeywordses}{Inteligencia Artificial, modelos de voz a texto, modelos de visión-lenguaje, planificación automatizada, automatización de escritorio, accesibilidad.}
-\newcommand{\mytitle}{Autopilot: Local Windows GUI Autonomous System}
+\newcommand{\mykeywordses}{Inteligencia Artificial, modelos de voz a texto, modelos de visión-lenguaje, planificación automática, automatización de escritorio, accesibilidad.}
+\newcommand{\mytitle}{Autopilot: On-Device AI Desktop Agent for Hands-Free and Accessible Windows Automation}
 
 \hypersetup{pdfauthor={\myname{}},%
             pdftitle={\mytitle{}},%
@@ -223,8 +238,8 @@
 \input{./chapters/journey}
 \input{./chapters/conclusions}
 
-\input{./chapters/appendix}
-
 \printbibliography[heading=bibintoc]
+
+\input{./chapters/appendix}
 
 \end{document}

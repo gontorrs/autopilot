@@ -31,27 +31,69 @@ Operating System & Windows 11 Home (Build 25H2) \\
 
 \subsection{Models}
 
-Three types of neural model are used in the pipeline. A Large Language Model (LLM) is a Transformer pre-trained on large text corpora that maps natural language inputs to structured outputs; it handles intent classification and pipeline orchestration. In Gemma4 E4B, the ``E'' denotes effective parameters: the model has a larger total parameter count, but the edge variant is described in terms of the effective parameter budget used for local deployment. A Vision-Language Model (VLM) couples a visual encoder with a language decoder to reason jointly over screenshots and text; it handles element detection, pixel grounding, and task verification. A Speech-to-Text (STT) model converts raw audio into a text transcription; it provides the voice interface to the system. Full descriptions of each model family are given in Chapter~\ref{chap:state_of_the_art}.
+Three types of neural model are used in the pipeline. In Gemma4 E4B, the ``E'' denotes effective parameters: the model has a larger total parameter count, but the edge variant is described in terms of the effective parameter budget used for local deployment. A Vision-Language Model (VLM) couples a visual encoder with a language decoder to reason jointly over screenshots and text; it handles element detection, pixel grounding, and task verification. A Speech-to-Text (STT) model converts raw audio into a text transcription; it provides the voice interface to the system. Full descriptions of each model family are given in Chapter~\ref{chap:state_of_the_art}.
 
-Candidate LLM and VLM models were restricted for models that could fit within the hardware constraints, with Q4 quantisation preferred because it keeps the models within the available VRAM when loaded sequentially. Whisper small was kept in FP16 because it is already small enough for the target hardware, so an additional quantised version was not necessary. The benchmarking experiments that justify the final model choices are presented in Chapter~6.
+Candidate LLM and VLM models were restricted to models that could fit within the hardware constraints, with Q4 quantisation preferred because it keeps the models within the available VRAM when loaded sequentially. Whisper small was kept in FP16 because it is already small enough for the target hardware, so an additional quantised version was not necessary. The benchmarking experiments that justify the final model choices are presented in Chapter~6.
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|p{2.2cm}|p{1.1cm}|p{2.0cm}|p{1.5cm}|p{1.3cm}|p{2.8cm}|}
+Table~\ref{tab:models} lists all neural models recorded in the Planner and VLM experimental worksheet. The order follows the pipeline hierarchy: first the speech-to-text model, then the LLM candidates used for planning and orchestration, and finally the VLM candidates used for visual grounding and verification. The Qwen3.5 entry is mapped to the closest current Ollama tag, \texttt{qwen3.5:9b}, because the experimental workbook records that run under an 8B local label.
+
+{\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{0.72cm}|>{\raggedright\arraybackslash}p{2.95cm}|>{\raggedright\arraybackslash}p{1.48cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{2.8cm}|}
+\caption{Neural models evaluated in the Planner and VLM experiments.}
+\label{tab:models}\\
 \hline
 \textbf{Model} & \textbf{Type} & \textbf{Params} & \textbf{Quant.} & \textbf{Size} & \textbf{Source} \\
 \hline
-Gemma4 E4B & LLM & 4.5B effective (8B total) & Q4\_K\_M & 9.6 GB & \href{https://ollama.com/library/gemma4:e4b}{Gemma4 E4B page} \\
+\endfirsthead
+\caption[]{Neural models evaluated in the Planner and VLM experiments (continued).}\\
 \hline
-Qwen3-VL 2B & VLM & 2.13B & Q4\_K\_M & 1.9 GB & \href{https://ollama.com/library/qwen3-vl:2b}{Qwen3-VL 2B page} \\
+\textbf{Model} & \textbf{Type} & \textbf{Params} & \textbf{Quant.} & \textbf{Size} & \textbf{Source} \\
 \hline
-Whisper small & STT & 244M & FP16 & 967 MB & \href{https://huggingface.co/openai/whisper-small}{Whisper small page} \\
+\endhead
 \hline
-\end{tabular}
-\caption{Neural models used in the pipeline.}
-\label{tab:models}
-\end{table}
+\endfoot
+Whisper small & STT & 244M & FP16 & 967 MB & \href{https://huggingface.co/openai/whisper-small}{Hugging Face} \\
+\hline
+Phi-3 Mini & LLM & 3.8B & default & 2.2 GB & \href{https://ollama.com/library/phi3}{Ollama phi3} \\
+\hline
+Gemma 3n E2B & LLM & 2B effective (4.46B total) & Q4\_K\_M & 5.6 GB & \href{https://ollama.com/library/gemma3n:e2b}{Ollama gemma3n:e2b} \\
+\hline
+Gemma 3n E2B INT4 & LLM & 2B effective (4.46B total) & INT4 & 5.6 GB & \href{https://ollama.com/library/gemma3n:e2b}{Ollama gemma3n:e2b} \\
+\hline
+FunctionGemma & LLM & 270M & default & 301 MB & \href{https://ollama.com/library/functiongemma}{Ollama functiongemma} \\
+\hline
+Llama 3.2 3B INT4 & LLM & 3.21B & Q4\_K\_M & 2.0 GB & \href{https://ollama.com/library/llama3.2:3b}{Ollama llama3.2:3b} \\
+\hline
+Llama 3 8B & LLM & 8B & default & 4.7 GB & \href{https://ollama.com/library/llama3}{Ollama llama3} \\
+\hline
+Ministral 3 & LLM & 8.92B & Q4\_K\_M & 6.0 GB & \href{https://ollama.com/library/ministral-3}{Ollama ministral-3} \\
+\hline
+Ministral 3 3B INT4 & LLM & 3.85B & Q4\_K\_M & 3.0 GB & \href{https://ollama.com/library/ministral-3:3b}{Ollama ministral-3:3b} \\
+\hline
+Qwen3 4B INT4 Instruct & LLM & 4.02B & Q4\_K\_M & 2.5 GB & \href{https://ollama.com/library/qwen3:4b}{Ollama qwen3:4b} \\
+\hline
+Qwen3 4B Instruct & LLM & 4.02B & Q4\_K\_M & 2.5 GB & \href{https://ollama.com/library/qwen3:4b}{Ollama qwen3:4b} \\
+\hline
+Gemma4 E4B INT4 & LLM & 4.5B effective (8B total) & Q4\_K\_M & 9.6 GB & \href{https://ollama.com/library/gemma4:e4b}{Ollama gemma4:e4b} \\
+\hline
+Qwen3.5 9B & LLM & 9.65B & Q4\_K\_M & 6.6 GB & \href{https://ollama.com/library/qwen3.5:9b}{Ollama qwen3.5:9b} \\
+\hline
+Gemma 3 4B INT4 & VLM & 4.3B & Q4\_K\_M & 3.3 GB & \href{https://ollama.com/library/gemma3:4b}{Ollama gemma3:4b} \\
+\hline
+Ministral 3 & VLM & 8.92B & Q4\_K\_M & 6.0 GB & \href{https://ollama.com/library/ministral-3}{Ollama ministral-3} \\
+\hline
+Ministral 3 3B INT4 & VLM & 3.85B & Q4\_K\_M & 3.0 GB & \href{https://ollama.com/library/ministral-3:3b}{Ollama ministral-3:3b} \\
+\hline
+Qwen3-VL 2B & VLM & 2.13B & Q4\_K\_M & 1.9 GB & \href{https://ollama.com/library/qwen3-vl:2b}{Ollama qwen3-vl:2b} \\
+\hline
+Qwen3-VL 2B INT4 & VLM & 2.13B & Q4\_K\_M & 1.9 GB & \href{https://ollama.com/library/qwen3-vl:2b}{Ollama qwen3-vl:2b} \\
+\hline
+Qwen3-VL 4B INT4 & VLM & 4.44B & Q4\_K\_M & 3.3 GB & \href{https://ollama.com/library/qwen3-vl:4b}{Ollama qwen3-vl:4b} \\
+\hline
+\end{longtable}
+}
 
 \subsection{Software Stack}
 
@@ -66,8 +108,9 @@ The system is implemented in Python 3.11. Table~\ref{tab:software} lists all lib
 \multicolumn{3}{|l|}{\textit{Core pipeline}} \\
 \hline
 CrewAI         & 1.14.1          & Agent orchestration framework \\
-Ollama         & 0.6.1           & Local model inference server \\
-Fast Downward  & --              & PDDL planning engine \\
+Ollama         & 0.24.0          & Local model inference server (Docker image: ollama/ollama) \\
+Fast Downward  & aibasel/downward & PDDL planning engine (official Docker image) \\
+Docker Desktop & 4.74.0          & Container runtime for Fast Downward \\
 PyAutoGUI      & 0.9.54          & Mouse and keyboard automation \\
 faster-whisper & 1.2.1           & Local speech-to-text transcription \\
 keyboard       & 0.13.5          & Low-level keyboard event injection \\
@@ -83,6 +126,11 @@ torch          & 2.6.0+cu124     & Deep learning runtime (Whisper backend) \\
 psutil         & 7.2.2           & CPU and RAM usage measurement \\
 nvidia-ml-py   & 13.580.82       & NVIDIA VRAM monitoring via NVML \\
 \hline
+\multicolumn{3}{|l|}{\textit{Competitor evaluation only}} \\
+\hline
+google-genai   & 1.73.1          & Google Gemini API client \\
+python-dotenv  & 1.1.1           & Environment variable management \\
+\hline
 \multicolumn{3}{|l|}{\textit{Supporting utilities}} \\
 \hline
 Gradio         & 6.12.0          & Web-based demo interface \\
@@ -94,29 +142,34 @@ Gradio         & 6.12.0          & Web-based demo interface \\
 
 \section{Methods}
 
-\textbf{Automated planning.} Task planning will be performed using the Planning Domain Definition Language (PDDL), separating the representation language from the planner, the search algorithm, and the heuristic. The PDDL domain file defines the available GUI actions as operators with preconditions and effects, while the PDDL problem file specifies the initial desktop state and the goal conditions for each supported task. Fast Downward then solves each problem instance using the A* search algorithm with the LM-cut heuristic. LM-cut identifies landmarks, facts that must become true in any valid plan, and computes a minimum cost through them, providing an admissible lower bound that guarantees the generated plan is optimal in terms of number of steps.
+This section describes the core technical decisions that shaped the Autopilot pipeline. Each method represents a deliberate design choice made to improve reliability, control, and feasibility under the hardware and privacy constraints described in Section~\ref{sec:constraints}. These choices were validated incrementally through the Lean Research cycles described in Section~\ref{sec:methodology}.
 
-\textbf{Visual perception and verification.} Screen element detection will be performed by a Vision-Language Model that receives a screenshot and a textual description of a target element and returns a binary YES/NO verdict on whether the element is currently visible. Coordinate grounding will be handled by the same model family in a dedicated role, returning normalised coordinates within a 1000x1000 resolution space that are then mapped to the actual screen resolution. Task completion verification will also rely on the VLM, receiving a final screenshot and confirming whether the goal state has been reached.
+\begin{enumerate}
 
-\textbf{Language understanding.} Intent classification will be handled by a local LLM that maps the transcribed voice input to a structured JSON object containing the task template identifier and its required arguments.
+  \item \textbf{A* search with LM-Cut heuristic:} Task planning is performed using the A* search algorithm guided by the LM-Cut admissible heuristic. LM-Cut identifies landmarks — facts that must become true in any valid plan — and computes a minimum cost through them, providing a lower bound that guarantees the generated plan is optimal in terms of number of steps. This combination was chosen over greedy or sampling-based planners because it ensures plan optimality and reproducibility, which are critical for deterministic GUI automation.
 
-\textbf{Multi-modal orchestration.} Pipeline orchestration will also be handled by the same LLM family in a dedicated Manager role, which receives the translated action list and dispatches each specialised agent. The resulting interaction is multi-modal because the system combines spoken natural language, visual screen interpretation, automated plans, and GUI actions inside the same execution loop.
+  \item \textbf{Three-agent VLM separation:} Rather than assigning all visual tasks to a single Vision-Language Model, the pipeline distributes visual responsibilities across three specialised agents: a Scout Agent that captures the initial screen state and identifies relevant elements before planning begins; a Vision Agent that grounds each target element to normalised pixel coordinates at execution time; and a QA Agent that verifies task completion after the final action. This decomposition reduces the complexity of each individual model call, makes failures easier to isolate and attribute, and allows different VLMs to be assigned to each role independently.
 
-\textbf{Evaluation protocol.} System performance will be assessed across seven task templates, each executed over three independent runs starting from a clean desktop state with no applications pre-loaded, yielding 21 total evaluation runs. Eleven metrics will be measured across four categories: performance (task success rate, step accuracy, end-to-end latency), reliability (planning error rate, tool hallucination rate, visual hallucination rate, total error rate), consistency (standard deviation of steps and latency), and privacy (data exposure level and total steps). Autopilot will be benchmarked against four alternative systems: Windows Voice Access, Claude Cowork, OpenClaw, and Gemini Computer Use, all evaluated under identical conditions on the same hardware, task templates, and metric set.
+  \item \textbf{Planner and Translator separation:} Instead of generating concrete GUI actions directly from the user's intent in a single model call, the system separates two responsibilities: the Planner Agent produces an abstract PDDL plan expressed in domain-level operators, and the Translator Agent converts each abstract operator into a concrete, executable GUI instruction. This split decomposes every task into atomic, independently verifiable actions and makes the system more controllable: if a step fails, the source of failure can be attributed either to the planning layer or to the translation layer without re-running the full inference chain.
+
+\end{enumerate}
 
 \section{Methodology}
+\label{sec:methodology}
 
-The project follows a Lean Research methodology inspired by the Lean Startup approach. Instead of assuming the final architecture from the beginning, the work is organised around short validation cycles in which each technical decision is treated as a hypothesis, tested through a concrete experiment, and accepted or revised according to the evidence obtained. This methodology is appropriate for Autopilot because the project combines uncertain components, such as local LLMs, VLMs, desktop automation tools, and automated planning, whose behaviour can only be assessed reliably through empirical testing on the target hardware.
+The project follows a Lean Research methodology inspired by the Lean Startup approach~\cite{Ries2011}. Instead of assuming the final architecture from the beginning, the work is organised around short validation cycles in which each technical decision is treated as a hypothesis, tested through a concrete experiment, and accepted or revised according to the evidence obtained. This methodology is appropriate for Autopilot because the project combines uncertain components, such as local LLMs, VLMs, desktop automation tools, and automated planning, whose behaviour can only be assessed reliably through empirical testing on the target hardware.
 
-\textbf{Hypothesis.} Each development cycle begins with a technical assumption linked to one of the project objectives. Examples include the assumption that local models can provide sufficient transcription, reasoning, and visual grounding accuracy; that automated planning can produce reproducible desktop action sequences; or that a multi-agent pipeline can recover from intermediate GUI failures. These hypotheses define what needs to be validated before the system can progress to the next architectural decision.
+\begin{enumerate}
+  \item \textbf{Hypothesis:} Each development cycle begins with a technical assumption linked to one of the project objectives. Examples include the assumption that local models can provide sufficient transcription, reasoning, and visual grounding accuracy; that automated planning can produce reproducible desktop action sequences; or that a multi-agent pipeline can recover from intermediate GUI failures. These hypotheses define what needs to be validated before the system can progress to the next architectural decision.
 
-\textbf{Experiment.} Each hypothesis is tested through a bounded experiment with a clear setup, input conditions, and success criteria. Experiments include model benchmarking, planner validation with PDDL domain and problem files, isolated agent tests, end-to-end task executions, and comparisons against alternative systems. This keeps development grounded in observable behaviour rather than in expected model capabilities.
+  \item \textbf{Experiment:} Each hypothesis is tested through a bounded experiment with a clear setup, input conditions, and success criteria. Experiments include model benchmarking, planner validation with PDDL domain and problem files, isolated agent tests, end-to-end task executions, and comparisons against alternative systems. This keeps development grounded in observable behaviour rather than in expected model capabilities.
 
-\textbf{Evidence.} The outcome of each experiment is converted into evidence through quantitative metrics, qualitative inspection, and failure analysis. Successful results support the current design decision, while weak or inconsistent results trigger a redesign, model replacement, prompt revision, or architectural adjustment. The final system is therefore the result of repeated Hypothesis--Experiment--Evidence cycles rather than a single linear implementation plan.
+  \item \textbf{Evidence:} The outcome of each experiment is converted into evidence through quantitative metrics, qualitative inspection, and failure analysis. Successful results support the current design decision, while weak or inconsistent results trigger a redesign, model replacement, prompt revision, or architectural adjustment. The final system is therefore the result of repeated Hypothesis--Experiment--Evidence cycles rather than a single linear implementation plan.
+\end{enumerate}
 
 \section{Work Plan}
 
-The work plan was organised into seven work packages distributed from January to May: project definition, five implementation iterations, and continuous documentation. This structure follows the Lean Research methodology described above, since each iteration produced a concrete technical outcome that was evaluated before deciding the next step.
+The work plan was organised into eight work packages spanning from October 2025 to May 2026: a preliminary project, project definition, five implementation iterations, and continuous documentation. This structure follows the Lean Research methodology described above, since each iteration produced a concrete technical outcome that was evaluated before deciding the next step.
 
 \begin{figure}[H]
 \centering
@@ -125,19 +178,23 @@ The work plan was organised into seven work packages distributed from January to
 \label{fig:work_plan_gantt}
 \end{figure}
 
-\textbf{Project definition.} This initial package defined the project scope, objectives, technical risks, and evaluation direction. It established the local-only execution requirement, the Windows desktop automation context, and the initial feasibility questions to be answered during the following iterations.
+\begin{enumerate}
+  \item \textbf{Preliminary project:} Conducted between 1 October and 16 November 2025, this phase served as an initial feasibility study for voice-driven desktop automation. At that stage, neither a multi-agent architecture nor a privacy-first approach had been considered as central requirements. As the scope was refined, the implications of processing sensitive user data such as voice recordings and screenshots became apparent, leading to the decision to adopt a privacy-preserving, agent-based pipeline as the core architectural direction of the project.
 
-\textbf{Iteration 1: Monolithic prototypes.} The first development iteration produced three task templates using a monolithic architecture. Its purpose was to verify whether an end-to-end voice-to-action pipeline could execute basic desktop tasks before introducing a more structured architecture.
+  \item \textbf{Project definition:} This package defined the project scope, objectives, technical risks, and evaluation direction. It established the local-only execution requirement, the Windows desktop automation context, and the initial feasibility questions to be answered during the following iterations.
 
-\textbf{Iteration 2: Modular architecture and planning pivot.} The second iteration introduced the main architectural pivot of the project: moving from the initial monolithic approach to a modular pipeline based on PDDL and specialised components. During this stage, different LLM and VLM candidates were also evaluated to determine which models were viable under the local hardware constraints.
+  \item \textbf{Iteration 1 - Monolithic prototypes:} The first development iteration produced three task templates using a monolithic architecture. Its purpose was to verify whether an end-to-end voice-to-action pipeline could execute basic desktop tasks before introducing a more structured architecture.
 
-\textbf{Iteration 3: MVP.} The third iteration completed the seven task templates and integrated agentic tools for the first minimum viable product. The MVP represented the first version of the system capable of executing the planned task set with the neuro-symbolic pipeline.
+  \item \textbf{Iteration 2 - Modular architecture and planning pivot:} The second iteration introduced the main architectural pivot of the project: moving from the initial monolithic approach to a modular pipeline based on PDDL and specialised components. During this stage, different LLM and VLM candidates were also evaluated to determine which models were viable under the local hardware constraints.
 
-\textbf{Iteration 4: Experimental evaluation.} The fourth iteration focused on recording and analysing experiments for Autopilot and the competitor systems. Its deliverable was the evidence base used to compare task success, latency, reliability, consistency, and privacy across all evaluated solutions.
+  \item \textbf{Iteration 3 - MVP:} The third iteration completed the seven task templates and integrated agentic tools for the first minimum viable product. The MVP represented the first version of the system capable of executing the planned task set with the neuro-symbolic pipeline.
 
-\textbf{Iteration 5: Final product.} The final implementation iteration added dynamic planning, integrated Whisper for speech-to-text input, and introduced the graphical user interface. This produced the final product version evaluated and documented in the report.
+  \item \textbf{Iteration 4 - Experimental evaluation:} The fourth iteration focused on recording and analysing experiments for Autopilot and the competitor systems. Its deliverable was the evidence base used to compare task success, latency, reliability, consistency, and privacy across all evaluated solutions.
 
-\textbf{Documentation.} Documentation was carried out in parallel with the technical work, especially from February onward. This package consolidated the design decisions, methodology, experiments, results, and final conclusions into the written report.
+  \item \textbf{Iteration 5 - Final product:} The final implementation iteration added dynamic planning, integrated Whisper for speech-to-text input, and introduced the graphical user interface. This produced the final product version evaluated and documented in the report.
+
+  \item \textbf{Documentation:} Documentation was carried out in parallel with the technical work, especially from February onward. This package consolidated the design decisions, methodology, experiments, results, and final conclusions into the written report.
+\end{enumerate}
 
 
 \section{Constraints and Limitations}
@@ -147,46 +204,51 @@ This section distinguishes between constraints and limitations. Constraints are 
 
 \subsection{Constraints}
 
-\textbf{Local-only execution.} No component of the pipeline may invoke an external API or transmit voice recordings, screenshots, task descriptions, file names, or intermediate outputs to a cloud service. All inference, planning, and execution must be performable with no internet access. This constraint directly supports SO1, because privacy and data sovereignty are core objectives of the project.
+\begin{enumerate}
+  \item \textbf{Local-only execution:} No component of the pipeline may invoke an API that may transmit voice recordings, screenshots, task descriptions, file names, or intermediate outputs to a cloud service. All inference, planning, and execution must be performable with no internet access. This constraint directly supports \hyperref[so:1]{SO1}, because privacy and data sovereignty are core objectives of the project.
 
-\textbf{Operating system.} The system targets Windows 11 exclusively. All GUI automation relies on the Windows graphical interface, and portability to other operating systems is out of scope.
+  \item \textbf{Operating system:} The system targets Windows 11 exclusively. All GUI automation relies on the Windows graphical interface, and portability to other operating systems is out of scope.
 
-\textbf{Hands-free interaction.} The user must be able to start the automation process through a spoken natural language prompt, without requiring keyboard, mouse, or terminal interaction. This constraint supports SO5 and also conditions SO6, since the GUI must expose the system as a usable voice-based application rather than as a developer-only prototype.
+  \item \textbf{Hands-free interaction:} The user must be able to start the automation process through a spoken natural language prompt, without requiring keyboard, mouse, or terminal interaction. This constraint supports \hyperref[so:5]{SO5} and also conditions \hyperref[so:6]{SO6}, since the GUI must expose the system as a usable voice-based application rather than as a developer-only prototype.
 
-\textbf{Evaluation comparability.} Autopilot and the competitor systems must be evaluated under the same hardware, task templates, and metric set whenever possible. This constraint supports SO4 by making the comparative benchmark meaningful and reducing experimental bias.
+  \item \textbf{Evaluation comparability:} Autopilot and the competitor systems must be evaluated under the same hardware, task templates, and metric set whenever possible. This constraint supports \hyperref[so:4]{SO4} by making the comparative benchmark meaningful and reducing experimental bias.
+\end{enumerate}
 
 \subsection{Limitations}
 
-\textbf{Limited GPU Memory.} The development laptop provides 7.71 GB of available VRAM. This hardware limitation restricts the size of the local models that can be executed and forces the pipeline to load models sequentially rather than keeping all models resident in GPU memory at the same time. It mainly impacts SO1, SO3, and SO4, because privacy-preserving local execution must remain feasible without exceeding consumer-level hardware resources.
+\begin{enumerate}
+  \item \textbf{Limited GPU Memory:} The development laptop provides 7.71 GB of available Video Random Access Memory (VRAM). This hardware limitation restricts the size of the local models that can be executed and forces the pipeline to load models sequentially rather than keeping all models resident in GPU memory at the same time. It mainly impacts \hyperref[so:1]{SO1}, \hyperref[so:3]{SO3}, and \hyperref[so:4]{SO4}, because privacy-preserving local execution must remain feasible without exceeding consumer-level hardware resources.
 
-\textbf{Task template coverage.} The system operates on a predefined set of PDDL task templates. Tasks outside this set cannot be planned by the automated planning layer without authoring a new domain and problem pair. This limitation impacts SO2 and SO3, since determinism and autonomy are guaranteed only within the supported task space.
+  \item \textbf{Task template coverage:} The system operates on a predefined set of PDDL task templates. Tasks outside this set cannot be planned by the automated planning layer without authoring a new domain and problem pair. This limitation impacts \hyperref[so:2]{SO2} and \hyperref[so:3]{SO3}, since determinism and autonomy are guaranteed only within the supported task space.
 
-\textbf{End-to-end latency.} Every task execution must complete within 300 seconds from voice input to verified completion on the target hardware. Runs exceeding this threshold are counted as failures regardless of the desktop state at timeout. This limitation affects SO3 and SO4 because slow local inference may reduce autonomous usability and comparative performance.
+  \item \textbf{End-to-end latency:} Every task execution must complete within 300 seconds from voice input to verified completion on the target hardware. Runs exceeding this threshold are counted as failures regardless of the desktop state at timeout. This limitation affects \hyperref[so:3]{SO3} and \hyperref[so:4]{SO4} because slow local inference may reduce autonomous usability and comparative performance.
 
-\textbf{Application and interface variability.} GUI automation depends on the visual state of Windows applications, which may change due to screen resolution, interface updates, unexpected pop-ups, or non-deterministic loading times. This limitation affects SO3 and SO6, because the system must observe and react to desktop state changes but cannot control every external interface condition.
+  \item \textbf{Application and interface variability:} GUI automation depends on the visual state of Windows applications, which may change due to screen resolution, interface updates, unexpected pop-ups, or non-deterministic loading times. This limitation affects \hyperref[so:3]{SO3} and \hyperref[so:6]{SO6}, because the system must observe and react to desktop state changes but cannot control every external interface condition.
+\end{enumerate}
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|p{3.2cm}|p{2.2cm}|p{5.8cm}|}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|p{3.6cm}|p{3.2cm}|p{5.6cm}|}
 \hline
 \textbf{Item} & \textbf{Related objectives} & \textbf{Impact} \\
 \hline
-Local-only execution & SO1, SO4 & Preserves privacy and enables comparison against cloud-based alternatives using data exposure as a metric. \\
+Local-only execution & \hyperref[so:1]{SO1}, \hyperref[so:4]{SO4} & Preserves privacy and enables comparison against cloud-based alternatives using data exposure as a metric. \\
 \hline
-Operating system & SO3, SO6 & Defines the desktop environment where automation and the GUI are implemented. \\
+Operating system & \hyperref[so:3]{SO3}, \hyperref[so:6]{SO6} & Defines the desktop environment where automation and the GUI are implemented. \\
 \hline
-Hands-free interaction & SO5, SO6 & Shapes the input method and final user-facing interface. \\
+Hands-free interaction & \hyperref[so:5]{SO5}, \hyperref[so:6]{SO6} & Shapes the input method and final user-facing interface. \\
 \hline
-Evaluation comparability & SO4 & Keeps Autopilot and competitor systems comparable by using the same hardware, task templates, and metric set whenever possible. \\
+Evaluation comparability & \hyperref[so:4]{SO4} & Keeps Autopilot and competitor systems comparable by using the same hardware, task templates, and metric set whenever possible. \\
 \hline
-Limited GPU Memory & SO1, SO3, SO4 & Limits model size and affects latency, autonomy, and local competitiveness. \\
+Limited GPU Memory & \hyperref[so:1]{SO1}, \hyperref[so:3]{SO3}, \hyperref[so:4]{SO4} & Limits model size and affects latency, autonomy, and local competitiveness. \\
 \hline
-Task template coverage & SO2, SO3 & Restricts deterministic planning and autonomy to the supported PDDL task set. \\
+Task template coverage & \hyperref[so:2]{SO2}, \hyperref[so:3]{SO3} & Restricts deterministic planning and autonomy to the supported PDDL task set. \\
 \hline
-End-to-end latency & SO3, SO4 & Defines the maximum acceptable execution time for local autonomous task completion. \\
+End-to-end latency & \hyperref[so:3]{SO3}, \hyperref[so:4]{SO4} & Defines the maximum acceptable execution time for local autonomous task completion. \\
 \hline
-Application and interface variability & SO3, SO6 & Introduces uncertainty in visual grounding, execution, and user-facing robustness. \\
+Application and interface variability & \hyperref[so:3]{SO3}, \hyperref[so:6]{SO6} & Introduces uncertainty in visual grounding, execution, and user-facing robustness. \\
 \hline
 \end{tabular}
 \caption{Relationship between constraints, limitations, and specific objectives. Source: self-created.}

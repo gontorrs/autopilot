@@ -1,72 +1,97 @@
 \chapter{Technical Development}
 \setcounter{section}{0}
 
-Autopilot is a fully autonomous desktop automation system for Windows, designed to let users operate a computer using only their voice. The system accepts a single spoken natural language command and executes the described task on the desktop without any further human interaction. Its architecture combines deterministic automated planning with local neural perception, forming a neuro-symbolic system where each component has a non-overlapping role.
+Autopilot is a fully autonomous desktop automation system for Windows, designed to let users operate a computer through spoken natural language while preserving local execution. This chapter describes the technical development of the system, beginning with the architectural organisation of its components and continuing with the functional and non-functional requirements that guided the implementation.
 
-The system is structured in three conceptual stages. In the first stage, the user's voice input is transcribed locally and classified into a structured intent with its relevant arguments. In the second stage, a symbolic planner generates the optimal sequence of GUI actions required to reach the goal state from the current desktop state. In the third stage, a set of specialised agents executes each step by perceiving the screen visually and interacting with graphical interface elements through standard mouse and keyboard actions, ending with a verification step that confirms task completion without human review.
-
-This chapter describes the system design and specifies the functional and non-functional requirements. This requirements section catalogues all identified functional and non-functional requirements using a structured attribute format.
-
-Before describing the internal architecture in detail, Figure~\ref{fig:high_level_architecture} summarises the typical execution flow followed by Autopilot. The diagram abstracts away the individual agents and focuses on the main stages that transform a spoken command into a completed desktop goal. After planning, visual perception and GUI execution are repeated for each planned step until the target desktop state is reached and verified.
-
-\definecolor{autopilotFlowBlue}{HTML}{E3EEFE}
-
-\begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-    node distance=1.1cm and 0.85cm,
-    >=Stealth,
-    component/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=3.25cm, minimum height=1.05cm, fill=autopilotFlowBlue},
-    external/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=3.25cm, minimum height=1.05cm, fill=autopilotFlowBlue},
-    repeatbox/.style={draw, dashed, rounded corners=4pt, inner sep=0.25cm},
-    arrow/.style={->, thick}
-]
-
-\node[external] (user) {Voice Command};
-\node[component, right=of user] (voice) {Speech To Text};
-\node[component, right=of voice] (orchestration) {System Orchestration};
-\node[component, right=of orchestration] (planner) {Automated Planning};
-\node[component, below=1.4cm of planner] (vision) {Visual Perception};
-\node[component, left=of vision] (execution) {GUI Execution};
-\node[external, left=of execution] (desktop) {Target Goal};
-\node[component, left=of desktop] (verification) {Verification};
-\node[repeatbox, fit=(vision)(execution), label={[font=\footnotesize]above:for each step}] {};
-
-\draw[arrow] (user) -- (voice);
-\draw[arrow] (voice) -- (orchestration);
-\draw[arrow] (orchestration) -- (planner);
-\draw[arrow] (planner) -- (vision);
-\draw[arrow] (vision) -- (execution);
-\draw[arrow] (execution) -- (desktop);
-\draw[arrow] (desktop) -- (verification);
-
-\end{tikzpicture}%
-}
-\caption{Typical high-level Autopilot execution flow. Source: self-created.}
-\label{fig:high_level_architecture}
-\end{figure}
+The chapter first presents the main system components and their responsibilities. It then explains how those components cooperate during execution, before formalising the requirements used to evaluate whether the implemented solution satisfies the objectives of the project.
 
 \section{Architecture}
 \label{sec:system-architecture}
 \label{sec:system-design}
 
+\definecolor{autopilotFlowBlue}{HTML}{E3EEFE}
+
+Figure~\ref{fig:autopilot_architecture} shows the architecture of Autopilot. The system separates the user-facing interface, the speech transcription layer, the orchestration logic, the template repository, the Transformer-based agents, the deliberative agents, and the operating system where actions are executed. This separation is central to the design because it prevents the system from relying on a single unconstrained model for the entire task.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.92\textwidth]{images/Workflow_diagram.png}
-\caption{Autopilot system architecture and execution flow.}
-\label{fig:class_diagram}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=1.05cm and 1.25cm,
+    >=Stealth,
+    component/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=3.7cm, minimum height=1.05cm, fill=autopilotFlowBlue, font=\small},
+    agentbox/.style={draw=blue!75, rounded corners=3pt, align=left, minimum width=4.3cm, minimum height=3.0cm, fill=autopilotFlowBlue, font=\small, inner sep=7pt},
+    templatebox/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=3.2cm, minimum height=1.75cm, fill=autopilotFlowBlue, font=\small},
+    arrow/.style={->, thick},
+    note/.style={font=\scriptsize, align=center, fill=white, inner sep=1pt}
+]
+
+\node[component] (web) {\textbf{WEB}\\Gradio UI};
+\node[component, below=of web] (stt) {\textbf{STT}\\Whisper};
+\node[component, below=of stt] (manager) {\textbf{MANAGER}\\Agent orchestration};
+
+\node[agentbox, below left=1.35cm and 1.45cm of manager] (transformer) {
+    \textbf{TRANSFORMER AGENTS}\\[0.15cm]
+    \textbullet{} Intention Agent\\
+    \textbullet{} Scout Agent\\
+    \textbullet{} Vision Agent\\
+    \textbullet{} QA Agent
+};
+
+\node[agentbox, below right=1.35cm and 1.45cm of manager] (deliberative) {
+    \textbf{DELIBERATIVE AGENTS}\\[0.15cm]
+    \textbullet{} Planner Agent\\
+    \textbullet{} PDDL Translator\\
+    \textbullet{} Executor Agent
+};
+
+\node[templatebox, below=1.975cm of manager] (templates) {\textbf{TEMPLATES}\\[0.1cm]PDDL templates};
+\node[component, below=3.15cm of templates] (os) {\textbf{OS}\\Windows 11\\GUI manipulation};
+
+\draw[arrow] (web) -- node[note, right] {audio} (stt);
+\draw[arrow] (stt) -- node[note, right] {transcribed text} (manager);
+
+% Manager to Transformer: horizontal left, then down
+\draw[arrow] (manager.west) -| node[note, near start, above] {dispatches} (transformer.north);
+
+% Manager to Deliberative: horizontal right, then down
+\draw[arrow] (manager.east) -| node[note, near start, above] {dispatches} (deliberative.north);
+
+% Horizontal arrows around Templates (perfectly straight)
+\draw[arrow] (transformer.east |- templates) -- node[note, above] {selects} (templates.west);
+\draw[arrow] (templates.east) -- node[note, above] {goal + state} (deliberative.west |- templates);
+
+% OS to Transformer: horizontal left, then up
+\draw[arrow] (os.west) -| node[note, near start, above] {screenshots} (transformer.south);
+
+% Deliberative to OS: down, then horizontal right
+\draw[arrow] (deliberative.south) |- node[note, near end, above] {GUI actions} (os.east);
+
+\end{tikzpicture}%
+}
+\caption{Autopilot system architecture. Source: self-created.}
+\label{fig:autopilot_architecture}
 \end{figure}
 
-\subsection{Description of functional features}
+\subsection{Description of Components}
 
-\subsubsection{System Components}
+\subsubsection{Web Interface}
 
-At a functional level, Autopilot is organised around a local speech interface, a local model runtime, an agent-based orchestration layer, a symbolic planning layer, a GUI execution layer, and a final verification stage. The speech interface uses Whisper to convert the user's spoken command into text. All language and vision model inference is managed by Ollama, which loads and unloads models from VRAM on demand so that no more than one model is resident in memory at the same time. This sequential loading strategy keeps peak VRAM usage within 8 GB and makes the system viable on consumer-grade hardware.
+The Web Interface is implemented with Gradio~\cite{Abid2019Gradio} and acts as the user-facing entry point of Autopilot. It provides the mechanism through which the user records or submits the spoken command and receives feedback about the execution. Its responsibility is intentionally limited: it captures the input and exposes the system state to the user, but it does not decide which task should be executed or how the desktop should be manipulated.
 
-The orchestration layer coordinates the agents that interpret the command, inspect the desktop state, generate the plan, translate that plan into executable operations, execute GUI actions, and verify the final result. This design keeps each responsibility separated while still allowing the Manager Agent to decide which component should be invoked at each moment of the run.
+\subsubsection{Speech-to-Text}
 
-\subsubsection{Supported Task Templates}
+The Speech-to-Text component converts the user's audio command into written text before the Manager receives the request. Autopilot uses Whisper locally for this task, so the audio input is processed on the user's machine rather than being sent to an external service. This component is placed between the Web Interface and the Manager because transcription is a preprocessing step, not an orchestration decision made by the Manager.
+
+\subsubsection{Manager}
+
+The Manager is the central orchestrator of the system. After receiving the transcribed command, it dispatches work to the appropriate agents, keeps track of intermediate outputs, and determines which component should be called at each moment of the run. The Manager does not directly contain all reasoning capabilities; instead, it coordinates specialised components whose responsibilities are deliberately narrower and easier to control.
+
+The Manager uses Gemma4 E4B INT4 as its local LLM. The model family, size, quantisation, and source are listed with the other evaluated models in Table~\ref{tab:models}.
+
+This design makes the architecture modular. The Manager can invoke the Intention Agent to identify the task, the Scout Agent to inspect the current screen, the Planner Agent to compute the symbolic plan, the PDDL Translator to convert the plan into executable steps, the Vision Agent to ground visible targets, the Executor Agent to perform GUI actions, and the QA Agent to verify the final state.
+
+\subsubsection{Templates}
 
 The system currently supports seven task templates, each backed by a dedicated PDDL domain and problem file. Table~\ref{tab:task_templates_detail} summarises the PDDL goal predicate and target application for each template.
 
@@ -97,84 +122,131 @@ Copy and Paste     & \texttt{pasted}         & File Explorer \\
 
 Each template encapsulates a distinct category of desktop interaction. The following describes what each one does, which agents are involved, and how a representative prompt is handled.
 
-\textbf{Write a Note} is the simplest template and does not require the Vision Agent, since no coordinate grounding is needed. Given a prompt such as \textit{``Write a note saying remember to call the doctor on Monday''}, the Intention Agent extracts the text content and sets \textit{typed\_text} as the goal. The planner produces an \textit{open} action followed by a \textit{type} action, and the Executor types the dictated text directly once Notepad is open.
+\begin{enumerate}
+  \item \textbf{Write a Note:} The simplest template, it does not require the Vision Agent since no coordinate grounding is needed. Given a prompt such as \textit{``Write a note saying remember to call the doctor on Monday''}, the Intention Agent extracts the text content and sets \textit{typed\_text} as the goal. The planner produces an \textit{open} action followed by a \textit{type} action, and the Executor types the dictated text directly once Notepad is open.
 
-\textbf{Create Doc / Folder} handles file system creation tasks. Given a prompt such as \textit{``Create a new folder called Projects inside Documents''}, the Intention Agent extracts the target directory and the new item name. The planner generates a sequence of \textit{open}, \textit{navigate}, \textit{click\_new}, \textit{select\_type}, and \textit{type\_name} actions. The Vision Agent is used to locate the New button and the naming field in File Explorer.
+  \item \textbf{Create Doc / Folder:} Handles file system creation tasks. Given a prompt such as \textit{``Create a new folder called Projects inside Documents''}, the Intention Agent extracts the target directory and the new item name. The planner generates a sequence of \textit{open}, \textit{navigate}, \textit{click\_new}, \textit{select\_type}, and \textit{type\_name} actions. The Vision Agent is used to locate the New button and the naming field in File Explorer.
 
-\textbf{Search \& Open File} navigates the folder hierarchy to locate and open a file. Given a prompt such as \textit{``Find the file called budget\_report.pdf and open it''}, the Intention Agent extracts the file name and its location. The planner chains \textit{open}, \textit{navigate}, and \textit{open\_file} actions. At each navigation step, the Vision Agent identifies the folder or file icon on screen so that the Executor can click it.
+  \item \textbf{Search \& Open File:} Navigates the folder hierarchy to locate and open a file. Given a prompt such as \textit{``Find the file called budget\_report.pdf and open it''}, the Intention Agent extracts the file name and its location. The planner chains \textit{open}, \textit{navigate}, and \textit{open\_file} actions. At each navigation step, the Vision Agent identifies the folder or file icon on screen so that the Executor can click it.
 
-\textbf{Search Text} locates a specific string inside a document. Given a prompt such as \textit{``Find the word introduction in the open document''}, the Intention Agent extracts the target text and the file name. The planner first navigates File Explorer to open the file in Microsoft Word, then issues a \textit{search\_text} action that triggers the application's Find tool. The Vision Agent is used to interact with the Find toolbar.
+  \item \textbf{Search Text:} Locates a specific string inside a document. Given a prompt such as \textit{``Find the word introduction in the open document''}, the Intention Agent extracts the target text and the file name. The planner first navigates File Explorer to open the file in Microsoft Word, then issues a \textit{search\_text} action that triggers the application's Find tool. The Vision Agent is used to interact with the Find toolbar.
 
-\textbf{Delete Text} extends the Search Text flow by removing the located string. Given a prompt such as \textit{``Delete the text that says first draft''}, the planner reaches \textit{text\_searched} as an intermediate state and then applies a \textit{delete\_text} action, which selects and deletes the highlighted text in Microsoft Word. The Vision Agent is required both to operate the Find toolbar and to confirm the selection before deletion.
+  \item \textbf{Delete Text:} Extends the Search Text flow by removing the located string. Given a prompt such as \textit{``Delete the text that says first draft''}, the planner reaches \textit{text\_searched} as an intermediate state and then applies a \textit{delete\_text} action, which selects and deletes the highlighted text in Microsoft Word. The Vision Agent is required both to operate the Find toolbar and to confirm the selection before deletion.
 
-\textbf{Format Text} also extends the Search Text flow, applying a style change instead of a deletion. Given a prompt such as \textit{``Make the text Final Project bold in my FDP.docx folder''}, the Intention Agent extracts the target string and the requested style. After reaching \textit{text\_searched}, the planner issues a \textit{change\_text} action. The Vision Agent must identify the relevant formatting control in the Microsoft Word toolbar so that the Executor can click it.
+  \item \textbf{Format Text:} Also extends the Search Text flow, applying a style change instead of a deletion. Given a prompt such as \textit{``Make the text Final Project bold in my FDP.docx folder''}, the Intention Agent extracts the target string and the requested style. After reaching \textit{text\_searched}, the planner issues a \textit{change\_text} action. The Vision Agent must identify the relevant formatting control in the Microsoft Word toolbar so that the Executor can click it.
 
-\textbf{Copy and Paste} moves or duplicates a file between folders. Given a prompt such as \textit{``Copy the file notes.txt from my Downloads folder to my Desktop folder''}, the Intention Agent extracts the file name, source folder, and destination folder. The planner generates \textit{open}, \textit{navigate}, \textit{copy}, a second \textit{navigate}, and finally \textit{paste}. The Vision Agent is used at each navigation step and to locate the file before copying.
+  \item \textbf{Copy and Paste:} Moves or duplicates a file between folders. Given a prompt such as \textit{``Copy the file notes.txt from my Downloads folder to my Desktop folder''}, the Intention Agent extracts the file name, source folder, and destination folder. The planner generates \textit{open}, \textit{navigate}, \textit{copy}, a second \textit{navigate}, and finally \textit{paste}. The Vision Agent is used at each navigation step and to locate the file before copying.
+\end{enumerate}
 
-\subsubsection{Agents}
+\subsubsection{Transformer Agents}
 
-The system uses specialised agents and code-based components with agent-like responsibilities.
+The Transformer Agents are the components that rely on Transformer-based generative models to interpret natural language, screenshots, or final visual states. They provide the perceptual and semantic information needed by the rest of the architecture, but they do not replace the deterministic planning layer.
 
-\textbf{Manager Agent.} The Manager Agent is the central orchestrator. Before a plan exists, its prompt defines the initial sequence of calls: it first sends the transcribed command to the Intention Agent, then asks the Scout Agent to inspect the current screen, then invokes the Planner Agent, and finally calls the PDDL Translator Agent. Once the translated plan is available, the Manager uses it as the execution guide and decides which agent or tool must be called for each step. It has access to all agents, monitors their outputs, and can repeat, skip, or replace a step when the observed desktop state requires it.
+\begin{enumerate}
+  \item \textbf{Intention Agent:} The Intention Agent receives the transcribed command and selects one of the available task templates. It also extracts the arguments required by that template, such as file names, folder paths, text content, formatting options, or target applications. Its output defines the task goal that the rest of the system must satisfy. This agent uses Gemma4 E4B INT4, whose specifications are given in Table~\ref{tab:models}.
 
-\textbf{Intention Agent.} The Intention Agent receives the user's transcribed command and chooses one of the seven available task templates. It also extracts the arguments required by that template, such as file names, folder paths, text content, formatting options, or target applications. Its output is a structured representation of the selected template and its parameters, which defines the final goal that the rest of the system must satisfy.
+  \item \textbf{Scout Agent:} The Scout Agent interprets the current desktop state from screenshots. Before planning, it receives a template-specific prompt that asks only for the information relevant to the selected task, instead of requesting a full description of the entire screen. This allows Autopilot to start from different desktop states and reuse the context that is already available, for example when the required application is already open. Additionally, the Scout Agent also assists in identifying the current location of a certain item on the screen. It receives a step-specific prompt and checks whether the required item is visible on screen. In this second mode, it returns a YES or NO answer that determines whether visual grounding can be performed directly or whether a fallback action is required. This agent uses Qwen3-VL 2B INT4, referenced in Table~\ref{tab:models}.
 
-\textbf{Scout Agent.} The Scout Agent is responsible for interpreting the current desktop state from screenshots. It is used in two different moments of the execution. Before planning, it receives a template-specific prompt that asks only for the information relevant to the selected task, instead of requesting a full description of the entire screen. This allows the system to start from different desktop states and reuse the current context, for example when the required application is already open. During execution, the Scout receives a step-specific prompt and checks whether the required item is visible on screen. In this second mode, it returns a YES or NO answer that determines whether visual grounding can be performed directly or whether a fallback action is required.
+  \item \textbf{Vision Agent:} When the Scout Agent confirms that a target item is visible, the Vision Agent receives the same step-specific prompt and estimates the item's coordinates in a normalised 1000x1000 resolution space. These coordinates are later mapped to the real screen resolution before execution. This agent therefore connects a symbolic action target, such as a folder or toolbar button, with a concrete screen location. It uses the same Qwen3-VL 2B INT4 model as the Scout Agent; the model specification is provided in Table~\ref{tab:models}.
 
-\textbf{Planner Agent.} The Planner Agent receives the final goal selected by the Intention Agent and the current screen state reported by the Scout Agent. It uses the corresponding PDDL domain and problem files, together with Fast Downward, to compute the sequence of actions needed to reach the goal. Its output is the raw symbolic plan produced by the planner.
+  \item \textbf{QA Agent:} The QA Agent is invoked after the planned actions have been completed. It receives a custom verification prompt and a screenshot of the final desktop state. Its output is a YES or NO verdict, together with a brief explanation of whether the requested goal appears to have been achieved. It also uses Qwen3-VL 2B INT4, previously listed in Table~\ref{tab:models}.
+\end{enumerate}
 
-\textbf{PDDL Translator Agent.} The PDDL Translator Agent converts the raw planner output into a Python dictionary containing the ordered executable steps, their target objects, and the information needed by the Manager Agent to dispatch the correct agent or tool.
+\subsubsection{Deliberative Agents}
 
-\textbf{Vision Agent.} When the Scout Agent confirms that a target item is visible, the Vision Agent receives the same step-specific prompt and estimates the item's coordinates in a normalised 1000x1000 resolution space. These coordinates are later mapped to the real screen resolution before execution.
+The Deliberative Agents implement the deterministic part of the architecture. They transform the selected task template, the extracted goal, and the observed desktop state into a concrete sequence of GUI operations. Unlike the Transformer Agents, these components do not rely on open-ended generative reasoning to decide the action sequence; they use Python logic, PDDL problem construction, Fast Downward planning, and direct GUI execution.
 
-\textbf{Executor Agent.} If the Scout returns NO, the Manager Agent calls the Executor Agent in fallback mode. In this case, the Executor receives the objective and the target type, such as an application, folder, or text element, and performs the necessary recovery actions to reach the expected state. In normal execution mode, the Executor performs GUI actions through \textit{pyautogui}, including writing text, clicking, double-clicking, and sending hotkeys. It returns a SUCCESS status when the action has been executed.
+\begin{enumerate}
+  \item \textbf{Planner Agent:} The Planner Agent receives three inputs: the final goal selected by the Intention Agent, the current desktop state previously observed by the Scout Agent, and the PDDL template associated with the selected task. The goal specifies what must become true, while the screen state specifies which relevant conditions are already true before execution begins. The Planner Agent combines both elements to instantiate the PDDL problem and then calls Fast Downward to compute the action sequence needed to reach the goal. As introduced earlier, A* search is discussed in Section~\ref{subsec:planning_search}, LM-cut is described in Section~\ref{subsec:planning_heuristics}, and Fast Downward is presented in Section~\ref{subsec:planners}; in this implementation, the Planner Agent uses Fast Downward configured with A* and LM-cut rather than a neural model. Further context about the PDDL domain structure and generated problem files is provided in Appendix~\ref{app:pddl_domain}.
 
-\textbf{QA Agent.} The QA Agent is invoked after the planned actions have been completed. It receives a custom verification prompt and a screenshot of the final desktop state. Its output is a YES or NO verdict, together with a brief explanation of whether the requested goal appears to have been achieved.
+  Figure~\ref{fig:planner_problem_result} shows an example of the planning input and output. The relevant state comes from the Scout Agent, which inspects the desktop before planning, while the goal comes from the Intention Agent after it has interpreted the user's command and selected the corresponding template. Fast Downward then returns an ordered sequence of symbolic actions. This sequence represents the plan that the Manager will follow after translation: it indicates which high-level GUI operations must be executed, in which order, and which intermediate states must be reached before the final goal can be verified.
 
-\subsubsection{Execution Flow}
+  \begin{figure}[H]
+  \centering
+  \begin{minipage}{0.43\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/problem_planner.png}
+  \caption*{Generated PDDL problem.}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.43\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/result_planner.png}
+  \caption*{Fast Downward plan.}
+  \end{minipage}
+  \caption{Example of a PDDL planning problem and the resulting symbolic plan.}
+  \label{fig:planner_problem_result}
+  \end{figure}
 
-Figure~\ref{fig:agent_execution_flow} shows the agent-level execution flow, including the initial planning sequence and the repeated per-step decision made after each Scout Agent check. The Manager Agent is shown only once for readability, although it remains the orchestrator that dispatches the corresponding agent at every step.
+  \item \textbf{PDDL Translator Agent:} The PDDL Translator Agent converts the raw planner output into a Python dictionary containing the ordered executable steps, their target objects, and the information needed by the Manager to dispatch the correct agent or tool. This translation step separates planning syntax from execution logic, making the symbolic plan easier for the rest of the system to consume. It is implemented as deterministic Python code and does not use a neural model. Appendix~\ref{app:pddl_domain} provides additional context about how the domain, problem structure, and symbolic actions are organised.
+
+  \item \textbf{Executor Agent:} The Executor Agent is implemented in Python and performs the GUI actions required by the translated plan. In normal execution mode, it uses \textit{pyautogui}~\cite{pyautogui} to write text, click, double-click, and send hotkeys. If the Scout Agent reports that a required target is not visible, the Manager can call the Executor in fallback mode so that it performs recovery actions and moves the desktop towards the expected intermediate state. This agent is also code-based and does not use a neural model.
+\end{enumerate}
+
+\subsubsection{Operating System}
+
+The Operating System is the environment where Autopilot acts. The implemented and evaluated version targets Windows 11, using the graphical user interface as the action surface. Applications, files, folders, windows, toolbars, and visible text are all treated as part of the desktop state that agents must observe or manipulate. This design keeps the system close to the way a human user interacts with the computer, since actions are performed through standard GUI operations rather than private application APIs.
+
+\subsection{Execution Flow}
+
+Figure~\ref{fig:agent_execution_flow} shows the agent-level execution flow, including the initial planning sequence and the repeated per-step decision made after each Scout Agent check. The Manager Agent is shown only once for readability. However, every circled \textbf{M} in the diagram indicates Manager mediation: the output of the previous component is first returned to the Manager, and the Manager then dispatches the next agent. Therefore, the direct arrows should be read as logical data flow, while the Manager remains the control point throughout the whole execution.
 
 \begin{figure}[H]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-    node distance=1.15cm and 1.05cm,
+    node distance=1.6cm and 2.0cm,
     >=Stealth,
-    agent/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=2.65cm, minimum height=0.9cm, fill=autopilotFlowBlue, font=\small},
-    repeatbox/.style={draw, dashed, rounded corners=4pt, inner sep=0.28cm},
+    agent/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=3.1cm, minimum height=1.15cm, fill=autopilotFlowBlue, font=\small},
+    repeatbox/.style={draw, dashed, rounded corners=4pt, inner sep=0.32cm},
     arrow/.style={->, thick},
-    note/.style={font=\scriptsize, align=center, fill=white, inner sep=1pt}
+    note/.style={font=\scriptsize, align=center, fill=white, inner sep=2pt},
+    mmarker/.style={circle, draw=blue!75, fill=autopilotFlowBlue, inner sep=1.2pt, font=\scriptsize\bfseries}
 ]
 
+% Row 1: input pipeline (left to right)
 \node[agent] (voice) {Voice\\Command};
 \node[agent, right=of voice] (stt) {Speech\\To Text};
 \node[agent, right=of stt] (manager) {Manager\\Agent};
-\node[agent, right=of manager] (intention) {Intention\\Agent};
+\node[agent, right=of manager] (intention) {Intention\\Agent\\{\scriptsize Transformer}};
 
-\node[agent, below=1.25cm of intention] (initialscout) {Scout\\Agent};
-\node[agent, left=of initialscout] (planner) {Planner\\Agent};
-\node[agent, left=of planner] (translator) {PDDL Translator\\Agent};
+% Row 2: planning chain (right to left), aligned with row 1
+\node[agent, below=1.6cm of voice] (translator) {PDDL Translator\\Agent\\{\scriptsize Deliberative}};
+\node[agent, below=1.6cm of stt] (planner) {Planner\\Agent\\{\scriptsize Deliberative}};
+\node[agent, below=1.6cm of manager] (initialscout) {Scout\\Agent\\{\scriptsize Transformer}};
+\node[agent, below=1.6cm of intention] (tempsel) {Template\\Selection\\{\scriptsize Templates}};
 
-\node[agent, below=1.35cm of translator] (stepscout) {Scout\\Agent};
-\node[agent, right=of stepscout] (vision) {Vision\\Agent};
-\node[agent, right=of vision] (executor) {Executor\\Agent};
-\node[agent, right=of executor] (qa) {QA\\Agent};
+% Row 3: per-step execution (left to right), aligned with row 2
+\node[agent, below=1.8cm of translator] (stepscout) {Scout\\Agent\\{\scriptsize Transformer}};
+\node[agent, below=1.8cm of planner] (vision) {Vision\\Agent\\{\scriptsize Transformer}};
+\node[agent, below=1.8cm of initialscout] (executor) {Executor\\Agent\\{\scriptsize Deliberative}};
+\node[agent, below=1.8cm of tempsel] (qa) {QA\\Agent\\{\scriptsize Transformer}};
 
 \node[repeatbox, fit=(stepscout)(vision)(executor), label={[font=\footnotesize]above:for each step}] {};
 
-\draw[arrow] (voice) -- node[note, above] {Voice\\prompt} (stt);
-\draw[arrow] (stt) -- node[note, above] {Text\\prompt} (manager);
-\draw[arrow] (manager) -- node[note, above] {Text\\prompt} (intention);
-\draw[arrow] (intention) -- node[note, right] {Custom\\prompt} (initialscout);
-\draw[arrow] (initialscout) -- node[note, above] {Screen\\state} (planner);
-\draw[arrow] (planner) -- node[note, above] {PDDL goal\\and initial state} (translator);
+% Row 1 arrows
+\draw[arrow] (voice) -- node[note, above] {Voice prompt} (stt);
+\draw[arrow] (stt) -- node[note, above] {Text prompt} (manager);
+\draw[arrow] (manager) -- node[note, above] {Text prompt} node[mmarker, below] {M} (intention);
 
-\draw[arrow] (translator) -- node[note, left] {Python dictionary\\and step target prompt} (stepscout);
-\draw[arrow] (stepscout) -- node[note, above] {YES:\\visible item} (vision);
-\draw[arrow] (vision) -- node[note, above] {(x, y)\\coordinates} (executor);
-\draw[arrow] (stepscout.south) -- ++(0,-0.75) -| node[note, pos=0.72, below] {NO:\\fallback action} (executor.south);
-\draw[arrow] (executor) -- node[note, above] {SUCCESS\\or next step} (qa);
+% Intention down to Template Selection
+\draw[arrow] (intention) -- node[note, right] {Intent} (tempsel);
+
+% Row 2 arrows (right to left)
+\draw[arrow] (tempsel) -- node[note, above] {goal + prompt} node[mmarker, below] {M} (initialscout);
+\draw[arrow] (initialscout) -- node[note, above] {Screen state} node[mmarker, below] {M} (planner);
+\draw[arrow] (planner) -- node[note, above] {PDDL goal + state} node[mmarker, below] {M} (translator);
+
+% Translator down to step Scout
+\draw[arrow] (translator) -- node[note, right] {Plan translated} node[mmarker, left] {M} (stepscout);
+
+% Row 3 arrows (left to right)
+\draw[arrow] (stepscout) -- node[note, above] {YES: visible item} node[mmarker, below] {M} (vision);
+\draw[arrow] (vision) -- node[note, above] {(x, y) coordinates} node[mmarker, below] {M} (executor);
+\draw[arrow] (executor) -- node[note, above] {SUCCESS} node[mmarker, below] {M} (qa);
+
+% NO fallback arrow (centered label below)
+\draw[arrow] (stepscout.south) -- ++(0,-0.9) -| node[note, pos=0.5, below] {NO: fallback action} node[mmarker, pos=0.72, below] {M} (executor.south);
 
 \end{tikzpicture}%
 }
@@ -182,11 +254,11 @@ Figure~\ref{fig:agent_execution_flow} shows the agent-level execution flow, incl
 \label{fig:agent_execution_flow}
 \end{figure}
 
-The standard execution starts when Whisper transcribes the voice command and the Manager Agent passes the resulting text to the Intention Agent. Once the template and parameters have been extracted, the Manager Agent invokes the Scout Agent to obtain a task-specific view of the current desktop state. This makes the execution modular: Autopilot does not assume that every task starts from the same initial screen, but instead adapts the plan to the state that is already available to the user.
+The standard execution starts when Whisper transcribes the voice command and returns the text to the Manager. The Manager then calls the Intention Agent, receives the selected template and parameters, and continues by dispatching the next component. In the diagram, the circled \textbf{M} marks this repeated control step: even when the arrow connects two non-manager components, the output is first handled by the Manager before the following agent is invoked. This makes the execution modular while preserving central control over the run.
 
-After the initial Scout call, the Manager Agent invokes the Planner Agent and sends the resulting plan to the PDDL Translator Agent. The translated dictionary becomes the operational guide for the rest of the run. For each planned step, the Manager first asks the Scout Agent whether the target item is visible. If the answer is YES, the Vision Agent returns coordinates and the Executor Agent performs the corresponding GUI action. If the answer is NO, the Executor Agent is called in fallback mode to reach the required intermediate state before the system continues with the plan.
+After the Intention Agent has selected the task template, the Manager invokes the Scout Agent to obtain a task-specific view of the current desktop state. The Manager then passes the resulting state and goal to the Planner Agent, receives the symbolic plan, and sends it to the PDDL Translator Agent. The translated dictionary becomes the operational guide for the rest of the run, but it is still interpreted through the Manager rather than executed autonomously by the downstream agents.
 
-This loop is repeated until the final goal is reached. Although it represents the normal path, the Manager Agent is not rigidly bound to it. As an LLM-based orchestrator, it can reorder, skip, or repeat calls based on the user's prompt, the translated plan, and the observed desktop state. Therefore, when a step fails, the system does not require a predefined error-handling procedure for every possible case; instead, the Manager Agent uses the available tools and state information to decide how to proceed. Once all actions have been executed, the QA Agent performs the final verification and reports whether the task has been completed successfully.
+The dashed box labelled \textit{for each step} represents the repeated execution loop applied to every action in the translated plan. For each planned step, the Manager first asks the Scout Agent whether the target item is visible. If the answer is YES, the Manager calls the Vision Agent to obtain coordinates and then dispatches the Executor Agent to perform the corresponding GUI action. If the answer is NO, the Manager calls the Executor Agent in fallback mode to reach the required intermediate state before continuing with the plan. This loop is repeated until the final goal is reached. Once all actions have been executed, the Manager invokes the QA Agent for final verification and reports whether the task has been completed successfully.
 
 \section{Requirements}
 \subsection{Description of requirement attributes}

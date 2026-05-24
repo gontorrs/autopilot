@@ -52,7 +52,7 @@ In order to assess the ethical implications of this project, an ethical
 framework is needed, that is, a structured set of principles used to evaluate
 whether an AI system aligns with broadly accepted values such as fairness,
 safety, privacy, and accountability. Among the available frameworks, Google's AI
-Principles \cite{google_principles} were selected as the most suitable for this
+Principles 2023 \cite{google_principles} were selected as the most suitable for this
 analysis. They are structured around seven concrete criteria that map directly
 onto the design decisions made throughout this project. Their focus on privacy,
 safety, accountability and bias makes them particularly relevant for a system
@@ -71,56 +71,19 @@ Data Disclosure and Rogue Actions. These are the seven different dimensions that
 
 \begin{enumerate}
 
-    \item \textbf{Be Socially Beneficial.} AI systems are to provide a tangible
-    value to the users and society, while still minimising potential harms. This
-    goes beyond functionality, including who is the end beneficiary, who is excluded
-    from the target audience and what is the broader impact of the system. In this
-    project, this principle translates into evaluating what societal problem this
-    system aims to solve and how effectively it does so.
+    \item \textbf{Be Socially Beneficial.} AI systems should provide tangible value to users and society while minimising potential harms. This principle is evaluated by examining what societal problem the system addresses and how effectively it does so.
 
-    \item \textbf{Avoid Creating or Reinforcing Unfair Bias.} AI systems can
-    introduce bias in many ways, due to the data they were trained on. In the
-    context of autonomous agents, bias can lead to an inconsistent behaviour, a
-    misinterpretation of the user intent or to make certain actions that do not
-    have the user as the final beneficiary, lacking transparency in the system.
-    Here for this principle, it should be evaluated the steps that have been taken
-    to ensure the system is fair and inclusive.
+    \item \textbf{Avoid Creating or Reinforcing Unfair Bias.} Bias in autonomous agents can lead to inconsistent behaviour or misinterpretation of user intent. This principle is evaluated by examining the steps taken to ensure the system behaves fairly and inclusively.
 
-    \item \textbf{Be Built and Tested for Safety.} Safety in AI systems refer to
-    the ability to operate accordingly to the user intent without causing any harm
-    or disruption, especially in systems that interact with the real world. In
-    desktop automation, this is crucial, where a misclick can result in irreversible
-    changes in the user's environment. This principle translates into evaluating
-    how safety has been prioritised in the design and development of the system.
+    \item \textbf{Be Built and Tested for Safety.} Safety refers to the ability to operate in accordance with user intent without causing harm, which is especially critical in desktop automation where actions can be irreversible. This principle is evaluated by examining how safety was prioritised in the system's design.
 
-    \item \textbf{Be Accountable to People.} In this principle, accountability
-    refers the ability to understand, audit and be responsible for the decisions
-    made by the AI system. This in autonomous agents is especially important, where
-    the system can act on behalf the user without necessarily explaining all the
-    step-by-step reasoning. In this project, this principle translates into
-    evaluating how the system provides transparency and user control.
+    \item \textbf{Be Accountable to People.} Accountability refers to the ability to understand, audit, and be responsible for the decisions made by the system. This principle is evaluated by examining how the system provides transparency and user control.
 
-    \item \textbf{Incorporate Privacy Design Principles.} The term privacy by
-    design refers to ensure that privacy should be built in the system from the
-    ground up, rather than being added afterwards once is completed. In the context
-    of AI systems that interact with the user's desktop, this is particularly
-    relevant since the system has complete access to sensitive information, such as
-    personal files, and the content visible in the screen. Therefore, the key
-    answer to this principle is to reflect on how this system protects user data
-    and privacy.
+    \item \textbf{Incorporate Privacy Design Principles.} Privacy by design requires that data protection be built into the system from the ground up rather than added afterwards. This principle is evaluated by examining how the system protects user data throughout the entire pipeline.
 
-    \item \textbf{Uphold High Standards of Scientific Excellence.} When developing
-    systems in AI research, it is important that they comply with privacy first and
-    security first rules, however, it is important that these systems are grounded
-    in rigorous research, empirical evaluation and transparent methodology. This
-    implies that any claim about the system's capabilities should be backed by
-    evidence and should be justified through scientific reasoning.
+    \item \textbf{Uphold High Standards of Scientific Excellence.} AI systems should be grounded in rigorous research, empirical evaluation, and transparent methodology, with all capability claims backed by evidence. This principle is evaluated by examining how the system's design and results are scientifically justified.
 
-    \item \textbf{Be Made Available for Uses that Accord with These Principles.}
-    This principle refers to the responsibility of ensuring that an AI system is
-    only made available for uses that align with ethical guidelines. This prevents
-    it from being reused for malicious or unintended intents, therefore the final
-    applications of this system should be outlined accordingly.
+    \item \textbf{Be Made Available for Uses that Accord with These Principles.} AI systems should only be made available for uses that align with ethical guidelines, preventing repurposing for malicious or unintended ends. This principle is evaluated by examining how the system's intended use cases are defined and constrained.
 
 \end{enumerate}
 

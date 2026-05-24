@@ -2,42 +2,17 @@
 \label{chap:experiments}
 \setcounter{section}{0}
 
-\section{Quantitative Evaluation}
+\section{Empirical Evaluation}
 
-All experiments were conducted on the same machine: an OMEN Gaming Laptop 16 with an AMD Ryzen AI 7 350 @ 2 GHz, an NVIDIA RTX 5070 Laptop GPU (7.71 GB VRAM), 32 GB RAM, running Windows 11 Home (25H2) and always plugged in using official charger. Although as it will be seen, this setup over compensates for the need to run these models, using quantization techniques. Cloud-based systems were evaluated over the same Wi-Fi connection to ensure consistent network conditions.
+This section presents the empirical evaluation of Autopilot through six experiments. The first experiment selects the visual-language model used by the Scout, Vision, and QA agents. The second experiment selects the local language model used for intent recognition and manager orchestration. The third experiment evaluates the execution time of the individual agents in the final pipeline. The fourth experiment analyses the orchestration time introduced by the Manager Agent when interpreting the plan and dispatching agents. The fifth experiment studies the resource profile of the final local configuration. The sixth experiment compares Autopilot against alternative desktop automation systems. Appendix~\ref{app:experimental_data} provides the complete experimental tables and per-run results supporting the summaries reported in this chapter.
 
-
-\subsection{System Evaluation}
-
-\subsubsection{VLM Selection}
+\subsection{Experiment 1 - VLM Selection}
 \label{sec:vlm_selection}
-The three VLM roles in Autopilot (Scout, Vision, and QA) share the same underlying
-model, but impose different objectives. Scout and QA tasks can be fulfilled by most
-VLMs, as they are reasonably capable at OCR. However, the Vision Agent presents a
-different challenge: it must return precise screen coordinates. This visual grounding
-capability is not common across VLMs, and therefore it was used as the primary
-criterion for model selection.
+The purpose of this experiment is to select the VLM used by the three visually grounded roles in Autopilot: Scout, Vision, and QA. Although Scout and QA mostly require screen description and OCR capabilities, the Vision Agent must return precise screen coordinates, which is a stricter visual grounding requirement. The experiment therefore focuses on determining which local VLM can identify icons and text reliably enough to support desktop interaction.
 
-The evaluation setup follows the same hardware and software configuration declared
-in Section~\ref{sec:materials_and_resources}, with the same validation methods
-defined in Section~\ref{sec:validation_methods}. The only difference is that the
-full pipeline is not executed, but only the VLM model, called directly with the
-specific prompt for each template, meaning that timing and VRAM usage reflect
-exclusively the VLM inference stage.
+The experiment follows the hardware configuration described in Section~\ref{sec:materials_and_resources} and the validation methods defined in Section~\ref{sec:validation_methods}. The full Autopilot pipeline is not executed in this stage; instead, each VLM is called directly with the prompt associated with the corresponding template. This restriction isolates the inference behaviour of the model, so the reported latency and VRAM usage correspond only to the VLM stage and are not affected by the Manager Agent, the Planner Agent, or the Executor Agent.
 
-Six candidate models were evaluated across three task templates (\textit{Write a
-Note}, \textit{Search and Open File}, and \textit{Change Text Format in Word}),
-all of which require identifying icons and text on screen. Each candidate is
-characterised by the number of parameters (Params), indicating the model size,
-and the quantisation level (Quant.), where INT4 refers to 4-bit integer
-quantisation, a compression technique that reduces memory usage at the cost of
-a minor precision loss. The metrics used are M-01 Task Success Rate (TSR),
-defined as the percentage of runs where the model correctly identified all
-required coordinates, and M-03 End-to-end Latency, measuring the time taken
-to process the input and return the coordinates. Average VRAM usage is also
-reported, as it is a key factor in the final model selection. Although more
-models were tested, only the INT4 quantised versions are presented, as they
-were the most competitive across all dimensions.
+Table~\ref{tab:vlm_candidates} summarises the most relevant candidates across three templates that require locating visual elements on screen: \textit{Write a Note}, \textit{Search and Open File}, and \textit{Change Text Format in Word}. Params indicates model size, Quant. indicates the quantisation format, and INT4 denotes 4-bit integer quantisation. M-01 Task Success Rate (TSR) measures the percentage of runs in which the model returned all required coordinates correctly. M-03 End-to-End Latency measures the time required to process the screen input and return the result. Average VRAM usage is also reported because the system must run on consumer hardware.
 
 \begin{table}[H]
 \centering
@@ -61,35 +36,23 @@ Gemma3 4B   & 4B & INT4 & 0   & 0   & 0   & 31.07 & 51.89 \\
 \label{tab:vlm_candidates}
 \end{table}
 
-Both Qwen3 2B VL and Qwen3 4B VL achieved perfect grounding across all three templates, correctly identifying both text and icon targets in every step. Mistral 3B and Gemma3 4B failed entirely at coordinate prediction, hallucinated positions, and were therefore discarded, despite the inference time and the small VRAM used.
+The positive result of this experiment is that two local VLMs, Qwen3 2B VL and Qwen3 4B VL, achieved 100\% TSR across all three templates. This confirms that reliable coordinate grounding is possible with compact quantised models, which is essential for preserving the local execution constraint of the project. The negative result is that the remaining candidates failed completely at coordinate prediction, returning hallucinated or unusable positions despite acceptable inference times.
 
-Between the two viable candidates, Qwen3 2B VL and Qwen3 4B VL are identical in accuracy (100\% across all templates) but differ in the inference time and the resources used. Since both models achieve the same grounding performance, the smaller model is preferable under the project's consumer hardware constraint. Qwen3 2B VL INT4 was selected as the VLM for all three agent roles (Scout, Vision, and QA).
+The experiment demonstrates that VLM model size is not the decisive factor once the required grounding capability is present. Since Qwen3 2B VL and Qwen3 4B VL achieved identical TSR, the final decision is driven by latency and resource efficiency. Qwen3 2B VL INT4 was selected as the VLM for Scout, Vision, and QA because it provides the same grounding accuracy as the larger model while using fewer resources.
 
+\subsection{Experiment 2 - LLM Selection}
+\label{sec:llm_selection}
+This experiment selects the language model used by Autopilot for two distinct roles: intent classification and manager orchestration. The Intention Agent must convert a free-form user request into a valid structured JSON object containing the correct intent and parameters. The Manager Agent must then read the deterministic plan, maintain execution state, and decide which specialised agent must be called at each step.
 
-\subsubsection{LLM Selection}
-The LLM must perform two distinct roles: intent classification with the Intention
-Agent, and task orchestration with the Manager Agent. The model must produce the
-correct intent name and all required parameters in a structured JSON format, without
-requiring regular expression fallbacks or post-processing.
-
-The evaluation setup, metrics, and validation methods follow the same configuration
-as the VLM experiment described in Section~\ref{sec:vlm_selection}, with the
-exception that only the LLM is called directly, and VRAM usage is not reported as
-a selection criterion for this stage. As in the VLM experiment, Params refers to
-the model size, Quant. to the quantisation level applied, and M-01 TSR to the
-percentage of runs where the model produced a correctly structured and complete
-JSON output. The most relevant candidates are summarised in
-Table~\ref{tab:llm_candidates}; the full list of evaluated models is provided
-in Appendix A. Each model was tested across two task templates (\textit{Write a
-Note} and \textit{Change Text Format in Word}).
-
+The same hardware and validation setup used in Experiment 1 is preserved, but only the LLM is called directly during the selection stage. Each model is evaluated on \textit{Write a Note} and \textit{Change Text Format in Word}, which together test both simple parameter extraction and a more demanding instruction involving an existing document. M-01 TSR measures the percentage of runs in which the model produced a complete and correctly structured JSON output. Inference time measures the duration of the model call, and average VRAM usage reports the memory footprint of the local configuration. The most relevant candidates are summarised in Table~\ref{tab:llm_candidates}, while Appendix~\ref{app:experimental_data} contains the extended experimental data.
 
 \begin{table}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-\textbf{Model} & \textbf{Params} & \textbf{Quant.} & \textbf{Write} & \textbf{Format} & \textbf{Inference} & \textbf{Avg} \\
- & & & & & \textbf{Time (s)} & \textbf{Vram (\%)} \\
+\textbf{Model} & \textbf{Params} & \textbf{Quant.} & \textbf{Write} & \textbf{Format} & \textbf{M-03 End-to-end} & \textbf{Avg Vram} \\
+ & & & \textbf{M-01 TSR (\%)} & \textbf{M-01 TSR (\%)} & \textbf{Latency (s)} & \textbf{(\%)} \\
 \hline
 Gemma4 E4B         & 4B & INT4  & 100 & 100 & 21.07 & 37.53 \\
 \hline
@@ -103,60 +66,24 @@ Llama3.2 3B        & 3B & INT 4 & 100 & 100 &  2.33 & 17.23 \\
 \hline
 Ministral3 3B      & 3B & INT 4 & 100 &   0 &  2.26 & 30.90 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \caption{LLM candidate evaluation across two task templates.}
 \label{tab:llm_candidates}
 \end{table}
 
-All six models achieved perfect intent classification on the Write a Note template, and all except Ministral3 3B generalised correctly to a more complex Format Text template. From an entirely Intention Agent perspective, the criteria to select the best model would favour the fastest and most resource-efficient model, which in this case it’s Qwen3 4B Instruct stands out with an inference time of just 2.02 s and 25.95\% average VRAM usage, while Llama3.2 3B offers similar speed at 2.33 s with the lowest VRAM footprint of all candidates (17.23\%).
+The positive result is that most candidates solved the intent-classification task successfully, which confirms that structured command extraction can be performed by several compact local LLMs. From the perspective of the Intention Agent alone, Qwen3 4B Instruct would be the strongest candidate because it combines perfect TSR with an inference time of 2.02 s and moderate VRAM usage. Llama3.2 3B also offers a competitive latency and the lowest memory footprint among the candidates.
 
-However, intent classification is only one of the two roles the LLM must fulfil. The same model is also used as the Manager Agent, where it must read the full PDDL plan, maintain execution state across multiple steps, and dispatch each agent Models that performed well as Intention Agents consistently failed as Managers, they lost track of the plan, repeated steps, or didn’t follow the PDDL plan. Of all candidates evaluated, only Gemma4 E4B demonstrated reliable orchestration behaviour across all seven task templates, it’s Effective 4B architecture, gives this model a huge advantage, with far better ability to reason and manage the entire workflow.
+The negative result is that intent classification accuracy alone does not predict manager reliability. Several fast models that produced valid JSON outputs failed when used as the Manager Agent: they lost track of the PDDL plan, repeated steps, or dispatched agents in an order that did not follow the deterministic plan. This makes the selection problem more restrictive than a standard prompt-to-JSON benchmark.
 
-\subsubsection{Agents Evaluation}
+The experiment demonstrates that the selected LLM must be evaluated as part of the complete orchestration role, not only as an intent parser. Gemma4 E4B was selected because it was the only candidate that preserved reliable manager behaviour across all seven task templates. The decision sacrifices some raw inference speed, but it provides the reasoning stability required to execute the deterministic plan without plan drift.
+
+\subsection{Experiment 3 - Agents Evaluation}
 \label{sec:autopilot-agents-eval}
+This experiment evaluates the execution time of the specialised agents in the final Autopilot pipeline. The objective is to determine which components dominate the runtime once the selected VLM and LLM are integrated into the complete system. The experiment covers all seven task templates, with three runs per template, for a total of 21 runs.
 
-This section presents the internal performance of the final Autopilot pipeline across all seven task templates, evaluated over 3 runs each (21 total runs). The metrics reported cover the timing breakdown of each pipeline stage, hardware resource utilisation, and the self-reported outcome of the QA Agent. Full per-run details are provided in Appendix A. For all this metrics, Gemma4 E4B to INT 4, was used and as seen in the results, was able to fully manage all workflows, with no errors.
+All runs start from a clean desktop state, with no applications open and no files pre-loaded in the target directories. This restriction maximises the number of evaluated steps because the system must navigate the complete execution path instead of benefiting from a partially prepared environment. The version evaluated in this experiment does not include the initial screen-state assessment described in Section~\ref{sec:system-design}; that feature was introduced later as a consequence of the comparative results. The metrics reported in Table~\ref{tab:agent_timings} correspond to average agent execution time in seconds, where each value represents the operational time spent by the corresponding agent after it is dispatched by the Manager Agent.
 
-All runs were conducted starting from a clean desktop state, with no applications open and no files pre-loaded in the target directories. This setup was chosen deliberately to maximise the number of steps evaluated per run, ensuring that the pipeline must navigate the full execution path from the initial screen state rather than benefiting from a partially prepared environment. It is important to note that all results presented in this chapter correspond to the system as evaluated at that point, without the initial screen state assessment feature described in Section~\ref{sec:system-design}; that functionality was introduced as a direct consequence of the observations derived from this comparative evaluation.
-
-Moreover, this evaluation divides into two section, the first one presents the time the Manager Agent took thinking and dispatching each agent, and the second one, presents the time each agent took to complete its task. This division is important, as it allows to understand the internal workflow of the system, and therefore identify potential bottlenecks or areas of improvement.
-
-\paragraph{Manager Evalution}
-\begin{table}[H]
-\centering
-\begin{tabular}{|l|c|c|c|c|c|c|c|}
-\hline
-\textbf{Template} & \textbf{Intention} & \textbf{Planner} & \textbf{Translator} & \textbf{Scout} & \textbf{Vision} & \textbf{Executor} & \textbf{QA} \\
- & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} \\
-\hline
-Write a Note      & 11.43 &  2.61 & 1.89 &  6.36 & N/A  &  7.02 & 1.05 \\
-\hline
-Create Doc/Folder &  7.82 &  2.10 & 0.55 &  2.57 & 1.58 &  9.45 & 0.61 \\
-\hline
-Search \& Open   & 13.59 &  1.46 & 1.01 &  1.81 & 2.61 & 16.28 & 1.11 \\
-\hline
-Search Text       & 10.85 &  1.98 & 1.88 &  3.86 & 3.81 & 19.27 & 3.36 \\
-\hline
-Delete Text       & 11.94 &  1.47 & 1.69 &  8.20 & 5.01 & 27.66 & 1.08 \\
-\hline
-Format Text       & 15.15 &  1.38 & 3.28 &  7.43 & 4.64 & 19.25 & 3.39 \\
-\hline
-Copy and Paste    &  8.97 &  1.97 & 2.45 &  6.05 & 1.66 & 16.11 & 2.42 \\
-\hline
-Global            & 11.39 &  1.85 & 1.82 &  5.18 & 3.22 & 16.43 & 1.86 \\
-\hline
-\end{tabular}
-\caption{Autopilot average Manager Thinking timings (seconds) per task template, averaged across 3 runs each.}
-\label{tab:manager_timings}
-\end{table}
-
-Across all templates, intent classification is the main cost, averaging 11.39 s globally. This is expected, as it is the first initialization of the model and might take more time to power up and load to the VRAM. Afterwards, the model is already loaded and call the Planner Agent quickly, the same thing happens for the translator agent that is called efficiently right after the PDDL planning.
-
-The Scout Agent time varies from nearly 2s up to almost 8s, this is due the numerous calls during more complex tasks, such as formatting a specific text in Word. Moreover, the Vision Agent is more direct, due to the straight and more natural approach. The execute action, has the highest time, this is because the Manager Agent, must think thoroughly, what the response for the Scout and Vision Agent was, and therefore give the executor the correct parameters for the given the specific situation, to execute a fallback action, a click, type or find a specific text.
-
-Finally, the QA Agent, is always the last step of the workflow, therefore due to the explicit declaration in the prompt, the manager agent can do this step very quickly and precise.
-
-\paragraph{Agents Evaluation}
 \begin{table}[H]
 \centering
 \begin{tabular}{|l|c|c|c|c|c|c|c|}
@@ -185,15 +112,57 @@ Global            & 23.29 & 0.42 &    0 & 2.87 & 2.63 & 13.26 & 3.97 \\
 \label{tab:agent_timings}
 \end{table}
 
-This table breaks down the average execution time per agent across all seven templates. The Intention agent dominates the pipeline, accounting for 23.29 s globally, which represents over half of the total end-to-end time in most templates. This is expected given that it runs a quantized 4B language model locally to parse all 7 templates, from free form speech into a structured JSON. Moreover, the Intention Agent is the first step of the pipeline, therefore it might take more time to power up and load to the VRAM, which can explain the higher time compared to the rest of the agents
+The positive result is that the deterministic and code-based components are highly efficient. The Planner Agent averages 0.42 s globally, showing that Fast Downward introduces negligible overhead, while the Translator Agent is effectively instantaneous because it performs deterministic code translation rather than model inference. Scout, Vision, and QA remain stable across templates, with higher values only when the task requires additional screen checks or more complex visual grounding.
 
-The next agent in line is the Planner, whichis consistently negligible at 0.42 s globally, reflecting the deterministic and lightweight nature of Fast Downward. The Translator is effectively zero across all templates, due to its pure code operation with no model inference.
+The negative result is that the Intention Agent and Executor Agent dominate runtime. The Intention Agent averages 23.29 s globally because it performs the initial local LLM call and may also include model loading into VRAM. The Executor Agent averages 13.26 s because it must wait for the operating system to update its interface after actions, reducing the risk of capturing stale screenshots or interacting before the UI is ready.
 
-Scout Agent averages 2.87 s globally, with Format Text being the highest at 7.43 s due to the greater number of visibility checks required when locating text or UI elements. Vision is N/A for Write a Note, the only template where no coordinate grounding is needed, this task only requires opening Notepad and typing. Across the remaining templates, Vision averages 2.63 s, remaining stable and predictable, due to the straightforward prompt and task it has to complete. 
+This experiment demonstrates that the largest runtime cost is not the deterministic planner but the model-based parsing stage and the safety delays required for desktop execution. The resulting decision is to preserve the deterministic planning layer, because it adds very little latency while providing a structured plan that prevents the system from relying on repeated LLM trial-and-error during execution.
 
-Then, the Executor Agent is the second most expensive agent at 13.26 s globally, this time is static, as the system has to wait until the Windows system has updated its state, otherwise, there is a risk of capturing incorrect screenshots, or typing/clicking when the OS isn't ready yet. Finally, QA is stable across all templates at around 3.97 s globally, consistent with its fixed role and custom prompt, which is designed to be concise and direct to the point, making it easier for the model to understand and answer quickly.
+\subsection{Experiment 4 - Manager Orchestration Timing}
+\label{sec:manager_orchestration_timing}
+This experiment analyses the time spent by the Manager Agent when reasoning over the current plan state and dispatching each specialised agent. Unlike Experiment 3, which measures the operational execution time of the agents themselves, this experiment measures the orchestration overhead introduced by the manager between plan steps. The goal is to determine whether the LLM-based manager becomes a bottleneck even when the plan is already generated deterministically.
 
-\paragraph{Resources Evaluation}
+The same 21 runs are used, with three executions for each of the seven templates. The restriction is that the Manager Agent does not generate a new plan through open-ended reasoning; it receives a deterministic PDDL plan and must follow it step by step. The metric reported in Table~\ref{tab:manager_timings} is average manager thinking time in seconds before or around each dispatched agent call, which captures the cost of interpreting the plan, maintaining execution state, and selecting the next action.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline
+\textbf{Template} & \textbf{Intention} & \textbf{Planner} & \textbf{Translator} & \textbf{Scout} & \textbf{Vision} & \textbf{Executor} & \textbf{QA} \\
+ & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} \\
+\hline
+Write a Note      & 11.43 &  2.61 & 1.89 &  6.36 & N/A  &  7.02 & 1.05 \\
+\hline
+Create Doc/Folder &  7.82 &  2.10 & 0.55 &  2.57 & 1.58 &  9.45 & 0.61 \\
+\hline
+Search \& Open   & 13.59 &  1.46 & 1.01 &  1.81 & 2.61 & 16.28 & 1.11 \\
+\hline
+Search Text       & 10.85 &  1.98 & 1.88 &  3.86 & 3.81 & 19.27 & 3.36 \\
+\hline
+Delete Text       & 11.94 &  1.47 & 1.69 &  8.20 & 5.01 & 27.66 & 1.08 \\
+\hline
+Format Text       & 15.15 &  1.38 & 3.28 &  7.43 & 4.64 & 19.25 & 3.39 \\
+\hline
+Copy and Paste    &  8.97 &  1.97 & 2.45 &  6.05 & 1.66 & 16.11 & 2.42 \\
+\hline
+Global            & 11.39 &  1.85 & 1.82 &  5.18 & 3.22 & 16.43 & 1.86 \\
+\hline
+\end{tabular}
+\caption{Autopilot average Manager Thinking timings (seconds) per task template, averaged across 3 runs each.}
+\label{tab:manager_timings}
+\end{table}
+
+The positive result is that the manager follows a prepared plan rather than attempting to discover the solution through open-ended LLM action loops. This deterministic planning structure prevents plan failures and keeps the workflow more direct: the manager does not need to try multiple possible actions until one works, because the PDDL planner has already produced a valid sequence of actions. As a result, the orchestration process remains interpretable and avoids the planning drift commonly observed in reactive LLM-controlled systems.
+
+The negative result is that the manager still introduces non-negligible overhead when it must interpret the responses of Scout and Vision before dispatching the Executor Agent. The Executor-related manager time is the largest global value at 16.43 s, because the manager must translate the current visual and textual evidence into the exact parameters required for clicking, typing, fallback execution, or text search.
+
+This experiment demonstrates that the hybrid architecture separates planning from orchestration effectively. The deterministic planner guarantees the action structure, while the Manager Agent focuses on grounded execution decisions. The design decision is therefore to keep the Manager Agent as a plan follower and dispatcher rather than replacing the planner with a single LLM loop, because that alternative would increase the risk of repeated actions, planning errors, and unnecessary intermediate steps.
+
+\subsection{Experiment 5 - Resources Evaluation}
+\label{sec:resources_evaluation}
+This experiment evaluates whether the final Autopilot configuration can operate within the constraints of consumer hardware. Since the system runs all models locally, resource usage is a central requirement rather than a secondary implementation detail. The experiment therefore measures CPU usage, RAM usage, GPU utilisation, and GPU memory usage across the same seven task templates.
+
+The restriction is that all runs are executed on the same local machine and with the same final model configuration selected in the previous experiments. Table~\ref{tab:resource_usage} reports average resource usage per template across three runs. CPU avg and RAM avg measure average system utilisation during execution. GPU Util. avg measures average GPU compute activity, while GPU Mem. avg measures average GPU memory occupation, which is especially relevant because Ollama keeps quantised models resident in VRAM once they have been loaded.
 
 \begin{table}[H]
 \centering
@@ -223,71 +192,22 @@ Global            & 24.7 & 71.9 & 23.8 & 78.6 \\
 \label{tab:resource_usage}
 \end{table}
 
-The regarding resource usage is a key aspect in this system, due to the complex organisation of the agents, it is important to reduce the resource consumption. We can see how GPU memory averages between 74\% and 81\% across templates, consistent with Ollama's managed memory, the quantized models are loaded into VRAM on demand and remain resident until unloaded, causing memory usage to stay elevated throughout execution. GPU utilisation averages between 21\% and 33\% and dropping to near zero between agent calls. CPU usage remains modest at around 25\% on average, and RAM usage stays stable between 70\% and 78\%, confirming that the system operates comfortably within consumer hardware constraints.
+The positive result is that the system remains within the expected limits of the evaluation hardware. CPU usage stays close to 25\% on average, RAM usage remains stable between approximately 70\% and 78\%, and GPU utilisation stays moderate despite the use of local VLM and LLM calls. This confirms that the multi-agent architecture can run locally without requiring cloud inference.
 
-Finally, it is important to note, that the QA Agent reported success (YES) in 86\% of runs globally (18 out of 21). The two \textit{NO} responses occurred during the \textit{Format Text} template, where the QA Agent incorrectly judged the formatting task as incomplete despite human verification confirming success. Despite altering the prompt several times to be more concise and even telling the model to compare the final text with other non-formatted text. Meaning that the QA Agent's screenshot, despite being in high-quality, Qwen3 only process images in 1000x1000, therefore the image distortion, not only in quality but in the aspect ratio, can lead the QA Agent to be less precise.
+The negative result is that GPU memory remains high throughout the runs, averaging between 74\% and 81\%. This behaviour is consistent with Ollama's memory management, because quantised models are loaded into VRAM on demand and remain resident until unloaded. The QA Agent also reported success in 86\% of runs globally, with the negative responses concentrated in the \textit{Format Text} template. Manual verification confirmed that these tasks were completed correctly, indicating that the QA failures were false negatives caused by limited visual precision when evaluating formatted text from screenshots.
 
-\subsection{Comparative Evaluation}
+This experiment demonstrates that Autopilot can satisfy the local execution requirement on consumer hardware, but it also shows that GPU memory is the limiting resource. The resulting decision is to keep the selected quantised models and avoid larger alternatives unless the hardware target changes, because the current configuration achieves the required functionality while remaining compatible with the project's privacy and offline-operation goals.
 
-This section presents a comparative benchmark of Autopilot against five alternative
-desktop automation systems: Windows Voice Access, Claude Cowork, OpenClaw, Gemini
-Computer Use, and Gemini Computer Use Screenshot. All systems were evaluated on the
-same seven task templates, over 3 runs each, on the same hardware described in
-Section 1.1, with steps normalised to Autopilot's PDDL action schema. The purpose
-of this comparison is to determine whether Autopilot offers advantages over existing
-desktop automation alternatives in terms of autonomy, local execution, privacy,
-robustness, and task completion. Since the evaluated systems do not share the same
-operating assumptions, the comparison is organised progressively: first all systems
-are compared together, then only fully autonomous systems are considered, and finally
-the analysis is restricted to fully local systems.
+\subsection{Experiment 6 - Competition}
+\label{sec:competition_eval}
 
-\textbf{Windows Voice Access (WVA)} \cite{windows_voice_access} is a command-driven,
-fully local system with no planning layer. \textbf{Claude Cowork} \cite{claude_cowork}
-is a cloud-based, reactive system that accepts a single prompt and executes autonomously
-by cycling through screenshot-decide-act iterations. \textbf{OpenClaw} \cite{openclaw}
-is a fully local, single-prompt system that exposes desktop tools to a general-purpose
-LLM without a dedicated planning stage. \textbf{Gemini Computer Use (Gemini CU)}
-\cite{gemini_cu} is a cloud-based reactive API evaluated in two modes: one where the
-model decides when to take screenshots autonomously, and one (Gemini SS) where
-screenshots are injected externally after every action. A full architectural
-description of each competitor system is provided in Appendix~\ref{app:competitors}.
-All competitor logs, execution traces, and supporting evidence are stored in the
-university repository under \texttt{Code/competitors}.
+This experiment compares Autopilot against the alternative desktop automation systems characterised in Section~\ref{sec:related_work}, especially in Tables~\ref{tab:cloud_related_systems} and~\ref{tab:local_related_systems}. The objective is not to describe those systems again, but to evaluate how Autopilot performs when progressively stricter requirements are applied. All systems were evaluated on the same seven task templates, with three runs per template, using the same hardware described in Section~\ref{sec:materials_and_resources}. Steps were normalised to Autopilot's PDDL action schema so that M-02 Step Accuracy, M-04 Planning Error Rate, M-05 Tool Hallucination Rate, M-06 Visual Hallucination Rate, M-07 Total Error Rate, M-08 Standard Deviation of Steps, M-09 Standard Deviation of Latency, M-10 Data Exposure Level, and M-11 Total Steps could be compared consistently. All competitor logs, execution traces, and supporting evidence are stored in the university repository under \texttt{Code/competitors}.
 
-Table~\ref{tab:comparative_setup} summarises the setup and main restrictions of
-each evaluated system. This information is necessary to interpret the following
-comparisons because some systems are fully local, others depend on cloud execution,
-and others are not fully autonomous.
+The competition is organised as three elimination rounds. Round 1 includes every evaluated system and establishes the complete benchmark landscape. Round 2 keeps only systems that can execute a task autonomously from a single user goal. Round 3 keeps only systems that are both autonomous and fully local. This structure makes the comparison progressively closer to the design goals of Autopilot: task completion, autonomy, and local privacy-preserving execution.
 
-\begin{table}[H]
-\centering
-\scriptsize
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|p{1.7cm}|p{1.2cm}|p{1.7cm}|p{2.2cm}|p{2.2cm}|p{3.4cm}|}
-\hline
-\textbf{System} & \textbf{Execution} & \textbf{Autonomy} & \textbf{Input / Control} & \textbf{Screen Feedback} & \textbf{Main Constraints} \\
-\hline
-Autopilot & Local & Fully autonomous & Voice prompt transcribed locally and mapped to a task template & Internal Scout, Vision, and QA agents & Limited to seven task templates; local model latency; evaluated version did not include the initial screen-state check \\
-\hline
-WVA & Local & Not autonomous & User issues each voice command manually & Native Windows accessibility feedback & Human user acts as the planner; no autonomous task decomposition; occasional screen detection errors \\
-\hline
-OpenClaw & Local & Fully autonomous & Single prompt with MCP tools and skills & Tool-based desktop interaction & Failed every evaluated run; resisted or self-reported completion incorrectly; no structured planner; tested offline with local models \\
-\hline
-Claude CW & Cloud & Fully autonomous & Native Claude app with computer-use enabled & Native screenshot-based feedback & Reactive planning; cloud data exposure; screenshots and context are processed externally \\
-\hline
-Gemini CU & Cloud & Fully autonomous & API prompt with Gemini computer-use tools, including screenshot & Model-requested screenshot tool & Reactive planning; cloud data exposure; repeated API quota exhaustion; frequent tool hallucinations and incorrect self-reported completion \\
-\hline
-Gemini SS & Cloud & Externally assisted & API prompt with externally injected screenshots after each action & Screenshot input provided by the evaluation script & Not fully autonomous; reactive planning; cloud data exposure; produced an unsafe OS-level shutdown action during testing \\
-\hline
-\end{tabular}
-}
-\caption{Setup and main constraints of the systems included in the comparative evaluation.}
-\label{tab:comparative_setup}
-\end{table}
+\subsubsection{Round 1 - Full System Comparison}
 
-\subsubsection{Full System Comparison}
-
-This experiment provides a broad baseline across all evaluated alternatives before applying any exclusion criterion. No system is removed at this stage, so the goal is to observe the complete landscape of results even though the setups differ in autonomy, locality, and screen feedback. Table~\ref{tab:full_comparative} reports all six systems across the same seven task templates with three runs each.
+Round 1 includes all evaluated systems, regardless of whether they are fully autonomous, fully local, or externally assisted. The purpose of this round is to provide a broad baseline before applying any exclusion criterion. The restriction is that all systems must be evaluated on the same seven templates and represented through the same metric definitions, even when their operating assumptions differ. Table~\ref{tab:full_comparative} reports the complete comparison.
 
 \begin{table}[H]
 \centering
@@ -323,17 +243,15 @@ M-11 Total Steps                    & 4.57   & 10.90 & 0.000 & 6.38  & 8.48  & 5
 \label{tab:full_comparative}
 \end{table}
 
-A cross-cutting observation that emerged from reviewing all competitor systems is that none of them performs an initial assessment of the current desktop state before committing to a plan or action. Every system evaluated, whether reactive like Claude CW and Gemini CU or command-driven like WVA, assumes a blank slate and begins issuing actions immediately, without first checking what is already visible on screen. This means they cannot take advantage of elements that are already open, nor detect early that the required conditions are not yet met. After analysing these results, it was decided to extend Autopilot with an initial screen state check: before invoking the Planning Agent, the Manager Agent now calls the Scout Agent to assess what is currently visible on the desktop, allowing the pipeline to ground its plan in the actual context from the very first step. This feature was not present during the experiments reported in this chapter and is therefore not reflected in the metrics above; it represents a direct improvement derived from the comparative analysis.
+The main favourable outcome of Round 1 is that Autopilot achieves perfect task success while maintaining zero planning errors, zero tool hallucinations, and zero data exposure. WVA also reaches perfect task success and slightly better step accuracy, while Gemini SS performs strongly in task success and total error rate. These results show that several systems can complete the evaluated tasks under their own operating conditions.
 
-This section focuses on WVA and Gemini SS, the two systems excluded from the next comparison, and how they relate to Autopilot. The remaining systems (OpenClaw, Claude CW, and Gemini CU) are discussed in the following sections.
+However, the strongest Round 1 alternatives do not satisfy the same autonomy conditions. WVA requires the user to decompose and issue commands step by step, which explains its high average number of steps. Gemini SS benefits from externally injected screenshots after each action, so its feedback loop is not fully autonomous. A cross-cutting observation also emerges from this round: none of the competitor systems performs an initial assessment of the desktop state before acting. This limitation motivated a later Autopilot improvement in which the Manager Agent first calls the Scout Agent to assess the current screen before invoking the planner; this feature was introduced after the experiments reported here and is therefore not reflected in the table.
 
-WVA achieves a perfect TSR (1.000) and actually outperforms Autopilot on step accuracy (0.968 vs 0.925) and total error rate (0.032 vs 0.075), with a lower latency of 47.00 s. However, these numbers come at the cost of autonomy: WVA requires the user to issue commands step by step, which is why it needs 10.90 steps on average, more than double Autopilot's 4.57. It is not a fair autonomous competitor, but it serves as a bottom line of current alternatives to assistive technologies. Moreover, WVA has as default settings to mantain everything locally with no data being sent across servers although this feature can be turned on at any time.
+Round 1 demonstrates that raw task completion is not enough to identify the most suitable system for this project. WVA and Gemini SS are removed from the next round because they do not satisfy the fully autonomous execution criterion. Autopilot, OpenClaw, Claude CW, and Gemini CU advance to Round 2.
 
-Gemini SS scores TSR 0.952 and a total error rate of 0.107, making it the second most accurate system. The constant scrennshot feedback injected after each action clearly helps the model keep track of its progress and future actions, resulting in lower planning errors (0.107) and no tool or visual hallucinations. Despite this, Gemini SS is excluded from the later autonomous comparison because the screenshot injection is managed externally by the orchestration script, not by the model itself, which breaks the core requirement of fully autonomous execution. Additionally, Gemini SS sends information to external servers, where they use this data to better train the models.
+\subsubsection{Round 2 - Autonomous Systems}
 
-\subsubsection{Autonomous Systems}
-
-This experiment isolates systems that can execute a full task from a single user goal without step-by-step human planning or externally injected screenshots. WVA is excluded because the user acts as the planner, and Gemini SS is excluded because the screenshot loop is managed by the evaluation script. Table~\ref{tab:autonomous_comparative} therefore compares the autonomous capabilities of Autopilot, OpenClaw, Claude CW, and Gemini CU.
+Round 2 keeps only systems that can execute a complete task from a single high-level user goal without step-by-step human planning or externally managed screenshot injection. This round evaluates autonomy as a necessary condition for comparison with Autopilot. The restriction removes WVA because the user remains responsible for planning the sequence of commands, and removes Gemini SS because its screenshot feedback is supplied externally by the evaluation script. Table~\ref{tab:autonomous_comparative} compares the remaining autonomous systems.
 
 \begin{table}[H]
 \centering
@@ -369,15 +287,15 @@ M-11 Total Steps                    & 4.57   & 0.000 & 6.38  & 8.48  \\
 \label{tab:autonomous_comparative}
 \end{table}
 
-This section focuses on Claude CW and Gemini CU, the two systems excluded from the final comparison, and how they relate to Autopilot. OpenClaw is also present but fails entirely (TSR 0.000), and is discussed in depth in the following section alongside Autopilot.
+Round 2 shows that fully autonomous completion is achievable, since both Autopilot and Claude CW reach perfect task success across the complete set of templates. Autopilot also keeps a lower average number of steps, no planning errors, no tool hallucinations, and no data exposure. This confirms that its deterministic planning layer provides a stable execution structure without requiring external processing.
 
-Claude CW matches Autopilot on TSR (1.000) but accumulates a planning error rate of 0.225, compared to Autopilot's zero, which is consistent with its reactive architecture: no upfront plan means the model occasionally chooses the wrong action or gets stuck. This also translates into more steps on average (6.38 vs 4.57) and a higher step standard deviation (0.139 vs 0.000). On the positive side, Claude CW produces no tool or visual hallucinations, meaning its errors are purely reasoning-based rather than perceptual. However, as a cloud system, it transmits screenshots and conversation context on every action (M-10 = 3), which rules it out for privacy-sensitive deployments.
+The limitation exposed by this round is that the remaining alternatives either fail the tasks or violate the local privacy requirement. OpenClaw completes none of the evaluated tasks, while Gemini CU achieves only 0.333 TSR and accumulates planning, tool, and total errors. Claude CW completes the tasks but still introduces planning errors and carries the maximum data exposure level because it depends on cloud processing. These results show that autonomy alone is not sufficient when privacy and reliable local execution are design requirements.
 
-Gemini CU performs significantly worse, achieving only TSR 0.333 and accumulating errors across all three categories: planning (0.358), tool hallucination (0.163), and a total error rate of 0.521. It is also the least consistent system, with a step standard deviation of 0.588 and a latency standard deviation of 0.556. Like Claude CW, it carries a data exposure level of 3. Both cloud systems are excluded from the final comparison for these reasons. The next section isolates Autopilot and OpenClaw as the only two fully local candidates.
+Round 2 demonstrates that the main distinction among autonomous systems is not only whether they can act without the user, but whether they can do so while preserving local execution and avoiding planning drift. Claude CW and Gemini CU are removed from the final round because they depend on cloud inference and external data processing. Autopilot and OpenClaw advance to Round 3 as the only fully local autonomous candidates.
 
-\subsubsection{Fully Local Systems}
+\subsubsection{Round 3 - Fully Local Autonomous Systems}
 
-This experiment focuses on the local-processing constraint that is central to Autopilot's design. Claude CW, Gemini CU, and Gemini SS are excluded because they depend on cloud inference and external data processing, while WVA is already excluded for not being autonomous. Table~\ref{tab:local_comparative} therefore isolates Autopilot and OpenClaw as the only fully local autonomous candidates.
+Round 3 applies the strictest criterion: a system must be both autonomous and fully local. This round directly tests the central objective of Autopilot, which is to perform desktop automation without sending voice, screen, or task data to external services. The restriction excludes cloud-based systems and non-autonomous systems, leaving only Autopilot and OpenClaw. Table~\ref{tab:local_comparative} reports the final comparison.
 
 \begin{table}[H]
 \centering
@@ -412,15 +330,15 @@ M-11 Total Steps                    & 4.57   & 0.000 \\
 \label{tab:local_comparative}
 \end{table}
 
-The fully local comparison yields the starkest result in the entire benchmark: Autopilot completes every task (TSR 1.000) while OpenClaw completes none (TSR 0.000). Both systems run on the same hardware, use comparable quantised models, and share a data exposure score of zero, so the gap cannot be attributed to hardware, cloud access, or privacy trade-offs.
+The decisive finding in Round 3 favours Autopilot: it completes every task with TSR 1.000, zero planning errors, zero tool hallucinations, and zero data exposure. Since both systems are evaluated under the local constraint, the result cannot be explained by cloud access or by different privacy trade-offs.
 
-The difference is purely architectural. Autopilot separates intention parsing, automated planning, visual grounding, and execution into specialised agents, each with a focused role and a tailored prompt. OpenClaw relies on a single general-purpose LLM to reason about the full task, decide which tool to invoke, and recover from failures, all in one unstructured loop. None of the tool configurations tested, whether skills or MCPs, were sufficient to overcome this limitation. The results show that access to the right tools is not enough without a planning layer that structures how they are used.
+The weakness revealed by the final round is that the only other fully local autonomous system fails every evaluated run. This shows that local execution alone does not guarantee reliable automation. Access to desktop tools and local models is insufficient if the system lacks a structured mechanism for decomposing the task, grounding actions, and maintaining execution state.
 
-This directly supports one of the central claims of this project: running local models is necessary for privacy and offline operation, but it is not sufficient for reliable automation. The structured pipeline is the critical component, and Autopilot demonstrates that strong performance on consumer hardware is achievable without any cloud dependency.
+Round 3 demonstrates the main conclusion of the competition. Autopilot wins the final round because it is the only system that satisfies the three central requirements simultaneously: full task success, autonomous execution, and fully local processing. The decision supported by this experiment is to preserve Autopilot's hybrid architecture, where deterministic planning provides the action structure and specialised agents handle language interpretation, visual grounding, execution, and verification.
 
-\section{Qualitative Evaluation}
+\section{User Evaluation}
 
-In addition to the quantitative benchmark, a qualitative user study was conducted to assess real-world perceived usability and accessibility. The experiment was conducted on the same hardware used for the comparative evaluation described in Section~\ref{sec:autopilot-agents-eval}, with the system running locally and without internet access. Ten participants interacted directly with Autopilot, each issuing one free-form voice command of their choice. Across all participants. After the interaction, each participant completed a Google Forms survey with six Likert-scale questions (1 = worst, 5 = best) and an optional free-text comment. All ten participants confirmed that the system completed their requested task successfully.
+In addition to the controlled experimental benchmark, a user evaluation was conducted to assess how Autopilot is perceived during direct interaction. The study combines quantitative evaluation, based on Likert-scale scores for predefined dimensions, and qualitative evaluation, based on the optional comments provided by participants after completing the task. Ten participants interacted with Autopilot on the same local machine used for the previous experiments, with the system running offline and without internet access. Each participant issued one free-form voice command and then completed a Google Forms questionnaire. The complete questionnaire link, the exact questions, and the full response table are included in Appendix~\ref{app:qualitative_form}.
 
 \begin{table}[H]
 \centering
@@ -434,65 +352,75 @@ Execution environment & Same local machine used in the quantitative evaluation, 
 \hline
 Interaction mode & Each participant issued one free-form voice command to the system. \\
 \hline
-Task coverage & All seven templates were available across all participants. \\
+Task coverage & Six of the seven available templates were executed by participants. \\
 \hline
 Questionnaire & Google Forms survey completed immediately after the interaction. \\
 \hline
-Scale & Six Likert-scale questions from 1 to 5, plus one optional free-text comment. \\
+Format Questions & Six Likert-scale questions from 1 to 5, plus one optional free-text comment. \\
 \hline
 \end{tabular}
-\caption{Setup of the qualitative user study.}
+\caption{Setup of the user evaluation study.}
 \label{tab:qualitative_setup}
 \end{table}
 
-The complete questionnaire, form link, and full response table are included in Appendix~\ref{app:qualitative_form}.
+\subsection{Quantitative Evaluation}
 
-The survey dimensions used in Table~\ref{tab:qualitative_responses} are defined as follows:
+The quantitative part of the study is based on six Likert-scale dimensions, each scored from 1 to 5. These dimensions were evaluated as follows:
 
 \begin{enumerate}
-    \item \textbf{Recovery:} perceived ability of the system to recover from mistakes or unexpected intermediate states without failing the task.
-    \item \textbf{Behaviour:} perceived predictability of the system, including whether it avoided unnecessary detours or unexpected actions.
-    \item \textbf{Privacy:} perceived importance of keeping voice, screen, and task data processed locally.
-    \item \textbf{Accessibility:} perceived suitability of the system for users with motor impairments.
-    \item \textbf{Daily Use:} perceived likelihood of using the system in everyday desktop tasks.
-    \item \textbf{vs Others:} perceived likelihood of choosing Autopilot over existing alternatives.
+    \item \textbf{Recovery:} participants rated how well the system recovered from errors or unexpected intermediate states without failing the requested task.
+    \item \textbf{Behaviour:} participants assessed whether the system took detours or unexpected actions during execution, with higher values indicating a more predictable interaction.
+    \item \textbf{Privacy:} participants rated the importance of local processing, understood as keeping voice, screen, and task data on the device.
+    \item \textbf{Accessibility:} participants evaluated how suitable the system appeared for users with motor difficulties.
+    \item \textbf{Daily Use:} participants rated how likely they would be to use the system in everyday tasks if it were fully developed.
+    \item \textbf{vs Others:} participants rated how likely they would be to choose Autopilot over existing alternatives.
 \end{enumerate}
 
-Table~\ref{tab:qualitative_responses} reports the individual responses of each participant.
+This structure separates technical task success from perceived usefulness, privacy value, and accessibility relevance. Appendix~\ref{app:qualitative_form} reports the exact wording of each question and the complete individual responses.
+
+Table~\ref{tab:qualitative_responses} reports the aggregated quantitative results by task template. Each row corresponds to one template used during the study, Runs indicates how many participants executed that template, and the remaining columns report the mean score for each dimension.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|l|c|c|c|c|c|c|}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
 \hline
-\textbf{\#} & \textbf{Task} & \textbf{Recovery} & \textbf{Behaviour} & \textbf{Privacy} & \textbf{Accessibility} & \textbf{Daily Use} & \textbf{vs Others} \\
+\textbf{Task Template} & \textbf{Runs} & \textbf{Recovery} & \textbf{Behaviour} & \textbf{Privacy} & \textbf{Accessibility} & \textbf{Daily Use} & \textbf{vs Others} \\
 \hline
-1  & Open File      & 5 & 2 & 4 & 4 & 4 & 4 \\
+Open File & 2 & 5.0 & 3.5 & 4.5 & 4.5 & 4.0 & 4.0 \\
 \hline
-2  & Format Text    & 4 & 2 & 5 & 5 & 3 & 3 \\
+Format Text & 2 & 3.5 & 3.0 & 3.5 & 3.5 & 2.5 & 3.5 \\
 \hline
-3  & Format Text    & 3 & 4 & 2 & 2 & 2 & 4 \\
+Copy \& Paste & 2 & 5.0 & 4.5 & 3.5 & 4.0 & 4.5 & 3.0 \\
 \hline
-4  & Open File      & 5 & 5 & 5 & 5 & 4 & 4 \\
+Create Folder & 1 & 4.0 & 5.0 & 5.0 & 4.0 & 4.0 & 3.0 \\
 \hline
-5  & Copy \& Paste  & 5 & 4 & 2 & 4 & 4 & 3 \\
+Write Note & 2 & 5.0 & 4.5 & 4.0 & 4.5 & 4.5 & 4.0 \\
 \hline
-6  & Create Folder  & 4 & 5 & 5 & 4 & 4 & 3 \\
+Search Text & 1 & 4.0 & 4.0 & 4.0 & 4.0 & 3.0 & 4.0 \\
 \hline
-7  & Write Note     & 5 & 5 & 4 & 4 & 4 & 4 \\
-\hline
-8  & Search Text    & 4 & 4 & 4 & 4 & 3 & 4 \\
-\hline
-9  & Write Note     & 5 & 4 & 4 & 5 & 5 & 4 \\
-\hline
-10 & Copy \& Paste  & 5 & 5 & 5 & 4 & 5 & 3 \\
-\hline
-\textbf{Mean} & & \textbf{4.5} & \textbf{4.0} & \textbf{4.0} & \textbf{4.1} & \textbf{3.8} & \textbf{3.6} \\
-\hline
-\end{tabular}
-\caption{Qualitative user study responses. All ratings on a 1--5 scale (1 = worst, 5 = best).}
+\end{tabular}%
+}
+\caption{Quantitative user evaluation results by task template.}
 \label{tab:qualitative_responses}
 \end{table}
 
-Error recovery received the highest mean score (4.5), indicating that participants consistently perceived the system as capable of handling mistakes without failing the task. One participant noted: \textit{Very impressive how despite identifying wrong certain elements in the screen it detects that and is able to continue to next step.} Behavioural predictability averaged 4.0, the two lower scores (both 2) corresponded to participants who attempted the Format Text template, where a higher number of intermediate steps and the visual grounding behaviour may have appeared less direct to a first-time user. Privacy scored 4.0 on average, though opinions were notably different, with participants of a more technical background rating it highest, while one noted \textit{``it is not very important to me the data in my device''}, reflecting that the perceived value of local processing depends on the user. Accessibility suitability for motor impaired people averaged 4.1, with one outlier (score 2) corresponding to the same participant who reported transcription errors.
+The strongest quantitative result is the Recovery dimension. Open File, Copy \& Paste, and Write Note all obtain a mean recovery score of 5.0, and even the lowest template-level score remains 3.5 for Format Text. This indicates that participants generally perceived Autopilot as capable of continuing the task even when intermediate recognition or grounding errors occurred. Behaviour is also positive overall, although Format Text obtains the lowest mean value with 3.0. This is consistent with the higher number of intermediate steps required by that template and with the fact that visual grounding inside Microsoft Word can appear less direct to a first-time user.
 
-Likelihood of daily use (3.8) and preference over alternatives (3.6) were the lowest scoring dimensions, consistent with the system's current limitation to seven task templates and the latency due to the complex orquestration in local INT4 inference. Two participants specifically mentioned execution time, with one commenting \textit{``It took a while, it wasn't quick.''} Speech recognition accuracy was the most frequently cited area for improvement, two participants noted that the system did not transcribe their command correctly on the first attempt, although in both cases the task was completed successfully.
+Privacy and accessibility obtain consistently high scores across most templates, showing that participants recognised the value of local processing and considered the interaction suitable for users with motor difficulties. The lower values appear in Daily Use and vs Others, especially for Format Text and Create Folder. This suggests that the current prototype is promising but not yet perceived as a daily replacement for existing interaction methods. The main reasons are consistent with the system's current limitations: local inference latency, occasional speech transcription errors, and support for a restricted set of task templates.
+
+\subsection{Qualitative Evaluation}
+
+The qualitative comments provide more detail about the numerical results. The clearest positive evidence concerns robustness during execution. One participant wrote: \textit{``Very impressive how despite identifying wrong certain elements in the screen it detects that and is able to continue to next step.''} This comment shows that the user did not only value final task completion, but also noticed the system's ability to recover from imperfect visual grounding. This supports the high Recovery scores and suggests that visible error correction improves perceived reliability.
+
+The comments also show that local processing can be meaningful in practical contexts. One participant stated: \textit{``Very nice and I can use it in business meetings where I have to be cautious with the data.''} As this comment indicates, privacy is not only an abstract technical requirement; for some users, it becomes relevant when the task involves professional or sensitive information. However, the comments also reveal that this perception is not universal, since another participant noted that keeping data on the device was not very important to them.
+
+The main concerns are latency, speech recognition, and the amount of information required from the user. One participant wrote: \textit{``It took a while, it was not quick.''} This directly matches the lower Daily Use scores and shows that execution time affects whether the system is perceived as convenient for everyday interaction. Speech recognition also affected usability, as one participant explained: \textit{``I needed a few attempts to repeat myself because the system did not understand my voice well.''} In both cases, the system still completed the requested task, but the comments show that task success alone is not enough if the interaction feels slow or requires repeated speech attempts.
+
+Another relevant comment was: \textit{``I should not have to specify where the document is.''} As this user suggests, future versions should improve contextual file discovery and reduce the amount of explicit path information required in the spoken command. This would make the interaction closer to natural user intent and reduce the preparation effort needed before using the system.
+
+Overall, the user evaluation supports the same conclusion as the technical experiments. Autopilot is perceived as reliable, privacy-preserving, and potentially useful for accessibility, but its current prototype status is still visible through latency, transcription sensitivity, and limited task coverage.
+

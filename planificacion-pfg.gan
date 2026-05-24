@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="PFG 2026" company="" webLink="" view-date="2026-05-11" view-index="0" gantt-divider-location="452" resource-divider-location="300" version="3.3.3322" locale="en_GB">
+<?xml version="1.0" encoding="UTF-8"?><project name="PFG 2026" company="" webLink="" view-date="2025-09-29" view-index="0" gantt-divider-location="375" resource-divider-location="300" version="3.3.3322" locale="en_GB">
     <description/>
-    <view zooming-state="default:0" id="gantt-chart">
-        <field id="tpd3" name="Name" width="208" order="0"/>
-        <field id="tpd4" name="Begin date" width="86" order="1"/>
-        <field id="tpd5" name="End date" width="86" order="2"/>
-        <field id="tpd6" name="Duration" width="71" order="3"/>
+    <view zooming-state="default:7" id="gantt-chart">
+        <field id="tpd3" name="Name" width="147" order="0"/>
+        <field id="tpd4" name="Begin date" width="81" order="1"/>
+        <field id="tpd5" name="End date" width="87" order="2"/>
+        <field id="tpd6" name="Duration" width="59" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
@@ -38,6 +38,7 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
+        <task id="10" uid="e3c15ee5a5b248fa897fbd6ca5c9542d" name="Preliminary Project" meeting="false" start="2025-10-01" duration="47" complete="0" expand="true"/>
         <task id="1" uid="72ba31c04fa04539bf4aeef3c1039cc7" name="Project Scope" color="#9fc5e8" meeting="false" start="2026-01-04" duration="14" complete="100" expand="true"/>
         <task id="2" uid="8ca9b1d1091648658e6fa9e4ae8802ef" name="Iteration 1" color="#9fc5e8" meeting="false" start="2026-01-18" duration="14" complete="100" expand="true"/>
         <task id="3" uid="67e5785bcd3e4642ba3e3f923d1afe7f" name="Iteration 2" color="#9fc5e8" meeting="false" start="2026-02-01" duration="22" complete="100" expand="true"/>

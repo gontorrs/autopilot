@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  23 MAY 2026 23:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  24 MAY 2026 21:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -866,70 +866,105 @@ Package caption Info: New subtype `subfigure' on input line 238.
 \c@subfigure=\count350
 Package caption Info: New subtype `subtable' on input line 238.
 \c@subtable=\count351
-) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
+Package: longtable 2025-10-13 v4.24 Multi-page Table package (DPC)
+\LTleft=\skip77
+\LTright=\skip78
+\LTpre=\skip79
+\LTpost=\skip80
+\LTchunksize=\count352
+\LTcapwidth=\dimen319
+\LT@head=\box73
+\LT@firsthead=\box74
+\LT@foot=\box75
+\LT@lastfoot=\box76
+\LT@gbox=\box77
+\LT@cols=\count353
+\LT@rows=\count354
+\c@LT@tables=\count355
+\c@LT@chunks=\count356
+\LT@p@ftn=\toks58
+)
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/pdflscape\pdflscape.sty
+Package: pdflscape 2022-10-27 v0.13 Display of landscape pages in PDF
+
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/pdflscape\pdflscape-nom
+etadata.sty
+Package: pdflscape-nometadata 2022-10-28 v0.13 Display of landscape pages in PD
+F (HO)
+
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
+)
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/graphics\lscape.sty
+Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
+)
+Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
+))
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/algorithm2e\algorithm2e
 .sty
 Package: algorithm2e 2017/07/18 v5.2 algorithms environments
-\c@AlgoLine=\count352
-\algocf@hangindent=\skip77
+\c@AlgoLine=\count357
+\algocf@hangindent=\skip81
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/ifoddpage\ifoddpage.sty
 Package: ifoddpage 2022/10/18 v1.2 Conditionals for odd/even page detection
-\c@checkoddpage=\count353
+\c@checkoddpage=\count358
 ) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/relsize\relsize.sty
 Package: relsize 2013/03/29 ver 4.1
 )
-\skiptotal=\skip78
-\skiplinenumber=\skip79
-\skiprule=\skip80
-\skiphlne=\skip81
-\skiptext=\skip82
-\skiplength=\skip83
-\algomargin=\skip84
-\skipalgocfslide=\skip85
-\algowidth=\dimen319
-\inoutsize=\dimen320
-\inoutindent=\dimen321
-\interspacetitleruled=\dimen322
-\interspacealgoruled=\dimen323
-\interspacetitleboxruled=\dimen324
-\algocf@ruledwidth=\skip86
-\algocf@inoutbox=\box73
-\algocf@inputbox=\box74
-\AlCapSkip=\skip87
-\AlCapHSkip=\skip88
-\algoskipindent=\skip89
-\algocf@nlbox=\box75
-\algocf@hangingbox=\box76
-\algocf@untilbox=\box77
-\algocf@skipuntil=\skip90
-\algocf@capbox=\box78
-\algocf@lcaptionbox=\skip91
-\algoheightruledefault=\skip92
-\algoheightrule=\skip93
-\algotitleheightruledefault=\skip94
-\algotitleheightrule=\skip95
-\c@algocfline=\count354
-\c@algocfproc=\count355
-\c@algocf=\count356
-\algocf@algoframe=\box79
-\algocf@algobox=\box80
+\skiptotal=\skip82
+\skiplinenumber=\skip83
+\skiprule=\skip84
+\skiphlne=\skip85
+\skiptext=\skip86
+\skiplength=\skip87
+\algomargin=\skip88
+\skipalgocfslide=\skip89
+\algowidth=\dimen320
+\inoutsize=\dimen321
+\inoutindent=\dimen322
+\interspacetitleruled=\dimen323
+\interspacealgoruled=\dimen324
+\interspacetitleboxruled=\dimen325
+\algocf@ruledwidth=\skip90
+\algocf@inoutbox=\box78
+\algocf@inputbox=\box79
+\AlCapSkip=\skip91
+\AlCapHSkip=\skip92
+\algoskipindent=\skip93
+\algocf@nlbox=\box80
+\algocf@hangingbox=\box81
+\algocf@untilbox=\box82
+\algocf@skipuntil=\skip94
+\algocf@capbox=\box83
+\algocf@lcaptionbox=\skip95
+\algoheightruledefault=\skip96
+\algoheightrule=\skip97
+\algotitleheightruledefault=\skip98
+\algotitleheightrule=\skip99
+\c@algocfline=\count359
+\c@algocfproc=\count360
+\c@algocf=\count361
+\algocf@algoframe=\box84
+\algocf@algobox=\box85
 ) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/appendix\appendix.sty
 Package: appendix 2020/02/08 v1.2c extra appendix facilities
-\c@@pps=\count357
-\c@@ppsavesec=\count358
-\c@@ppsaveapp=\count359
+\c@@pps=\count362
+\c@@ppsavesec=\count363
+\c@@ppsaveapp=\count364
 ) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/units\units.sty
 Package: units 1998/08/04 v0.9b Typesetting units
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/units\nicefrac.sty
 Package: nicefrac 1998/08/04 v0.9b Nice fractions
-\L@UnitsRaiseDisplaystyle=\skip96
-\L@UnitsRaiseTextstyle=\skip97
-\L@UnitsRaiseScriptstyle=\skip98
+\L@UnitsRaiseDisplaystyle=\skip100
+\L@UnitsRaiseTextstyle=\skip101
+\L@UnitsRaiseScriptstyle=\skip102
 ))
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty
 Package: setspace 2022/12/04 v6.7b set line spacing
@@ -937,21 +972,21 @@ Package: setspace 2022/12/04 v6.7b set line spacing
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty
 Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
 
-\f@nch@headwidth=\skip99
-\f@nch@offset@elh=\skip100
-\f@nch@offset@erh=\skip101
-\f@nch@offset@olh=\skip102
-\f@nch@offset@orh=\skip103
-\f@nch@offset@elf=\skip104
-\f@nch@offset@erf=\skip105
-\f@nch@offset@olf=\skip106
-\f@nch@offset@orf=\skip107
-\f@nch@height=\skip108
-\f@nch@footalignment=\skip109
-\f@nch@widthL=\skip110
-\f@nch@widthC=\skip111
-\f@nch@widthR=\skip112
-\@temptokenb=\toks58
+\f@nch@headwidth=\skip103
+\f@nch@offset@elh=\skip104
+\f@nch@offset@erh=\skip105
+\f@nch@offset@olh=\skip106
+\f@nch@offset@orh=\skip107
+\f@nch@offset@elf=\skip108
+\f@nch@offset@erf=\skip109
+\f@nch@offset@olf=\skip110
+\f@nch@offset@orf=\skip111
+\f@nch@height=\skip112
+\f@nch@footalignment=\skip113
+\f@nch@widthL=\skip114
+\f@nch@widthC=\skip115
+\f@nch@widthR=\skip116
+\@temptokenb=\toks59
 )
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/lipsum\lipsum.sty
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/l3keys2e\l3k
@@ -962,14 +997,14 @@ Package: expl3 2025-12-24 L3 programming layer (loader)
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count360
+\l__color_backend_stack_int=\count365
 ))
 Package: l3keys2e 2025-10-09 LaTeX2e option processing using LaTeX3 keys
 )
 Package: lipsum 2021-09-20 v2.7 150 paragraphs of Lorem Ipsum dummy text
-\g__lipsum_par_int=\count361
-\l__lipsum_a_int=\count362
-\l__lipsum_b_int=\count363
+\g__lipsum_par_int=\count366
+\l__lipsum_a_int=\count367
+\l__lipsum_b_int=\count368
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/lipsum\lipsum.ltd.tex))
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquotes.sty
@@ -977,15 +1012,15 @@ Package: csquotes 2024-04-04 v5.2o context-sensitive quotations (JAW)
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
 Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count364
+\etb@tempcnta=\count369
 )
-\csq@reset=\count365
-\csq@gtype=\count366
-\csq@glevel=\count367
-\csq@qlevel=\count368
-\csq@maxlvl=\count369
-\csq@tshold=\count370
-\csq@ltx@everypar=\toks59
+\csq@reset=\count370
+\csq@gtype=\count371
+\csq@glevel=\count372
+\csq@qlevel=\count373
+\csq@maxlvl=\count374
+\csq@tshold=\count375
+\csq@ltx@everypar=\toks60
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquotes.def
 File: csquotes.def 2024-04-04 v5.2o csquotes generic definitions (JAW)
@@ -998,16 +1033,49 @@ File: csquotes.cfg
 )) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.st
 y
 Package: titlesec 2025/01/04 v2.17 Sectioning titles
-\ttl@box=\box81
-\beforetitleunit=\skip113
-\aftertitleunit=\skip114
-\ttl@plus=\dimen325
-\ttl@minus=\dimen326
-\ttl@toksa=\toks60
-\titlewidth=\dimen327
-\titlewidthlast=\dimen328
-\titlewidthfirst=\dimen329
-) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.sty
+\ttl@box=\box86
+\beforetitleunit=\skip117
+\aftertitleunit=\skip118
+\ttl@plus=\dimen326
+\ttl@minus=\dimen327
+\ttl@toksa=\toks61
+\titlewidth=\dimen328
+\titlewidthlast=\dimen329
+\titlewidthfirst=\dimen330
+) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+\lst@mode=\count376
+\lst@gtempboxa=\box87
+\lst@token=\toks62
+\lst@length=\count377
+\lst@currlwidth=\dimen331
+\lst@column=\count378
+\lst@pos=\count379
+\lst@lostspace=\dimen332
+\lst@width=\dimen333
+\lst@newlines=\count380
+\lst@lineno=\count381
+\lst@maxwidth=\dimen334
+
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpatch.sty
+File: lstpatch.sty 2025/11/14 1.11b (Carsten Heinz)
+)
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
+File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
+\c@lstnumber=\count382
+\lst@skipnumbers=\count383
+\lst@framebox=\box88
+)
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg
+File: listings.cfg 2025/11/14 1.11b listings configuration
+))
+Package: listings 2025/11/14 1.11b (Carsten Heinz)
+==> First Aid for listings.sty no longer applied!
+    Expected:
+        2024/09/23 1.10c (Carsten Heinz)
+    but found:
+        2025/11/14 1.11b (Carsten Heinz)
+    so I'm assuming it got fixed.
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.sty
 Package: biblatex 2025/07/10 v3.21 programmable bibliographies (PK/MW)
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
@@ -1018,8 +1086,6 @@ Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
 ty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
-) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
-Package: iftex 2024/12/12 v1.0g TeX engine tests
 )
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
 Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
@@ -1035,68 +1101,68 @@ Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 )) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.sty
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count371
+\lrq@indent=\count384
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 ))
-\c@tabx@nest=\count372
-\c@listtotal=\count373
-\c@listcount=\count374
-\c@liststart=\count375
-\c@liststop=\count376
-\c@citecount=\count377
-\c@citetotal=\count378
-\c@multicitecount=\count379
-\c@multicitetotal=\count380
-\c@instcount=\count381
-\c@maxnames=\count382
-\c@minnames=\count383
-\c@maxitems=\count384
-\c@minitems=\count385
-\c@citecounter=\count386
-\c@maxcitecounter=\count387
-\c@savedcitecounter=\count388
-\c@uniquelist=\count389
-\c@uniquename=\count390
-\c@refsection=\count391
-\c@refsegment=\count392
-\c@maxextratitle=\count393
-\c@maxextratitleyear=\count394
-\c@maxextraname=\count395
-\c@maxextradate=\count396
-\c@maxextraalpha=\count397
-\c@abbrvpenalty=\count398
-\c@highnamepenalty=\count399
-\c@lownamepenalty=\count400
-\c@maxparens=\count401
-\c@parenlevel=\count402
-\blx@tempcnta=\count403
-\blx@tempcntb=\count404
-\blx@tempcntc=\count405
-\c@blx@maxsection=\count406
-\blx@maxsegment@0=\count407
-\blx@notetype=\count408
-\blx@parenlevel@text=\count409
-\blx@parenlevel@foot=\count410
-\blx@sectionciteorder@0=\count411
-\blx@sectionciteorderinternal@0=\count412
-\blx@entrysetcounter=\count413
-\blx@biblioinstance=\count414
-\labelnumberwidth=\skip115
-\labelalphawidth=\skip116
-\biblabelsep=\skip117
-\bibitemsep=\skip118
-\bibnamesep=\skip119
-\bibinitsep=\skip120
-\bibparsep=\skip121
-\bibhang=\skip122
+\c@tabx@nest=\count385
+\c@listtotal=\count386
+\c@listcount=\count387
+\c@liststart=\count388
+\c@liststop=\count389
+\c@citecount=\count390
+\c@citetotal=\count391
+\c@multicitecount=\count392
+\c@multicitetotal=\count393
+\c@instcount=\count394
+\c@maxnames=\count395
+\c@minnames=\count396
+\c@maxitems=\count397
+\c@minitems=\count398
+\c@citecounter=\count399
+\c@maxcitecounter=\count400
+\c@savedcitecounter=\count401
+\c@uniquelist=\count402
+\c@uniquename=\count403
+\c@refsection=\count404
+\c@refsegment=\count405
+\c@maxextratitle=\count406
+\c@maxextratitleyear=\count407
+\c@maxextraname=\count408
+\c@maxextradate=\count409
+\c@maxextraalpha=\count410
+\c@abbrvpenalty=\count411
+\c@highnamepenalty=\count412
+\c@lownamepenalty=\count413
+\c@maxparens=\count414
+\c@parenlevel=\count415
+\blx@tempcnta=\count416
+\blx@tempcntb=\count417
+\blx@tempcntc=\count418
+\c@blx@maxsection=\count419
+\blx@maxsegment@0=\count420
+\blx@notetype=\count421
+\blx@parenlevel@text=\count422
+\blx@parenlevel@foot=\count423
+\blx@sectionciteorder@0=\count424
+\blx@sectionciteorderinternal@0=\count425
+\blx@entrysetcounter=\count426
+\blx@biblioinstance=\count427
+\labelnumberwidth=\skip119
+\labelalphawidth=\skip120
+\biblabelsep=\skip121
+\bibitemsep=\skip122
+\bibnamesep=\skip123
+\bibinitsep=\skip124
+\bibparsep=\skip125
+\bibhang=\skip126
 \blx@bcfin=\read4
 \blx@bcfout=\write4
 \blx@langwohyphens=\language81
-\c@mincomprange=\count415
-\c@maxcomprange=\count416
-\c@mincompwidth=\count417
+\c@mincomprange=\count428
+\c@maxcomprange=\count429
+\c@mincompwidth=\count430
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
 
@@ -1107,88 +1173,88 @@ Package biblatex Info: Trying to load biblatex style data model...
 Package biblatex Info: ... file 'ieee.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count418
-\c@savedafterword=\count419
-\c@annotator=\count420
-\c@savedannotator=\count421
-\c@author=\count422
-\c@savedauthor=\count423
-\c@bookauthor=\count424
-\c@savedbookauthor=\count425
-\c@commentator=\count426
-\c@savedcommentator=\count427
-\c@editor=\count428
-\c@savededitor=\count429
-\c@editora=\count430
-\c@savededitora=\count431
-\c@editorb=\count432
-\c@savededitorb=\count433
-\c@editorc=\count434
-\c@savededitorc=\count435
-\c@foreword=\count436
-\c@savedforeword=\count437
-\c@holder=\count438
-\c@savedholder=\count439
-\c@introduction=\count440
-\c@savedintroduction=\count441
-\c@namea=\count442
-\c@savednamea=\count443
-\c@nameb=\count444
-\c@savednameb=\count445
-\c@namec=\count446
-\c@savednamec=\count447
-\c@translator=\count448
-\c@savedtranslator=\count449
-\c@shortauthor=\count450
-\c@savedshortauthor=\count451
-\c@shorteditor=\count452
-\c@savedshorteditor=\count453
-\c@labelname=\count454
-\c@savedlabelname=\count455
-\c@institution=\count456
-\c@savedinstitution=\count457
-\c@lista=\count458
-\c@savedlista=\count459
-\c@listb=\count460
-\c@savedlistb=\count461
-\c@listc=\count462
-\c@savedlistc=\count463
-\c@listd=\count464
-\c@savedlistd=\count465
-\c@liste=\count466
-\c@savedliste=\count467
-\c@listf=\count468
-\c@savedlistf=\count469
-\c@location=\count470
-\c@savedlocation=\count471
-\c@organization=\count472
-\c@savedorganization=\count473
-\c@origlocation=\count474
-\c@savedoriglocation=\count475
-\c@origpublisher=\count476
-\c@savedorigpublisher=\count477
-\c@publisher=\count478
-\c@savedpublisher=\count479
-\c@language=\count480
-\c@savedlanguage=\count481
-\c@origlanguage=\count482
-\c@savedoriglanguage=\count483
-\c@pageref=\count484
-\c@savedpageref=\count485
-\shorthandwidth=\skip123
-\shortjournalwidth=\skip124
-\shortserieswidth=\skip125
-\shorttitlewidth=\skip126
-\shortauthorwidth=\skip127
-\shorteditorwidth=\skip128
-\locallabelnumberwidth=\skip129
-\locallabelalphawidth=\skip130
-\localshorthandwidth=\skip131
-\localshortjournalwidth=\skip132
-\localshortserieswidth=\skip133
-\localshorttitlewidth=\skip134
-\localshortauthorwidth=\skip135
-\localshorteditorwidth=\skip136
+\c@afterword=\count431
+\c@savedafterword=\count432
+\c@annotator=\count433
+\c@savedannotator=\count434
+\c@author=\count435
+\c@savedauthor=\count436
+\c@bookauthor=\count437
+\c@savedbookauthor=\count438
+\c@commentator=\count439
+\c@savedcommentator=\count440
+\c@editor=\count441
+\c@savededitor=\count442
+\c@editora=\count443
+\c@savededitora=\count444
+\c@editorb=\count445
+\c@savededitorb=\count446
+\c@editorc=\count447
+\c@savededitorc=\count448
+\c@foreword=\count449
+\c@savedforeword=\count450
+\c@holder=\count451
+\c@savedholder=\count452
+\c@introduction=\count453
+\c@savedintroduction=\count454
+\c@namea=\count455
+\c@savednamea=\count456
+\c@nameb=\count457
+\c@savednameb=\count458
+\c@namec=\count459
+\c@savednamec=\count460
+\c@translator=\count461
+\c@savedtranslator=\count462
+\c@shortauthor=\count463
+\c@savedshortauthor=\count464
+\c@shorteditor=\count465
+\c@savedshorteditor=\count466
+\c@labelname=\count467
+\c@savedlabelname=\count468
+\c@institution=\count469
+\c@savedinstitution=\count470
+\c@lista=\count471
+\c@savedlista=\count472
+\c@listb=\count473
+\c@savedlistb=\count474
+\c@listc=\count475
+\c@savedlistc=\count476
+\c@listd=\count477
+\c@savedlistd=\count478
+\c@liste=\count479
+\c@savedliste=\count480
+\c@listf=\count481
+\c@savedlistf=\count482
+\c@location=\count483
+\c@savedlocation=\count484
+\c@organization=\count485
+\c@savedorganization=\count486
+\c@origlocation=\count487
+\c@savedoriglocation=\count488
+\c@origpublisher=\count489
+\c@savedorigpublisher=\count490
+\c@publisher=\count491
+\c@savedpublisher=\count492
+\c@language=\count493
+\c@savedlanguage=\count494
+\c@origlanguage=\count495
+\c@savedoriglanguage=\count496
+\c@pageref=\count497
+\c@savedpageref=\count498
+\shorthandwidth=\skip127
+\shortjournalwidth=\skip128
+\shortserieswidth=\skip129
+\shorttitlewidth=\skip130
+\shortauthorwidth=\skip131
+\shorteditorwidth=\skip132
+\locallabelnumberwidth=\skip133
+\locallabelalphawidth=\skip134
+\localshorthandwidth=\skip135
+\localshortjournalwidth=\skip136
+\localshortserieswidth=\skip137
+\localshorttitlewidth=\skip138
+\localshortauthorwidth=\skip139
+\localshorteditorwidth=\skip140
 Package biblatex Info: Trying to load compatibility code...
 Package biblatex Info: ... file 'blx-compat.def' found.
 
@@ -1199,19 +1265,19 @@ Package biblatex Info: Trying to load generic definitions...
 Package biblatex Info: ... file 'biblatex.def' found.
  (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.def
 File: biblatex.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
-\c@textcitecount=\count486
-\c@textcitetotal=\count487
-\c@textcitemaxnames=\count488
-\c@biburlbigbreakpenalty=\count489
-\c@biburlbreakpenalty=\count490
-\c@biburlnumpenalty=\count491
-\c@biburlucpenalty=\count492
-\c@biburllcpenalty=\count493
+\c@textcitecount=\count499
+\c@textcitetotal=\count500
+\c@textcitemaxnames=\count501
+\c@biburlbigbreakpenalty=\count502
+\c@biburlbreakpenalty=\count503
+\c@biburlnumpenalty=\count504
+\c@biburlucpenalty=\count505
+\c@biburllcpenalty=\count506
 \biburlbigskip=\muskip19
 \biburlnumskip=\muskip20
 \biburlucskip=\muskip21
 \biburllcskip=\muskip22
-\c@smartand=\count494
+\c@smartand=\count507
 )
 Package biblatex Info: Trying to load bibliography style 'ieee'...
 Package biblatex Info: ... file 'ieee.bbx' found.
@@ -1236,8 +1302,8 @@ Package biblatex Info: ... file 'standard.bbx' found.
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/bbx\standard.b
 bx
 File: standard.bbx 2025/07/10 v3.21 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count495
-\c@bbx:relatedtotal=\count496
+\c@bbx:relatedcount=\count508
+\c@bbx:relatedtotal=\count509
 ))))
 Package biblatex Info: Trying to load citation style 'ieee'...
 Package biblatex Info: ... file 'ieee.cbx' found.
@@ -1304,16 +1370,16 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 lestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count497
+\c@section@level=\count510
 )
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
 ty
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
-\@linkdim=\dimen330
-\Hy@linkcounter=\count498
-\Hy@pagecounter=\count499
+\@linkdim=\dimen335
+\Hy@linkcounter=\count511
+\Hy@pagecounter=\count512
  (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
 File: pd1enc.def 2025-07-12 v7.01o Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
@@ -1321,7 +1387,7 @@ Now handling font encoding PD1 ...
 ) (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count500
+\Hy@SavedSpaceFactor=\count513
  (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
 File: puenc.def 2025-07-12 v7.01o Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
@@ -1334,9 +1400,9 @@ Package hyperref Info: Plain pages OFF on input line 4210.
 Package hyperref Info: Backreferencing OFF on input line 4215.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4462.
-\c@Hy@tempcnt=\count501
+\c@Hy@tempcnt=\count514
 LaTeX Info: Redefining \url on input line 4801.
-\XeTeXLinkMargin=\dimen331
+\XeTeXLinkMargin=\dimen336
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
@@ -1346,9 +1412,9 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count502
-\Field@Width=\dimen332
-\Fld@charsize=\dimen333
+\Fld@menulength=\count515
+\Field@Width=\dimen337
+\Fld@charsize=\dimen338
 Package hyperref Info: Hyper figures OFF on input line 6078.
 Package hyperref Info: Link nesting OFF on input line 6083.
 Package hyperref Info: Hyper index ON on input line 6086.
@@ -1356,16 +1422,16 @@ Package hyperref Info: backreferencing OFF on input line 6093.
 Package hyperref Info: Link coloring OFF on input line 6098.
 Package hyperref Info: Link coloring with OCG OFF on input line 6103.
 Package hyperref Info: PDF/A mode OFF on input line 6108.
-\Hy@abspage=\count503
-\c@Item=\count504
-\c@Hfootnote=\count505
+\Hy@abspage=\count516
+\c@Item=\count517
+\c@Hfootnote=\count518
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
 File: hpdftex.def 2025-07-12 v7.01o Hyperref driver for pdfTeX
-\Fld@listcount=\count506
-\c@bookmark@seq@number=\count507
+\Fld@listcount=\count519
+\c@bookmark@seq@number=\count520
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
 echeck.sty
@@ -1378,15 +1444,15 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 84.
 )
-\Hy@SectionHShift=\skip137
+\Hy@SectionHShift=\skip141
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 121.
+Package hyperref Info: Option `colorlinks' set `true' on input line 136.
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'english'.
-LaTeX Font Info:    Trying to load font information for T1+ptm on input line 18
-2.
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 19
+7.
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
@@ -1394,39 +1460,39 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 197.
+LaTeX Font Info:    ... okay on input line 197.
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count508
-\scratchdimen=\dimen334
-\scratchbox=\box82
-\nofMPsegments=\count509
-\nofMParguments=\count510
-\everyMPshowfont=\toks61
-\MPscratchCnt=\count511
-\MPscratchDim=\dimen335
-\MPnumerator=\count512
-\makeMPintoPDFobject=\count513
-\everyMPtoPDFconversion=\toks62
+\scratchcounter=\count521
+\scratchdimen=\dimen339
+\scratchbox=\box89
+\nofMPsegments=\count522
+\nofMParguments=\count523
+\everyMPshowfont=\toks63
+\MPscratchCnt=\count524
+\MPscratchDim=\dimen340
+\MPnumerator=\count525
+\makeMPintoPDFobject=\count526
+\everyMPtoPDFconversion=\toks64
 )
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -1443,7 +1509,13 @@ s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
+Package caption Info: longtable package is loaded.
+(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty
+Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
+)
 Package caption Info: End \AtBeginDocument code.
+\c@lstlisting=\count527
 Package biblatex Info: Trying to load language 'english'...
 Package biblatex Info: ... file 'english.lbx' found.
 
@@ -1459,66 +1531,71 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
  (main.bbl)
-Package biblatex Info: Reference section=0 on input line 182.
-Package biblatex Info: Reference segment=0 on input line 182.
-Package hyperref Info: Link coloring ON on input line 182.
+Package biblatex Info: Reference section=0 on input line 197.
+Package biblatex Info: Reference segment=0 on input line 197.
+Package hyperref Info: Link coloring ON on input line 197.
  (main.out) (main.out)
 \@outlinefile=\write5
 \openout5 = `main.out'.
 
  (sections/portrait.tex
-<./images/logo.jpg, id=190, 289.08pt x 125.268pt>
+<./images/logo.jpg, id=234, 289.08pt x 125.268pt>
 File: ./images/logo.jpg Graphic file (type jpg)
 <use ./images/logo.jpg>
 Package pdftex.def Info: ./images/logo.jpg  used on input line 4.
 (pdftex.def)             Requested size: 170.71652pt x 73.97627pt.
-) [1
-
-{C:/Users/gonza/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/gonz
-a/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./images/logo.jpg
->] [2]
-(sections/grade.tex
-LaTeX Font Info:    Trying to load font information for U+msa on input line 10.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 39.
 
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 10.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 39.
 
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ))
-[3] (sections/acknowledgements.tex) (sections/resumen.tex [4
+[1
 
-])
-(sections/abstract.tex [5
+{C:/Users/gonza/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/gonz
+a/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./images/logo.jpg
+>] [2] (sections/grade.tex) [3] (sections/acknowledgements.tex)
+(sections/resumen.tex [4
+
+]) (sections/abstract.tex [5
 
 ]) [6
 
 ] (main.toc [7
 
-])
+]
+[8])
 \tf@toc=\write6
 \openout6 = `main.toc'.
 
- [8] (main.lof)
+ [9] (main.lof)
 \tf@lof=\write7
 \openout7 = `main.lof'.
 
- [9
+ [10
 
-] (main.lot
-[10
+] (main.lot [11
 
 ])
 \tf@lot=\write8
 \openout8 = `main.lot'.
 
- (sections/acronyms.tex [11]) [12
+ (sections/acronyms.tex [12])
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-] (chapters/introduction.tex
+ [13
+
+]
+Overfull \vbox (128.40462pt too high) has occurred while \output is active []
+
+
+[14] (chapters/introduction.tex
 Chapter 1.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1531,79 +1608,125 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Chapter 2.
 [4
 
-] [5] [6] [7]) (chapters/objectives.tex [8]
-Chapter 3.
-[9
+] [5] [6] [7] [8] [9]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-] (tables/validation_metrics.tex) [10]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 4
-3.
+ [10]
+[11]
+Underfull \hbox (badness 8132) in paragraph at lines 234--234
+[]|\T1/ptm/m/n/7 Native Claude app with
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 234--234
+[]|\T1/ptm/m/n/7 Native screenshot-based
+ []
+
+
+Underfull \hbox (badness 2717) in paragraph at lines 234--234
+[]|\T1/ptm/m/n/7 API prompt with Gem-ini
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 234--234
+[]|\T1/ptm/m/n/7 Model-requested screen-
+ []
+
+
+Underfull \hbox (badness 2368) in paragraph at lines 234--234
+\T1/ptm/m/n/7 tool hal-lu-ci-na-tions and in-cor-rect self-
+ []
+
+
+Underfull \hbox (badness 7631) in paragraph at lines 234--234
+\T1/ptm/m/n/7 in-jected screen-shots af-ter
+ []
+
+[12]
+Underfull \hbox (badness 2837) in paragraph at lines 264--264
+[]|\T1/ptm/m/n/7 Native Win-dows ac-ces-si-
+ []
+
+
+Underfull \hbox (badness 2384) in paragraph at lines 264--264
+[]|\T1/ptm/m/n/7 Single prompt with MCP
+ []
+
+) (chapters/objectives.tex [13]
+Chapter 3.
+[14
+
+] [15] (tables/validation_metrics.tex) [16]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 5
+8.
 
 (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-[11]) (chapters/plan.tex [12]
+[17]) (chapters/plan.tex [18]
 Chapter 4.
-[13
+[19
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 45--45
-[]|\T1/ptm/m/n/9 4.5B ef-fec-tive
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 38
+.
+ (C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
+Overfull \hbox (22.10727pt too wide) in paragraph at lines 104--139
+ [][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [14]
-[15]
-<images/Gantt_FDP.png, id=649, 1633.10126pt x 360.34625pt>
+ [20]
+[21]
+<images/Gantt_FDP.png, id=834, 2285.53876pt x 392.46625pt>
 File: images/Gantt_FDP.png Graphic file (type png)
 <use images/Gantt_FDP.png>
-Package pdftex.def Info: images/Gantt_FDP.png  used on input line 123.
-(pdftex.def)             Requested size: 398.33862pt x 87.89246pt.
- [16 <./images/Gantt_FDP.png (PNG copy)>] [17]
-Underfull \hbox (badness 10000) in paragraph at lines 173--173
-[]|\T1/ptm/b/n/9 Related ob-jec-
+Package pdftex.def Info: images/Gantt_FDP.png  used on input line 176.
+(pdftex.def)             Requested size: 398.33862pt x 68.40115pt.
+ [22] [23 <./images/Gantt_FDP.png (PNG copy)>] [24]
+Underfull \hbox (badness 1412) in paragraph at lines 243--244
+[]|\T1/ptm/m/n/9 Keeps Au-topi-lot and com-peti-tor sys-tems
  []
 
 
-Underfull \hbox (badness 1484) in paragraph at lines 175--176
-[]|\T1/ptm/m/n/9 Preserves pri-vacy and en-ables com-par-i-son
+Underfull \hbox (badness 6825) in paragraph at lines 251--251
+[]|\T1/ptm/m/n/9 Application and in-ter-face
  []
 
-) (chapters/development.tex [18]
+) (chapters/development.tex [25]
 Chapter 5.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [19
+ [26
 
 ]
-<images/Workflow_diagram.png, id=670, 1672.2475pt x 947.54pt>
-File: images/Workflow_diagram.png Graphic file (type png)
-<use images/Workflow_diagram.png>
-Package pdftex.def Info: images/Workflow_diagram.png  used on input line 56.
-(pdftex.def)             Requested size: 366.4708pt x 207.64978pt.
-
-[20 <./images/Workflow_diagram.png (PNG copy)>]
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 79
-.
-
-(C:\Users\gonza\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1pcr.fd
-File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
-)
-Overfull \hbox (3.4567pt too wide) in paragraph at lines 75--94
+[27]
+Overfull \hbox (3.4567pt too wide) in paragraph at lines 100--119
  [][] 
  []
 
-[21] [22] [23] [24] (tables/fr_001.tex) (tables/fr_002.tex)
+[28] [29]
+<images/problem_planner.png, id=949, 1164.35pt x 1360.08125pt>
+File: images/problem_planner.png Graphic file (type png)
+<use images/problem_planner.png>
+Package pdftex.def Info: images/problem_planner.png  used on input line 168.
+(pdftex.def)             Requested size: 171.28268pt x 200.06029pt.
+<images/result_planner.png, id=950, 1421.31pt x 1115.16624pt>
+File: images/result_planner.png Graphic file (type png)
+<use images/result_planner.png>
+Package pdftex.def Info: images/result_planner.png  used on input line 174.
+(pdftex.def)             Requested size: 171.28268pt x 134.3757pt.
+ [30]
+Underfull \vbox (badness 1642) has occurred while \output is active []
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-(tables/fr_003.tex)
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
+ [31 <./images/problem_planner.png (PNG copy)> <./images/result_planner.png (PN
+G copy)>]
+[32] [33] (tables/fr_001.tex) (tables/fr_002.tex) (tables/fr_003.tex)
 (tables/fr_004.tex)
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -1660,7 +1783,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[25] [26] [27] [28] [29] [30] [31] (tables/nfr_001.tex) (tables/nfr_002.tex)
+[34] [35] [36] [37] [38] (tables/nfr_001.tex) (tables/nfr_002.tex)
 (tables/nfr_003.tex) (tables/nfr_004.tex)
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -1677,273 +1800,312 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-) (chapters/experiments.tex [32
+) (chapters/experiments.tex [39
 
-] [33] [34]
+] [40]
 Chapter 6.
-[35
+[41
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [36]
-Overfull \hbox (1.0982pt too wide) in paragraph at lines 127--149
- [][] 
- []
-
-
-Underfull \vbox (badness 3919) has occurred while \output is active []
-
- [37]
-Overfull \hbox (1.0982pt too wide) in paragraph at lines 162--184
- [][] 
- []
-
-[38] [39]
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Fully au-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Voice prompt tran-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-\T1/ptm/m/n/7 scribed lo-cally and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-\T1/ptm/m/n/7 mapped to a task
- []
-
-
-Underfull \hbox (badness 1490) in paragraph at lines 283--283
-\T1/ptm/m/n/7 sion did not in-clude the ini-tial
- []
-
-
-Underfull \hbox (badness 2096) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Native Win-dows ac-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Fully au-
- []
-
-
-Underfull \hbox (badness 6708) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Single prompt with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Tool-based desk-top
- []
-
-
-Underfull \hbox (badness 1460) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Failed ev-ery eval-u-ated run; re-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Fully au-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Native Claude app
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-\T1/ptm/m/n/7 with computer-use
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Native screenshot-
- []
-
-
-Underfull \hbox (badness 1028) in paragraph at lines 283--283
-\T1/ptm/m/n/7 po-sure; screen-shots and con-text
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Fully au-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 API prompt with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-\T1/ptm/m/n/7 Gem-ini computer-
- []
-
-
-Underfull \hbox (badness 3815) in paragraph at lines 283--283
-\T1/ptm/m/n/7 use tools, in-clud-ing
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Model-requested
- []
-
-
-Underfull \hbox (badness 1152) in paragraph at lines 283--283
-\T1/ptm/m/n/7 tions and in-cor-rect self-reported
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Externally as-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 API prompt with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 283--283
-\T1/ptm/m/n/7 ex-ter-nally in-jected
- []
-
-
-Underfull \hbox (badness 1845) in paragraph at lines 283--283
-[]|\T1/ptm/m/n/7 Not fully au-tonomous; re-ac-tive
- []
-
-
-Underfull \hbox (badness 2478) in paragraph at lines 283--283
-\T1/ptm/m/n/7 plan-ning; cloud data ex-po-sure;
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [40]
-Underfull \hbox (badness 3884) in paragraph at lines 313--313
-[]|\T1/ptm/m/n/10 M-08 Stan-dard De-vi-a-tion of
- []
-
-
-Overfull \hbox (19.50653pt too wide) in paragraph at lines 294--322
- [][] 
- []
-
-[41]
-Underfull \hbox (badness 3884) in paragraph at lines 359--359
-[]|\T1/ptm/m/n/10 M-08 Stan-dard De-vi-a-tion of
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [42]
-Underfull \hbox (badness 3884) in paragraph at lines 402--402
-[]|\T1/ptm/m/n/10 M-08 Stan-dard De-vi-a-tion of
+Overfull \hbox (1.0982pt too wide) in paragraph at lines 89--111
+ [][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [43]
-Underfull \vbox (badness 6380) has occurred while \output is active []
-
- [44]
-Overfull \hbox (32.54794pt too wide) in paragraph at lines 465--492
+Overfull \hbox (1.0982pt too wide) in paragraph at lines 129--151
  [][] 
  []
 
-[45]) (chapters/ethical_evaluation.tex [46]
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [44]
+[45] [46]
+Underfull \hbox (badness 3884) in paragraph at lines 233--233
+[]|\T1/ptm/m/n/10 M-08 Stan-dard De-vi-a-tion of
+ []
+
+
+Overfull \hbox (19.50653pt too wide) in paragraph at lines 214--242
+ [][] 
+ []
+
+[47]
+Underfull \hbox (badness 3884) in paragraph at lines 277--277
+[]|\T1/ptm/m/n/10 M-08 Stan-dard De-vi-a-tion of
+ []
+
+[48]
+Underfull \hbox (badness 3884) in paragraph at lines 320--320
+[]|\T1/ptm/m/n/10 M-08 Stan-dard De-vi-a-tion of
+ []
+
+[49] [50] [51]) (chapters/ethical_evaluation.tex [52]
 Chapter 7.
+[53
 
-Underfull \vbox (badness 1163) has occurred while \output is active []
-
- [47
-
-]
-[48] [49] [50] [51]) (chapters/journey.tex [52]
+] [54] [55] [56] [57]) (chapters/journey.tex [58]
 Chapter 8.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [53
+ [59
 
 ])
-(chapters/conclusions.tex [54] [55]
+(chapters/conclusions.tex [60]
 Chapter 9.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [56
+ [61
 
 ]
-Underfull \vbox (badness 2884) has occurred while \output is active []
+[62] [63]) [64] [65
 
- [57]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [58])
-(chapters/appendix.tex [59]
+] [66] (chapters/appendix.tex [67]
 Appendix A.
-[60
+[68
 
-] [61] [62]
+] [69] [70] [71] [72] [73] [74] [75] [76] [77]
 Appendix B.
-) [63
+[78
 
-] [64] [65
+] [79] [80] [81] [82]
+Underfull \hbox (badness 10000) in paragraph at lines 638--639
+[]|\T1/pcr/m/n/9 open\T1/ptm/m/n/9 , \T1/pcr/m/n/9 navigate\T1/ptm/m/n/9 , \T1/
+pcr/m/n/9 open_-file\T1/ptm/m/n/9 ,
+ []
 
-] [66] [67] (main.aux)
+
+Underfull \hbox (badness 10000) in paragraph at lines 640--641
+[]|\T1/pcr/m/n/9 open\T1/ptm/m/n/9 , \T1/pcr/m/n/9 navigate\T1/ptm/m/n/9 , \T1/
+pcr/m/n/9 open_-file\T1/ptm/m/n/9 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 642--643
+[]|\T1/pcr/m/n/9 open\T1/ptm/m/n/9 , \T1/pcr/m/n/9 navigate\T1/ptm/m/n/9 , \T1/
+pcr/m/n/9 open_-file\T1/ptm/m/n/9 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 644--645
+[]|\T1/pcr/m/n/9 open\T1/ptm/m/n/9 , \T1/pcr/m/n/9 navigate\T1/ptm/m/n/9 , \T1/
+pcr/m/n/9 click_-new\T1/ptm/m/n/9 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 646--647
+[]|\T1/pcr/m/n/9 open\T1/ptm/m/n/9 , \T1/pcr/m/n/9 navigate\T1/ptm/m/n/9 , \T1/
+pcr/m/n/9 copy\T1/ptm/m/n/9 ,
+ []
+
+
+Overfull \hbox (14.83763pt too wide) in paragraph at lines 630--649
+ [][] 
+ []
+
+[83]
+Appendix C.
+[84
+
+] [85
+
+] [86
+
+]
+Appendix D.
+(tables/appendix_experimental_data.tex [87
+
+] [88
+
+] [89]
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 213.
+See the caption package documentation for explanation.
+
+[90]
+ignored error: Infinite glue shrinkage found in box being split [91
+
+]
+ignored error: Infinite glue shrinkage found in box being split [92]
+ignored error: Infinite glue shrinkage found in box being split [93]
+
+Package caption Warning: \setcaptiontype
+(caption)                outside box or environment on input line 681.
+See the caption package documentation for explanation.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 681.
+See the caption package documentation for explanation.
+
+[94]
+Underfull \hbox (badness 10000) in paragraph at lines 690--690
+[]|\T1/ptm/b/n/7 CPU
+ []
+
+
+Underfull \hbox (badness 1360) in paragraph at lines 690--690
+[]|\T1/ptm/b/n/7 RAM avg
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 690--690
+[]|\T1/ptm/b/n/7 RAM
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 690--690
+\T1/ptm/b/n/7 peak
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 690--690
+[]|\T1/ptm/b/n/7 VRAM
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 690--690
+[]|\T1/ptm/b/n/7 VRAM
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
+[]|\T1/ptm/b/n/7 CPU
+ []
+
+
+Underfull \hbox (badness 1360) in paragraph at lines 694--694
+[]|\T1/ptm/b/n/7 RAM avg
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
+[]|\T1/ptm/b/n/7 RAM
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
+\T1/ptm/b/n/7 peak
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
+[]|\T1/ptm/b/n/7 VRAM
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
+[]|\T1/ptm/b/n/7 VRAM
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 741--741
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 747--747
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 753--753
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 759--759
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 765--765
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 771--771
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 777--777
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 783--783
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 789--789
+\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
+ []
+
+[95
+
+] [96] [97]
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 805.
+See the caption package documentation for explanation.
+
+[98])
+Appendix E.
+) [99
+
+
+] (main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: A7E23C684C16B76801840DCCFF1A5CE6;7251.
+(rerunfilecheck)             Checksum: 0030B291B1B405D9FBE8DC4E669EF823;9429.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 46916 strings out of 467871
- 1047654 string characters out of 5418377
- 2122653 words of memory out of 5000000
- 74666 multiletter control sequences out of 15000+600000
- 683634 words of font info for 102 fonts, out of 8000000 for 9000
+ 49326 strings out of 467871
+ 1083152 string characters out of 5418377
+ 2452126 words of memory out of 5000000
+ 76557 multiletter control sequences out of 15000+600000
+ 698379 words of font info for 126 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 110i,13n,107p,2591b,2331s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 110i,12n,107p,2591b,2350s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
-cmmi10.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
-fonts/cm/cmmi6.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/pu
-blic/amsfonts/cm/cmmi8.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTe
-X/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/gonza/AppData/Local/Progra
-ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/gonza/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/gonza/AppDat
-a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/gonza
-/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Us
-ers/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy9.pf
-b><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.
-pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.
-pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.
-pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a
-.pfb>
-Output written on main.pdf (79 pages, 1518797 bytes).
+cmex10.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmmi10.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmmi6.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/gonza/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/gonza/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/gonza/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/gonza/App
+Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/go
+nza/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/U
+sers/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pf
+b><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
+cmsy10.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmsy7.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmsy9.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/
+type1/urw/courier/ucrr8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
+s/type1/urw/times/utmb8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
+s/type1/urw/times/utmr8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
+s/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (113 pages, 2949176 bytes).
 PDF statistics:
- 1123 PDF objects out of 1200 (max. 8388607)
- 283 named destinations out of 1000 (max. 500000)
- 396 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1967 PDF objects out of 2073 (max. 8388607)
+ 764 named destinations out of 1000 (max. 500000)
+ 489 words of extra memory for PDF output out of 10000 (max. 10000000)
 
