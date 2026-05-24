@@ -96,9 +96,11 @@ The manager calls 7 tools in sequence:
 
 - **Python** 3.10+ with a virtual environment (conda or venv)
 - **Docker Desktop** — must be running before launching the app
+- **NVIDIA GPU with CUDA** — required for local Whisper inference (`float16`)
+- **Microphone** — voice is the primary input interface
 - **Windows desktop environment** — the system controls the actual GUI via PyAutoGUI
 
-> **Why not fully Dockerized?** The main agent pipeline (`main.py`) runs on the host because it needs direct access to the Windows GUI via PyAutoGUI. Only the services that don't touch the screen (Ollama inference and Fast Downward planner) run in Docker.
+> **Why not fully Dockerized?** Two components must run on the host: the main agent pipeline (`main.py`) needs direct access to the Windows GUI via PyAutoGUI, and Whisper needs direct access to the microphone — Docker cannot reliably forward audio input devices on Windows.
 
 ### Docker Services
 
@@ -150,7 +152,7 @@ Download and install [Docker Desktop for Windows](https://www.docker.com/product
 
 ### 5. Pull the required Ollama models
 
-On first run, pull the models into the Ollama container:
+**This step is required.** Unlike Whisper, Ollama models are **not downloaded automatically** — if you skip this, the app will fail when it tries to use the models.
 
 ```bash
 docker compose up -d ollama
@@ -159,6 +161,27 @@ docker exec -it ollama ollama pull qwen3-vl:2b-instruct-q4_K_M
 ```
 
 The models are stored in a persistent Docker volume (`ollama_models`), so you only need to do this once.
+
+### 6. Whisper model (auto-downloaded on first run)
+
+Whisper runs **locally on the host** (not in Docker) because Docker cannot reliably forward microphone input on Windows. It uses the `faster-whisper` library, which is already included in `requirements.txt`.
+
+The `small` model (~460 MB) **downloads automatically the first time you run `python run.py`**, so no manual step is needed. If you prefer to download it in advance to avoid waiting on the first launch:
+
+```python
+# Run once from the Code/ directory with the environment activated
+from faster_whisper import WhisperModel
+WhisperModel("small", device="cuda", compute_type="float16", download_root="./models/whisper")
+```
+
+Or equivalently from the shell:
+
+```bash
+cd Code
+python -c "from faster_whisper import WhisperModel; WhisperModel('small', device='cuda', compute_type='float16', download_root='./models/whisper')"
+```
+
+> **Note:** Whisper requires an NVIDIA GPU. If CUDA is not available you can change `device="cuda"` to `device="cpu"` and `compute_type="float16"` to `compute_type="int8"` in `Code/voice/whisper.py`, at the cost of slower transcription.
 
 ## Usage
 
