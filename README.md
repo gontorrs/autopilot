@@ -67,34 +67,45 @@ The manager calls 7 tools in sequence:
 ## Project Structure
 
 ```
-Code/
-├── main.py                    # Entry point
-├── competitors/               # Evidence for the execution of all templates, for the different competitors.
-├── crew/
-│   ├── agents.py              # Agent factory (manager, intention, VLM agents, etc.)
-│   ├── manager_agent.py       # Custom BaseLLM for Ollama with CrewAI 1.14+ support
-│   ├── executor_agent.py      # Deterministic GUI executor (clicks, typing, shortcuts)
-│   ├── planner_agent.py       # PDDL problem generator + Fast Downward runner
-│   ├── pddl_translator.py     # Converts PDDL plans to executable step dicts
-│   └── vlm_agents.py          # Scout, Vision, and QA agents (Ollama VLM wrappers)
-├── logs/
-│   └── crew-ai-plain          # Logs for all the tests done, with the base version. 
-|
-├── tools/
-│   ├── tools.py               # All CrewAI tools (orchestration + execution + intent tools)
-│   └── vlm_prompts.py         # Prompt templates for VLM agents
-├── pddl/
-│   ├── gui_domain.pddl        # PDDL domain definition for GUI actions
-│   └── *.pddl                 # Example problem files
-└── requirements.txt
+├── run.py                     # Main entry point — starts Docker services and launches the app
+├── docker-compose.yaml        # Docker services (Ollama + Fast Downward planner)
+├── docker/
+│   └── planner/               # Dockerfile for the Fast Downward planner service
+└── Code/
+    ├── main.py                # Core app logic (called by run.py)
+    ├── competitors/           # Evidence for the execution of all templates, for the different competitors.
+    ├── crew/
+    │   ├── agents.py          # Agent factory (manager, intention, VLM agents, etc.)
+    │   ├── manager_agent.py   # Custom BaseLLM for Ollama with CrewAI 1.14+ support
+    │   ├── executor_agent.py  # Deterministic GUI executor (clicks, typing, shortcuts)
+    │   ├── planner_agent.py   # PDDL problem generator + Fast Downward runner
+    │   ├── pddl_translator.py # Converts PDDL plans to executable step dicts
+    │   └── vlm_agents.py      # Scout, Vision, and QA agents (Ollama VLM wrappers)
+    ├── logs/
+    │   └── crew-ai-plain      # Logs for all the tests done, with the base version.
+    ├── tools/
+    │   ├── tools.py           # All CrewAI tools (orchestration + execution + intent tools)
+    │   └── vlm_prompts.py     # Prompt templates for VLM agents
+    ├── pddl/
+    │   ├── gui_domain.pddl    # PDDL domain definition for GUI actions
+    │   └── *.pddl             # Example problem files
+    └── requirements.txt
 ```
 
 ## Prerequisites
 
-- **Python** 3.10+
-- **Ollama** — running locally at `http://localhost:11434`
-- **Fast Downward** — classical AI planner (compiled from source)
+- **Python** 3.10+ with a virtual environment (conda or venv)
+- **Docker Desktop** — must be running before launching the app
 - **Windows desktop environment** — the system controls the actual GUI via PyAutoGUI
+
+> **Why not fully Dockerized?** The main agent pipeline (`main.py`) runs on the host because it needs direct access to the Windows GUI via PyAutoGUI. Only the services that don't touch the screen (Ollama inference and Fast Downward planner) run in Docker.
+
+### Docker Services
+
+| Service | Image / Build | Port | Purpose |
+|---------|--------------|------|---------|
+| `ollama` | `ollama/ollama` | 11434 | Local LLM/VLM inference |
+| `planner` | Custom (Fast Downward) | 8000 | Classical AI planner as HTTP service |
 
 ### Models (pulled via Ollama)
 
@@ -110,10 +121,10 @@ Code/
 
 ```bash
 git clone <your-repo-url>
-cd TFG/Code
+cd proyecto-fin-de-grado-2026-gontorrs
 ```
 
-### 2. Create a Python environment
+### 2. Create and activate a Python environment
 
 Using conda (recommended):
 ```bash
@@ -124,94 +135,53 @@ conda activate autopilot
 Or using venv:
 ```bash
 python -m venv .venv
-# Windows
 .venv\Scripts\activate
-# Linux/macOS
-source .venv/bin/activate
 ```
 
 ### 3. Install Python dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -r Code/requirements.txt
 ```
 
-### 4. Install and start Ollama
+### 4. Install and start Docker Desktop
 
-**Windows/macOS:** Download from [ollama.com](https://ollama.com) and install.
+Download and install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/). Make sure it is running before the next step.
 
-**Linux:**
-```bash
-curl -fsSL https://ollama.com/install.sh | sh
-```
+### 5. Pull the required Ollama models
 
-Start Ollama and pull the required models:
-```bash
-ollama serve  # if not running as a service
-
-ollama pull gemma4:e4b-it-q4_K_M
-ollama pull qwen3:4b-instruct
-ollama pull qwen3-vl:2b-instruct-q4_K_M
-```
-
-### 5. Install Fast Downward
-
-Fast Downward requires a C++ compiler and CMake to build from source.
-
-#### Windows
-
-1. Install [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/) with the **"Desktop development with C++"** workload (this includes CMake).
-2. Install [Python](https://www.python.org/downloads/) if not already installed.
-3. Download the [Fast Downward source tarball](https://www.fast-downward.org/latest/releases/) and extract it.
-4. Open **Developer PowerShell for VS** and run:
-
-```powershell
-cd fast-downward-24.06.1
-py build.py
-```
-
-#### Linux (Ubuntu/Debian)
+On first run, pull the models into the Ollama container:
 
 ```bash
-sudo apt install cmake g++ make python3
-git clone https://github.com/aibasel/downward.git
-cd downward
-python3 build.py
+docker compose up -d ollama
+docker exec -it ollama ollama pull gemma4:e4b-it-q4_K_M
+docker exec -it ollama ollama pull qwen3-vl:2b-instruct-q4_K_M
 ```
 
-#### macOS
-
-```bash
-brew install cmake
-git clone https://github.com/aibasel/downward.git
-cd downward
-python3 build.py
-```
-
-### 6. Configure the Fast Downward path
-
-In `crew/planner_agent.py`, update the path to your Fast Downward installation:
-
-```python
-# Change this line to match your system:
-fd = "C:\\Users\\gonza\\fastdownward\\fast-downward.py"
-
-# Linux/macOS example:
-# fd = "/home/user/downward/fast-downward.py"
-```
+The models are stored in a persistent Docker volume (`ollama_models`), so you only need to do this once.
 
 ## Usage
 
-Edit `main.py` to set your desired user input, then run:
+Make sure your Python environment is activated, then run from the project root:
 
 ```bash
-cd Code/
-python main.py
+# Activate environment first (if not already active)
+conda activate autopilot   # or: .venv\Scripts\activate
+
+# Launch everything
+python run.py
 ```
+
+`run.py` will automatically:
+1. Build and start the **Ollama** and **Fast Downward planner** Docker containers in the background.
+2. Launch `main.py` on the host to control the Windows GUI.
+3. Shut down all containers cleanly when the app exits (or you press `Ctrl+C`).
 
 **Important:** Minimize your terminal after launching. The system controls your mouse and keyboard directly — do not interact with the desktop while Autopilot is running.
 
-Example inputs (uncomment one in `main.py`):
+### Customising the task
+
+Edit `Code/main.py` to set your desired user input before running:
 
 ```python
 user_input = "Open the file report.pdf which is in Documents, then TFG folder and then Docs folder."
@@ -221,11 +191,9 @@ user_input = 'Create a folder named "Projects" in the Documents folder.'
 user_input = 'Copy my document.docx in my Downloads folder and paste it in my Documents folder.'
 ```
 
-The manager agent will orchestrate the full pipeline automatically, performing real GUI actions on your screen.
-
 ## Configuration
 
-Models can be changed in `main.py` via the `model_dict`:
+Models can be changed in `Code/main.py` via the `model_dict`:
 
 ```python
 planner_model = model_dict['e4bk']       # Manager LLM
@@ -233,13 +201,14 @@ vlm_model = model_dict['qwen2k-vl']      # Vision-language model
 intention_model = model_dict['qwen4k']    # Intention classifier
 ```
 
-See `main.py` for the full list of available model aliases.
+See `Code/main.py` for the full list of available model aliases.
 
 ## Tech Stack
 
 - **CrewAI 1.14+** — multi-agent orchestration framework
+- **Docker** — containerised Ollama and Fast Downward services
 - **Ollama** — local LLM/VLM inference
-- **Fast Downward** — classical AI planner (PDDL)
+- **Fast Downward** — classical AI planner (PDDL), running as a Docker service
 - **PyAutoGUI** — GUI automation (mouse/keyboard control)
 - **Gemma 4 / Qwen 3** — language models for reasoning and tool-calling
 - **Qwen3-VL** — vision-language model for screenshot analysis
