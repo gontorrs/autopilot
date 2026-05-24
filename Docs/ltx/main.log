@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  24 MAY 2026 21:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  24 MAY 2026 22:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1580,13 +1580,17 @@ a/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./images/logo.jpg
 
  [10
 
-] (main.lot [11
+] (main.lot
+Underfull \vbox (badness 2027) has occurred while \output is active []
+
+ [11
 
 ])
 \tf@lot=\write8
 \openout8 = `main.lot'.
 
- (sections/acronyms.tex [12])
+
+(sections/acronyms.tex [12])
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [13
@@ -1682,7 +1686,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [20]
 [21]
-<images/Gantt_FDP.png, id=834, 2285.53876pt x 392.46625pt>
+<images/Gantt_FDP.png, id=833, 2285.53876pt x 392.46625pt>
 File: images/Gantt_FDP.png Graphic file (type png)
 <use images/Gantt_FDP.png>
 Package pdftex.def Info: images/Gantt_FDP.png  used on input line 176.
@@ -1711,12 +1715,12 @@ Overfull \hbox (3.4567pt too wide) in paragraph at lines 100--119
  []
 
 [28] [29]
-<images/problem_planner.png, id=949, 1164.35pt x 1360.08125pt>
+<images/problem_planner.png, id=948, 1164.35pt x 1360.08125pt>
 File: images/problem_planner.png Graphic file (type png)
 <use images/problem_planner.png>
 Package pdftex.def Info: images/problem_planner.png  used on input line 168.
 (pdftex.def)             Requested size: 171.28268pt x 200.06029pt.
-<images/result_planner.png, id=950, 1421.31pt x 1115.16624pt>
+<images/result_planner.png, id=949, 1421.31pt x 1115.16624pt>
 File: images/result_planner.png Graphic file (type png)
 <use images/result_planner.png>
 Package pdftex.def Info: images/result_planner.png  used on input line 174.
@@ -2079,7 +2083,7 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 Here is how much of TeX's memory you used:
  49326 strings out of 467871
  1083152 string characters out of 5418377
- 2452126 words of memory out of 5000000
+ 2451994 words of memory out of 5000000
  76557 multiletter control sequences out of 15000+600000
  698379 words of font info for 126 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -2103,9 +2107,9 @@ type1/urw/courier/ucrr8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmb8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmr8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (113 pages, 2949176 bytes).
+Output written on main.pdf (113 pages, 2948766 bytes).
 PDF statistics:
- 1967 PDF objects out of 2073 (max. 8388607)
+ 1966 PDF objects out of 2073 (max. 8388607)
  764 named destinations out of 1000 (max. 500000)
  489 words of extra memory for PDF output out of 10000 (max. 10000000)
 
