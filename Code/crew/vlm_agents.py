@@ -28,6 +28,7 @@ class VLMBaseAgent(BaseAgent):
         response = ollama.chat(
             model=self.vlm_model_name,
             messages=[{"role": "user", "content": prompt, "images": [img]}],
+            options={"num_ctx": 8192},
             #keep_alive=0
         )
         return response
@@ -37,7 +38,7 @@ class VLMBaseAgent(BaseAgent):
             model=self.vlm_model_name,
             messages=[{"role": "user", "content": prompt, "images": [img]}],
             tools=vlm_tools,
-            options={"temperature": 0.1},
+            options={"temperature": 0.1, "num_ctx": 8192},
             #keep_alive=0
         )
         return response

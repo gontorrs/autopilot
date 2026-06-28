@@ -209,6 +209,8 @@ def create_manager_tools(agents: dict, config: dict) -> list:
             return f"FAILED: Could not parse intent from: {result}"
 
         intent_name = data.get("intent", "")
+        if intent_name.startswith("call:"):
+            intent_name = intent_name.split(":", 1)[1]
         if intent_name and not intent_name.endswith("_tool"):
             intent_name += "_tool"  
         intent_args = data.get("args", {})
