@@ -16,8 +16,9 @@ Table~\ref{tab:vlm_candidates} summarises the most relevant candidates across th
 
 \begin{table}[H]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|c|c|c|}
 \hline
 \textbf{Model} & \textbf{Params} & \textbf{Quant.} & \textbf{Write} & \textbf{Search} & \textbf{Format} & \textbf{M-03 End-to-end} & \textbf{Avg Vram} \\
  & & & \textbf{M-01 TSR (\%)} & \textbf{M-01 TSR (\%)} & \textbf{M-01 TSR (\%)} & \textbf{Latency (s)} & \textbf{(\%)} \\
@@ -30,8 +31,7 @@ Mistral 3B  & 3B & INT4 & 0   & 0   & 0   & 33.40 & 47.2  \\
 \hline
 Gemma3 4B   & 4B & INT4 & 0   & 0   & 0   & 31.07 & 51.89 \\
 \hline
-\end{tabular}%
-}
+\end{tabularx}
 \caption{VLM candidate evaluation across three task templates.}
 \label{tab:vlm_candidates}
 \end{table}
@@ -48,8 +48,9 @@ The same hardware and validation setup used in Experiment 1 is preserved, but on
 
 \begin{table}[H]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|c|c|c|c|c|c|}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|c|c|}
 \hline
 \textbf{Model} & \textbf{Params} & \textbf{Quant.} & \textbf{Write} & \textbf{Format} & \textbf{M-03 End-to-end} & \textbf{Avg Vram} \\
  & & & \textbf{M-01 TSR (\%)} & \textbf{M-01 TSR (\%)} & \textbf{Latency (s)} & \textbf{(\%)} \\
@@ -66,8 +67,7 @@ Llama3.2 3B        & 3B & INT 4 & 100 & 100 &  2.33 & 17.23 \\
 \hline
 Ministral3 3B      & 3B & INT 4 & 100 &   0 &  2.26 & 30.90 \\
 \hline
-\end{tabular}%
-}
+\end{tabularx}
 \caption{LLM candidate evaluation across two task templates.}
 \label{tab:llm_candidates}
 \end{table}

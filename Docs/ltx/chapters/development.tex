@@ -23,30 +23,40 @@ Figure~\ref{fig:autopilot_architecture} shows the architecture of Autopilot. The
     agentbox/.style={draw=blue!75, rounded corners=3pt, align=left, minimum width=4.3cm, minimum height=3.0cm, fill=autopilotFlowBlue, font=\small, inner sep=7pt},
     templatebox/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=3.2cm, minimum height=1.75cm, fill=autopilotFlowBlue, font=\small},
     arrow/.style={->, thick},
-    note/.style={font=\scriptsize, align=center, inner sep=1pt}
+    note/.style={font=\scriptsize, align=center, inner sep=1pt},
+    legend/.style={draw=blue!75, rounded corners=3pt, align=left, fill=white, font=\small, inner sep=6pt}
 ]
 
 \node[component] (web) {\textbf{WEB}\\Gradio UI};
 \node[component, below=of web] (stt) {\textbf{STT}\\Whisper};
-\node[component, below=of stt] (manager) {\textbf{MANAGER}\\Agent orchestration};
+\node[component, below=of stt] (manager) {\textbf{MANAGER}~\textbf{[G]}\\Agent orchestration};
 
 \node[agentbox, below left=1.35cm and 1.45cm of manager] (transformer) {
     \textbf{TRANSFORMER AGENTS}\\[0.15cm]
-    \textbullet{} Intention Agent\\
-    \textbullet{} Scout Agent\\
-    \textbullet{} Vision Agent\\
-    \textbullet{} QA Agent
+    \textbullet{} Intention Agent~\textbf{[G]}\\
+    \textbullet{} Scout Agent~\textbf{[Q]}\\
+    \textbullet{} Vision Agent~\textbf{[Q]}\\
+    \textbullet{} QA Agent~\textbf{[Q]}
 };
 
 \node[agentbox, below right=1.35cm and 1.45cm of manager] (deliberative) {
     \textbf{DELIBERATIVE AGENTS}\\[0.15cm]
-    \textbullet{} Planner Agent\\
-    \textbullet{} PDDL Translator\\
-    \textbullet{} Executor Agent
+    \textbullet{} Planner Agent~\textbf{[P]}\\
+    \textbullet{} PDDL Translator~\textbf{[Py]}\\
+    \textbullet{} Executor Agent~\textbf{[Py]}
 };
 
 \node[templatebox, below=1.975cm of manager] (templates) {\textbf{TEMPLATES}\\[0.1cm]PDDL templates};
 \node[component, below=3.15cm of templates] (os) {\textbf{OS}\\Windows 11\\GUI manipulation};
+
+\node[legend, anchor=north east] at (deliberative.east |- web.north) {%
+\begin{tabular}{@{}ll@{}}
+\multicolumn{2}{@{}l@{}}{\textbf{Agent engine}}\\[2pt]
+\textbf{P}  & PDDL planner\\
+\textbf{Py} & Python\\
+\textbf{G}  & Gemma4 E4B (INT4)\\
+\textbf{Q}  & Qwen3 VL 2B (INT4)\\
+\end{tabular}};
 
 \draw[arrow] (web) -- node[note, right] {audio} (stt);
 \draw[arrow] (stt) -- node[note, right] {transcribed text} (manager);
@@ -252,6 +262,11 @@ Figure~\ref{fig:agent_execution_flow} shows the agent-level execution flow, incl
 
 \end{tikzpicture}%
 }
+
+\vspace{4pt}
+{\centering\small
+\tikz[baseline=-0.55ex]{\node[circle, draw=blue!75, fill=autopilotFlowBlue, inner sep=1.2pt, font=\scriptsize\bfseries]{M};}\;$=$\; Manager mediation: control returns to the Manager between agents.\par}
+
 \caption{Agent-level Autopilot execution flow.}
 \label{fig:agent_execution_flow}
 \end{figure}

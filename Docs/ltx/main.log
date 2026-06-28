@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  28 JUN 2026 22:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  28 JUN 2026 22:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1794,12 +1794,12 @@ Chapter 5.
 <images/problem_planner.png, id=962, 1164.35pt x 1360.08125pt>
 File: images/problem_planner.png Graphic file (type png)
 <use images/problem_planner.png>
-Package pdftex.def Info: images/problem_planner.png  used on input line 170.
+Package pdftex.def Info: images/problem_planner.png  used on input line 180.
 (pdftex.def)             Requested size: 171.28268pt x 200.06029pt.
 <images/result_planner.png, id=963, 1421.31pt x 1115.16624pt>
 File: images/result_planner.png Graphic file (type png)
 <use images/result_planner.png>
-Package pdftex.def Info: images/result_planner.png  used on input line 176.
+Package pdftex.def Info: images/result_planner.png  used on input line 186.
 (pdftex.def)             Requested size: 171.28268pt x 134.3757pt.
  [31] [32 <./images/problem_planner.png (PNG copy)> <./images/result_planner.pn
 g (PNG copy)>] [33] [34] (tables/fr_001.tex)
@@ -1816,7 +1816,27 @@ g (PNG copy)>] [33] [34] (tables/fr_001.tex)
 Chapter 6.
 [42
 
-] [43] [44] [45] [46] [47]
+]
+Underfull \hbox (badness 10000) in paragraph at lines 34--34
+[]|\T1/ptm/m/n/8 Qwen3
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--34
+[]|\T1/ptm/m/n/8 Qwen3
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--34
+[]|\T1/ptm/m/n/8 Mistral
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--34
+[]|\T1/ptm/m/n/8 Gemma3
+ []
+
+[43] [44] [45] [46] [47]
 Underfull \hbox (badness 3884) in paragraph at lines 249--249
 []|\T1/ptm/m/n/10 M-08 Stan-dard De-vi-a-tion of
  []
@@ -1987,6 +2007,10 @@ Appendix E.
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 0030B291B1B405D9FBE8DC4E669EF823;9429.
 Package logreq Info: Writing requests to 'main.run.xml'.
@@ -1994,13 +2018,13 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 49405 strings out of 467871
- 1084812 string characters out of 5418377
- 2453847 words of memory out of 5000000
- 76631 multiletter control sequences out of 15000+600000
+ 49407 strings out of 467871
+ 1084859 string characters out of 5418377
+ 2453848 words of memory out of 5000000
+ 76633 multiletter control sequences out of 15000+600000
  698379 words of font info for 126 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 110i,12n,107p,2591b,2350s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 110i,14n,107p,2591b,2350s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmex10.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmmi10.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/fonts/type1/p
@@ -2020,7 +2044,7 @@ type1/urw/courier/ucrr8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmb8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmr8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (114 pages, 2949132 bytes).
+Output written on main.pdf (114 pages, 2949686 bytes).
 PDF statistics:
  1984 PDF objects out of 2073 (max. 8388607)
  766 named destinations out of 1000 (max. 500000)
