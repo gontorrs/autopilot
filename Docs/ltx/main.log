@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  24 MAY 2026 22:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  28 JUN 2026 18:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1850,7 +1850,11 @@ Underfull \hbox (badness 3884) in paragraph at lines 320--320
 []|\T1/ptm/m/n/10 M-08 Stan-dard De-vi-a-tion of
  []
 
-[49] [50] [51]) (chapters/ethical_evaluation.tex [52]
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [49]
+[50] [51]) (chapters/ethical_evaluation.tex [52]
 Chapter 7.
 [53
 
@@ -2011,51 +2015,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 694--694
 []|\T1/ptm/b/n/7 VRAM
  []
 
-
-Underfull \hbox (badness 1783) in paragraph at lines 741--741
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 747--747
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 753--753
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 759--759
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 765--765
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 771--771
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 777--777
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 783--783
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 789--789
-\T1/ptm/m/n/7 it con-sumes.Open Gon-zalo_-An-teproyecto.pdf
- []
-
 [95
 
 ] [96] [97]
@@ -2107,9 +2066,9 @@ type1/urw/courier/ucrr8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmb8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmr8a.pfb><C:/Users/gonza/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (113 pages, 2948766 bytes).
+Output written on main.pdf (113 pages, 2950489 bytes).
 PDF statistics:
- 1966 PDF objects out of 2073 (max. 8388607)
+ 1970 PDF objects out of 2073 (max. 8388607)
  764 named destinations out of 1000 (max. 500000)
  489 words of extra memory for PDF output out of 10000 (max. 10000000)
 
