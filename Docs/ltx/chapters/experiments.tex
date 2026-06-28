@@ -36,7 +36,7 @@ Gemma3 4B   & 4B & INT4 & 0   & 0   & 0   & 31.07 & 51.89 \\
 \label{tab:vlm_candidates}
 \end{table}
 
-The positive result of this experiment is that two local VLMs, Qwen3 2B VL and Qwen3 4B VL, achieved 100\% TSR across all three templates. This confirms that reliable coordinate grounding is possible with compact quantised models, which is essential for preserving the local execution constraint of the project. The negative result is that the remaining candidates failed completely at coordinate prediction, returning hallucinated or unusable positions despite acceptable inference times.
+A key finding of this experiment is that two local VLMs, Qwen3 2B VL and Qwen3 4B VL, achieved 100\% TSR across all three templates. This confirms that reliable coordinate grounding is possible with compact quantised models, which is essential for preserving the local execution constraint of the project. Conversely, the remaining candidates failed completely at coordinate prediction, returning hallucinated or unusable positions despite acceptable inference times.
 
 The experiment demonstrates that VLM model size is not the decisive factor once the required grounding capability is present. Since Qwen3 2B VL and Qwen3 4B VL achieved identical TSR, the final decision is driven by latency and resource efficiency. Qwen3 2B VL INT4 was selected as the VLM for Scout, Vision, and QA because it provides the same grounding accuracy as the larger model while using fewer resources.
 
@@ -72,9 +72,9 @@ Ministral3 3B      & 3B & INT 4 & 100 &   0 &  2.26 & 30.90 \\
 \label{tab:llm_candidates}
 \end{table}
 
-The positive result is that most candidates solved the intent-classification task successfully, which confirms that structured command extraction can be performed by several compact local LLMs. From the perspective of the Intention Agent alone, Qwen3 4B Instruct would be the strongest candidate because it combines perfect TSR with an inference time of 2.02 s and moderate VRAM usage. Llama3.2 3B also offers a competitive latency and the lowest memory footprint among the candidates.
+A first observation is that most candidates solved the intent-classification task successfully, which confirms that structured command extraction can be performed by several compact local LLMs. From the perspective of the Intention Agent alone, Qwen3 4B Instruct would be the strongest candidate because it combines perfect TSR with an inference time of 2.02 s and moderate VRAM usage. Llama3.2 3B also offers a competitive latency and the lowest memory footprint among the candidates.
 
-The negative result is that intent classification accuracy alone does not predict manager reliability. Several fast models that produced valid JSON outputs failed when used as the Manager Agent: they lost track of the PDDL plan, repeated steps, or dispatched agents in an order that did not follow the deterministic plan. This makes the selection problem more restrictive than a standard prompt-to-JSON benchmark.
+However, intent classification accuracy alone does not predict manager reliability. Several fast models that produced valid JSON outputs failed when used as the Manager Agent: they lost track of the PDDL plan, repeated steps, or dispatched agents in an order that did not follow the deterministic plan. This makes the selection problem more restrictive than a standard prompt-to-JSON benchmark.
 
 The experiment demonstrates that the selected LLM must be evaluated as part of the complete orchestration role, not only as an intent parser. Gemma4 E4B was selected because it was the only candidate that preserved reliable manager behaviour across all seven task templates. The decision sacrifices some raw inference speed, but it provides the reasoning stability required to execute the deterministic plan without plan drift.
 
@@ -86,6 +86,7 @@ All runs start from a clean desktop state, with no applications open and no file
 
 \begin{table}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|c|c|c|c|}
 \hline
 \textbf{Template} & \textbf{Intention} & \textbf{Planner} & \textbf{Translator} & \textbf{Scout} & \textbf{Vision} & \textbf{Executor} & \textbf{QA} \\
@@ -108,13 +109,14 @@ Copy and Paste    & 23.28 & 0.44 &    0 & 2.08 & 1.91 & 12.32 & 4.04 \\
 Global            & 23.29 & 0.42 &    0 & 2.87 & 2.63 & 13.26 & 3.97 \\
 \hline
 \end{tabular}
+}
 \caption{Autopilot average Agent times (seconds) per task template averaged across 3 runs each.}
 \label{tab:agent_timings}
 \end{table}
 
-The positive result is that the deterministic and code-based components are highly efficient. The Planner Agent averages 0.42 s globally, showing that Fast Downward introduces negligible overhead, while the Translator Agent is effectively instantaneous because it performs deterministic code translation rather than model inference. Scout, Vision, and QA remain stable across templates, with higher values only when the task requires additional screen checks or more complex visual grounding.
+On the one hand, the deterministic and code-based components are highly efficient. The Planner Agent averages 0.42 s globally, showing that Fast Downward introduces negligible overhead, while the Translator Agent is effectively instantaneous because it performs deterministic code translation rather than model inference. Scout, Vision, and QA remain stable across templates, with higher values only when the task requires additional screen checks or more complex visual grounding.
 
-The negative result is that the Intention Agent and Executor Agent dominate runtime. The Intention Agent averages 23.29 s globally because it performs the initial local LLM call and may also include model loading into VRAM. The Executor Agent averages 13.26 s because it must wait for the operating system to update its interface after actions, reducing the risk of capturing stale screenshots or interacting before the UI is ready.
+On the other hand, the Intention Agent and Executor Agent dominate runtime. The Intention Agent averages 23.29 s globally because it performs the initial local LLM call and may also include model loading into VRAM. The Executor Agent averages 13.26 s because it must wait for the operating system to update its interface after actions, reducing the risk of capturing stale screenshots or interacting before the UI is ready.
 
 This experiment demonstrates that the largest runtime cost is not the deterministic planner but the model-based parsing stage and the safety delays required for desktop execution. The resulting decision is to preserve the deterministic planning layer, because it adds very little latency while providing a structured plan that prevents the system from relying on repeated LLM trial-and-error during execution.
 
@@ -126,6 +128,7 @@ The same 21 runs are used, with three executions for each of the seven templates
 
 \begin{table}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|c|c|c|c|}
 \hline
 \textbf{Template} & \textbf{Intention} & \textbf{Planner} & \textbf{Translator} & \textbf{Scout} & \textbf{Vision} & \textbf{Executor} & \textbf{QA} \\
@@ -148,13 +151,14 @@ Copy and Paste    &  8.97 &  1.97 & 2.45 &  6.05 & 1.66 & 16.11 & 2.42 \\
 Global            & 11.39 &  1.85 & 1.82 &  5.18 & 3.22 & 16.43 & 1.86 \\
 \hline
 \end{tabular}
+}
 \caption{Autopilot average Manager Thinking timings (seconds) per task template, averaged across 3 runs each.}
 \label{tab:manager_timings}
 \end{table}
 
-The positive result is that the manager follows a prepared plan rather than attempting to discover the solution through open-ended LLM action loops. This deterministic planning structure prevents plan failures and keeps the workflow more direct: the manager does not need to try multiple possible actions until one works, because the PDDL planner has already produced a valid sequence of actions. As a result, the orchestration process remains interpretable and avoids the planning drift commonly observed in reactive LLM-controlled systems.
+A favourable outcome is that the manager follows a prepared plan rather than attempting to discover the solution through open-ended LLM action loops. This deterministic planning structure prevents plan failures and keeps the workflow more direct: the manager does not need to try multiple possible actions until one works, because the PDDL planner has already produced a valid sequence of actions. As a result, the orchestration process remains interpretable and avoids the planning drift commonly observed in reactive LLM-controlled systems.
 
-The negative result is that the manager still introduces non-negligible overhead when it must interpret the responses of Scout and Vision before dispatching the Executor Agent. The Executor-related manager time is the largest global value at 16.43 s, because the manager must translate the current visual and textual evidence into the exact parameters required for clicking, typing, fallback execution, or text search.
+Conversely, the manager still introduces non-negligible overhead when it must interpret the responses of Scout and Vision before dispatching the Executor Agent. The Executor-related manager time is the largest global value at 16.43 s, because the manager must translate the current visual and textual evidence into the exact parameters required for clicking, typing, fallback execution, or text search.
 
 This experiment demonstrates that the hybrid architecture separates planning from orchestration effectively. The deterministic planner guarantees the action structure, while the Manager Agent focuses on grounded execution decisions. The design decision is therefore to keep the Manager Agent as a plan follower and dispatcher rather than replacing the planner with a single LLM loop, because that alternative would increase the risk of repeated actions, planning errors, and unnecessary intermediate steps.
 
@@ -166,6 +170,7 @@ The restriction is that all runs are executed on the same local machine and with
 
 \begin{table}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|c|}
 \hline
 \textbf{Template} & \textbf{CPU avg} & \textbf{RAM avg} & \textbf{GPU Util.} & \textbf{GPU Mem.} \\
@@ -187,14 +192,15 @@ Copy \& Paste    & 25.2 & 69.9 & 22.7 & 81.0 \\
 \hline
 Global            & 24.7 & 71.9 & 23.8 & 78.6 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \caption{Autopilot average resource usage per task template, averaged across 3 runs.}
 \label{tab:resource_usage}
 \end{table}
 
-The positive result is that the system remains within the expected limits of the evaluation hardware. CPU usage stays close to 25\% on average, RAM usage remains stable between approximately 70\% and 78\%, and GPU utilisation stays moderate despite the use of local VLM and LLM calls. This confirms that the multi-agent architecture can run locally without requiring cloud inference.
+On the positive side, the system remains within the expected limits of the evaluation hardware. CPU usage stays close to 25\% on average, RAM usage remains stable between approximately 70\% and 78\%, and GPU utilisation stays moderate despite the use of local VLM and LLM calls. This confirms that the multi-agent architecture can run locally without requiring cloud inference.
 
-The negative result is that GPU memory remains high throughout the runs, averaging between 74\% and 81\%. This behaviour is consistent with Ollama's memory management, because quantised models are loaded into VRAM on demand and remain resident until unloaded. The QA Agent also reported success in 86\% of runs globally, with the negative responses concentrated in the \textit{Format Text} template. Manual verification confirmed that these tasks were completed correctly, indicating that the QA failures were false negatives caused by limited visual precision when evaluating formatted text from screenshots.
+On the other hand, GPU memory remains high throughout the runs, averaging between 74\% and 81\%. This behaviour is consistent with Ollama's memory management, because quantised models are loaded into VRAM on demand and remain resident until unloaded. The QA Agent also reported success in 86\% of runs globally, with the negative responses concentrated in the \textit{Format Text} template. Manual verification confirmed that these tasks were completed correctly, indicating that the QA failures were false negatives caused by limited visual precision when evaluating formatted text from screenshots.
 
 This experiment demonstrates that Autopilot can satisfy the local execution requirement on consumer hardware, but it also shows that GPU memory is the limiting resource. The resulting decision is to keep the selected quantised models and avoid larger alternatives unless the hardware target changes, because the current configuration achieves the required functionality while remaining compatible with the project's privacy and offline-operation goals.
 
@@ -211,6 +217,7 @@ Round 1 includes all evaluated systems, regardless of whether they are fully aut
 
 \begin{table}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|p{4.5cm}|c|c|c|c|c|c|}
 \hline
 \textbf{Metric} & \textbf{Autopilot} & \textbf{WVA} & \textbf{OpenClaw} & \textbf{Claude} & \textbf{Gemini} & \textbf{Gemini} \\
@@ -239,6 +246,7 @@ M-10 Data Exposure Level            & 0      & 0     & 0     & 3     & 3     & 3
 M-11 Total Steps                    & 4.57   & 10.90 & 0.000 & 6.38  & 8.48  & 5.86  \\
 \hline
 \end{tabular}
+}
 \caption{Full comparative evaluation across all six systems with three runs per template.}
 \label{tab:full_comparative}
 \end{table}
@@ -255,7 +263,7 @@ Round 2 keeps only systems that can execute a complete task from a single high-l
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|p{4.5cm}|c|c|c|c|}
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|}
 \hline
 \textbf{Metric} & \textbf{Autopilot} & \textbf{OpenClaw} & \textbf{Claude} & \textbf{Gemini} \\
  & & & \textbf{CW} & \textbf{CU} \\
@@ -282,7 +290,7 @@ M-10 Data Exposure Level            & 0      & 0     & 3     & 3     \\
 \hline
 M-11 Total Steps                    & 4.57   & 0.000 & 6.38  & 8.48  \\
 \hline
-\end{tabular}
+\end{tabularx}
 \caption{Autonomous systems comparison: Autopilot, OpenClaw, Claude CW, and Gemini CU.}
 \label{tab:autonomous_comparative}
 \end{table}
@@ -299,7 +307,7 @@ Round 3 applies the strictest criterion: a system must be both autonomous and fu
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|p{4.5cm}|c|c|}
+\begin{tabularx}{\textwidth}{|X|c|c|}
 \hline
 \textbf{Metric} & \textbf{Autopilot} & \textbf{OpenClaw} \\
 \hline
@@ -325,7 +333,7 @@ M-10 Data Exposure Level            & 0      & 0     \\
 \hline
 M-11 Total Steps                    & 4.57   & 0.000 \\
 \hline
-\end{tabular}
+\end{tabularx}
 \caption{Fully local systems comparison: Autopilot and OpenClaw.}
 \label{tab:local_comparative}
 \end{table}
@@ -342,6 +350,7 @@ In addition to the controlled experimental benchmark, a user evaluation was cond
 
 \begin{table}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|p{4cm}|p{9cm}|}
 \hline
 \textbf{Aspect} & \textbf{Description} \\
@@ -358,7 +367,8 @@ Questionnaire & Google Forms survey completed immediately after the interaction.
 \hline
 Format Questions & Six Likert-scale questions from 1 to 5, plus one optional free-text comment. \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \caption{Setup of the user evaluation study.}
 \label{tab:qualitative_setup}
 \end{table}

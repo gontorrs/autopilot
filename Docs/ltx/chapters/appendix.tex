@@ -627,6 +627,7 @@ The following table summarises how user-level task templates are mapped to PDDL 
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|p{3.2cm}|p{5.0cm}|p{5.0cm}|}
 \hline
 \textbf{Task template} & \textbf{Main PDDL goal} & \textbf{Typical planned actions} \\
@@ -646,6 +647,7 @@ Create item & \texttt{(created <name>)} & \texttt{open}, \texttt{navigate}, \tex
 Copy and paste file & \texttt{(pasted <file> <folder>)} & \texttt{open}, \texttt{navigate}, \texttt{copy}, \texttt{navigate\_back}, \texttt{paste} \\
 \hline
 \end{tabular}
+}
 \caption{Mapping between Autopilot task templates and PDDL goals.}
 \label{tab:pddl_templates}
 \end{table}

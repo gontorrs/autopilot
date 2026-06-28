@@ -31,6 +31,7 @@
 \usepackage{hyphenat}
 \usepackage{caption, subcaption}
 \usepackage{longtable}
+\usepackage{tabularx}
 \usepackage{url}
 \usepackage{multirow} 
 \usepackage{rotating}
@@ -102,7 +103,7 @@
 }
 
 \newcommand{\requirement}[3]{
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering
 \small
 \setlength{\tabcolsep}{4pt}
@@ -193,6 +194,11 @@
             pdfcreator={pdfLaTeX}}
 
 \setcounter{secnumdepth}{4}
+
+% Avoid stretching vertical glue (around headings, after tables) to justify the
+% bottom margin: leftover space goes to the page bottom instead of opening large
+% gaps above subsections. Standard for reports; keeps headings tight to their text.
+\raggedbottom
 
 \begin{document}
 

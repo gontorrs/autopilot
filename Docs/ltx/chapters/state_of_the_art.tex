@@ -125,7 +125,7 @@ CNNs are relevant to Autopilot because desktop automation depends on visual perc
 
 In this Final Degree Project (FDP), CNNs therefore provide historical and conceptual context for the visual components of the system. They explain how neural models can transform raw pixels into useful visual representations, which is a necessary step before higher-level models can ground natural language instructions in screen coordinates. This connection is important because Autopilot must bridge the gap between what the user says and what is visually available on the Windows desktop.
 
-\subsubsection{Recurrent Neural Networks (RNNs), Long Short-Term Memory (LSTMs), and Gated Recurrent Units (GRUs)}
+\subsubsection{Recurrent Neural Networks}
 
 Recurrent Neural Networks (RNNs)~\cite{Elman1990} are neural architectures designed for sequential data. Unlike feed-forward networks, they maintain a hidden state that is updated at each timestep. This hidden state acts as a memory of previous inputs, allowing the model to process sequences such as text, speech, commands, or time-dependent observations.
 
@@ -135,11 +135,6 @@ However, standard RNNs have difficulty learning long-range dependencies. As sequ
 
 Gated Recurrent Units (GRUs) \cite{Cho2014} provide a related recurrent architecture with a simpler gating mechanism. They combine some of the memory and update operations used by LSTMs, reducing the number of internal components while preserving the ability to model temporal context. GRUs are often used when a recurrent model needs to capture sequential dependencies with lower computational complexity than a full LSTM.
 
-These recurrent architectures are relevant to Autopilot because the system begins from a spoken natural language instruction and must preserve the structure of that instruction through transcription, interpretation, and planning. Although the final pipeline uses more recent large models for command understanding and orchestration, RNNs, LSTMs, and GRUs establish the core idea that neural systems can model ordered information rather than isolated inputs. This makes them an important conceptual bridge between basic neural networks and the large sequence models discussed later.
-
-\subsection{Large Models}
-\label{subsec:foundation_models}
-
 \subsubsection{Transformers}
 
 Transformers \cite{Vaswani2017} are neural architectures designed to process sequences through attention rather than recurrence. Their central mechanism is self-attention, which allows each token in an input sequence to compare itself with every other token and assign different levels of importance to them. This means that the representation of a word, image patch, or audio segment can be computed in relation to the surrounding context, rather than only from a fixed local window or a sequential hidden state.
@@ -147,6 +142,15 @@ Transformers \cite{Vaswani2017} are neural architectures designed to process seq
 The Transformer architecture is built from stacked layers that combine self-attention with feed-forward neural networks, residual connections, normalisation, and positional information. Since self-attention itself does not encode order, positional encodings are added so that the model can distinguish between different positions in a sequence. This design makes it possible to model both local and long-range dependencies while still allowing many operations to be computed in parallel.
 
 This parallelism is one of the main reasons Transformers enabled the current generation of large models. Unlike recurrent models, which process tokens step by step, Transformers can process entire sequences more efficiently during training. When trained on very large datasets and scaled to billions of parameters, they learn flexible representations that can be adapted to language, speech, vision, and multi-modal tasks. As a result, Transformers provide the architectural foundation for many modern Speech-to-Text models, Vision-Language Models, and Large Language Models.
+
+These recurrent architectures are relevant to Autopilot because the system begins from a spoken natural language instruction and must preserve the structure of that instruction through transcription, interpretation, and planning. Although the final pipeline uses more recent large models for command understanding and orchestration, RNNs, LSTMs, and GRUs establish the core idea that neural systems can model ordered information rather than isolated inputs. This makes them an important conceptual bridge between basic neural networks and the large sequence models discussed later.
+
+\subsection{Large Models}
+\label{subsec:foundation_models}
+
+Large models are neural networks that have been scaled to a very large number of parameters and trained on massive, diverse datasets. Their size and training data allow them to capture broad patterns across language, vision, speech, and other modalities, making them capable of generalising to new tasks with limited additional tuning.
+
+In this project, large models provide the flexible interpretation and grounding capabilities needed to connect spoken commands, visual observations, and symbolic planning. They are not a separate architectural family in themselves, but rather an instantiation of neural models that emphasises scale, data coverage, and multi-task adaptability.
 
 \subsubsection{Speech-to-Text Models (STT)}
 
@@ -218,7 +222,8 @@ Table~\ref{tab:cloud_related_systems} summarises the cloud-based systems conside
 
 \begin{table}[H]
 \centering
-\scriptsize
+{\small
+\renewcommand{\arraystretch}{1.15}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|p{1.5cm}|p{2.1cm}|p{2.8cm}|p{2.7cm}|p{4.1cm}|}
 \hline
@@ -231,6 +236,7 @@ Gemini CU & Fully autonomous & API prompt with Gemini computer-use tools, includ
 Gemini SS & Externally assisted & API prompt with externally injected screenshots after each action & Screenshot input provided by the evaluation script & Not fully autonomous; reactive planning; cloud data exposure; produced an unsafe OS-level shutdown action during testing \\
 \hline
 \end{tabular}
+}
 }
 \caption{Positioning of cloud-based desktop automation systems.}
 \label{tab:cloud_related_systems}
@@ -248,7 +254,8 @@ Table~\ref{tab:local_related_systems} summarises the local systems and includes 
 
 \begin{table}[H]
 \centering
-\scriptsize
+{\small
+\renewcommand{\arraystretch}{1.15}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|p{1.5cm}|p{2.1cm}|p{2.8cm}|p{2.7cm}|p{4.1cm}|}
 \hline
@@ -261,6 +268,7 @@ WVA & Not autonomous & User issues each voice command manually & Native Windows 
 OpenClaw & Fully autonomous & Single prompt with MCP tools and skills & Tool-based desktop interaction & Failed every evaluated run; resisted or self-reported completion incorrectly; no structured planner; tested offline with local models \\
 \hline
 \end{tabular}
+}
 }
 \caption{Positioning of local desktop automation systems and Autopilot.}
 \label{tab:local_related_systems}

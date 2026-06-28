@@ -3,13 +3,13 @@
 
 \section{Main Objective}
 
-The main goal of this project is to develop a fully autonomous desktop automation system that allows users to operate a Windows computer through free-form spoken natural language. The system must interpret a single voice request, plan and execute the required desktop actions through the graphical interface, and verify task completion without further human intervention, while keeping the entire processing pipeline on the local device.
+The main objective of this project is to develop a fully autonomous desktop automation system that allows users to operate a Windows computer through free-form spoken natural language. The system must interpret a single voice request, plan and execute the required desktop actions through the graphical interface, and verify task completion without further human intervention, while keeping the entire processing pipeline on the local device.
 
 \textbf{Hypothesis:} a Windows computer can be controlled autonomously from spoken natural language by combining local speech transcription, language-based intent interpretation, automated planning, visual desktop perception, and closed-loop verification. If these components are integrated into a local pipeline, then common desktop tasks can be completed without manual input, fixed command syntax, or external data transmission.
 
 \section{Specific Objectives}
 
-The following specific objectives use the SO convention and divide the main objective into six concrete targets aligned with the project presentation, while using the formal terminology required by the review feedback. Each objective addresses a distinct requirement that the system must satisfy to be considered a valid autonomous desktop automation solution.
+The following specific objectives divide the main objective into six concrete targets aligned with the project presentation, while using the formal terminology required by the review feedback. Each objective addresses a distinct requirement that the system must satisfy to be considered a valid autonomous desktop automation solution.
 
 \begin{enumerate}
 
@@ -34,18 +34,19 @@ Each specific objective is validated through concrete qualitative and quantitati
 
 Before mapping each objective to its corresponding validation process, the core metrics are defined formally. Let $n$ denote the total number of evaluation runs, $s$ the number of successful runs, and $x_i$ the number of steps executed in run $i$:
 
-\begin{align}
-    \text{TSR} &= \frac{s}{n} \times 100 \\[6pt]
-    \text{Step Accuracy} &= \frac{\text{error-free steps}}{\text{total executed steps}} \times 100 \\[6pt]
-    \text{Latency} &= t_{\text{completion}} - t_{\text{prompt}} \\[6pt]
-    \text{Planning Error Rate} &= \frac{\text{planning errors}}{\text{total planned actions}} \times 100 \\[6pt]
-    \text{Tool Hallucination Rate} &= \frac{\text{tool hallucinations}}{\text{total tool calls}} \times 100 \\[6pt]
-    \text{Visual Hallucination Rate} &= \frac{\text{visual hallucinations}}{\text{total visual checks}} \times 100 \\[6pt]
-    \text{Total Error Rate} &= \text{M-04} + \text{M-05} + \text{M-06} \\[6pt]
-    \sigma &= \sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2}
-\end{align}
+\begin{gather}
+    \text{TSR} = \frac{s}{n} \times 100 \label{eq:M-01} \\[6pt]
+    \text{Step Accuracy} = \frac{\text{error-free steps}}{\text{total executed steps}} \times 100 \label{eq:M-02} \\[6pt]
+    \text{Latency} = t_{\text{completion}} - t_{\text{prompt}} \label{eq:M-03} \\[6pt]
+    \text{Planning Error Rate} = \frac{\text{planning errors}}{\text{total planned actions}} \times 100 \label{eq:M-04} \\[6pt]
+    \text{Tool Hallucination Rate} = \frac{\text{tool hallucinations}}{\text{total tool calls}} \times 100 \label{eq:M-05} \\[6pt]
+    \text{Visual Hallucination Rate} = \frac{\text{visual hallucinations}}{\text{total visual checks}} \times 100 \label{eq:M-06} \\[6pt]
+    \text{Total Error Rate} = \text{M-04} + \text{M-05} + \text{M-06} \label{eq:M-07} \\[6pt]
+    \sigma_{\text{steps}} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2} \label{eq:M-08} \\[6pt]
+    \sigma_{\text{latency}} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2} \label{eq:M-09}
+\end{gather}
 
-\noindent where $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$ is the mean value across runs, applicable to both $\sigma_{\text{steps}}$ (M-08) and $\sigma_{\text{latency}}$ (M-09). Table~\ref{tab:validation_metrics} summarises all metrics used throughout the evaluation.
+\noindent where $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$ is the mean value across runs. Table~\ref{tab:validation_metrics} summarises all metrics used throughout the evaluation.
 
 \input{tables/validation_metrics.tex}
 

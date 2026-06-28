@@ -12,7 +12,7 @@ The system was developed and evaluated on a single consumer laptop, representati
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|l|}
+\begin{tabularx}{\textwidth}{|l|X|}
 \hline
 \textbf{Component} & \textbf{Specification} \\
 \hline
@@ -24,7 +24,7 @@ RAM & 32 GB \\
 \hline
 Operating System & Windows 11 Home (Build 25H2) \\
 \hline
-\end{tabular}
+\end{tabularx}
 \caption{Development and evaluation hardware specifications.}
 \label{tab:hardware}
 \end{table}
@@ -40,20 +40,22 @@ Table~\ref{tab:models} lists all neural models recorded in the Planner and VLM e
 {\footnotesize
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.08}
-\begin{longtable}{|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{0.72cm}|>{\raggedright\arraybackslash}p{2.95cm}|>{\raggedright\arraybackslash}p{1.48cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{2.8cm}|}
-\caption{Neural models evaluated in the Planner and VLM experiments.}
-\label{tab:models}\\
+\begin{longtable}{|>{\raggedright\arraybackslash}p{3.10cm}|>{\raggedright\arraybackslash}p{0.74cm}|>{\raggedright\arraybackslash}p{3.05cm}|>{\raggedright\arraybackslash}p{1.53cm}|>{\raggedright\arraybackslash}p{1.29cm}|>{\raggedright\arraybackslash}p{2.89cm}|}
 \hline
 \textbf{Model} & \textbf{Type} & \textbf{Params} & \textbf{Quant.} & \textbf{Size} & \textbf{Source} \\
 \hline
 \endfirsthead
-\caption[]{Neural models evaluated in the Planner and VLM experiments (continued).}\\
 \hline
 \textbf{Model} & \textbf{Type} & \textbf{Params} & \textbf{Quant.} & \textbf{Size} & \textbf{Source} \\
 \hline
 \endhead
 \hline
 \endfoot
+\hline
+\noalign{\vskip 6pt}
+\caption{Neural models evaluated in the Planner and VLM experiments.}
+\label{tab:models}
+\endlastfoot
 Whisper small & STT & 244M & FP16 & 967 MB & \href{https://huggingface.co/openai/whisper-small}{Hugging Face} \\
 \hline
 Phi-3 Mini & LLM & 3.8B & default & 2.2 GB & \href{https://ollama.com/library/phi3}{Ollama phi3} \\
@@ -92,21 +94,23 @@ Qwen3-VL 2B INT4 & VLM & 2.13B & Q4\_K\_M & 1.9 GB & \href{https://ollama.com/li
 \hline
 Qwen3-VL 4B INT4 & VLM & 4.44B & Q4\_K\_M & 3.3 GB & \href{https://ollama.com/library/qwen3-vl:4b}{Ollama qwen3-vl:4b} \\
 \hline
-\end{longtable}
+\end{longtable}%
 }
 
 \subsection{Software Stack}
 
-The system is implemented in Python 3.11. Table~\ref{tab:software} lists all libraries and external tools used across the pipeline, organised by functional role.
+The system is implemented in Python 3.13. Table~\ref{tab:software} lists all libraries and external tools used across the pipeline, organised by functional role.
 
 \begin{table}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|l|}
 \hline
 \textbf{Library / Tool} & \textbf{Version} & \textbf{Purpose} \\
 \hline
 \multicolumn{3}{|l|}{\textit{Core pipeline}} \\
 \hline
+Python         & 3.13            & Programming language and runtime \\
 CrewAI         & 1.14.1          & Agent orchestration framework \\
 Ollama         & 0.24.0          & Local model inference server (Docker image: ollama/ollama) \\
 Fast Downward  & aibasel/downward & PDDL planning engine (official Docker image) \\
@@ -135,7 +139,8 @@ python-dotenv  & 1.1.1           & Environment variable management \\
 \hline
 Gradio         & 6.12.0          & Web-based demo interface \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \caption{Python libraries and external tools used in the project.}
 \label{tab:software}
 \end{table}
@@ -230,6 +235,7 @@ This section distinguishes between constraints and limitations. Constraints are 
 \centering
 \small
 \setlength{\tabcolsep}{4pt}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|p{3.6cm}|p{3.2cm}|p{5.6cm}|}
 \hline
 \textbf{Item} & \textbf{Related objectives} & \textbf{Impact} \\
@@ -250,7 +256,8 @@ End-to-end latency & \hyperref[so:3]{SO3}, \hyperref[so:4]{SO4} & Defines the ma
 \hline
 Application and interface variability & \hyperref[so:3]{SO3}, \hyperref[so:6]{SO6} & Introduces uncertainty in visual grounding, execution, and user-facing robustness. \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \caption{Relationship between constraints, limitations, and specific objectives.}
 \label{tab:constraints_limitations}
 \end{table}

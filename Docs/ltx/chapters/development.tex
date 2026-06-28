@@ -23,7 +23,7 @@ Figure~\ref{fig:autopilot_architecture} shows the architecture of Autopilot. The
     agentbox/.style={draw=blue!75, rounded corners=3pt, align=left, minimum width=4.3cm, minimum height=3.0cm, fill=autopilotFlowBlue, font=\small, inner sep=7pt},
     templatebox/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=3.2cm, minimum height=1.75cm, fill=autopilotFlowBlue, font=\small},
     arrow/.style={->, thick},
-    note/.style={font=\scriptsize, align=center, fill=white, inner sep=1pt}
+    note/.style={font=\scriptsize, align=center, inner sep=1pt}
 ]
 
 \node[component] (web) {\textbf{WEB}\\Gradio UI};
@@ -97,6 +97,7 @@ The system currently supports seven task templates, each backed by a dedicated P
 
 \begin{table}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|p{3.8cm}|p{4cm}|p{5cm}|}
 \hline
 \textbf{Template} & \textbf{PDDL Goal} & \textbf{Target Application} \\
@@ -116,6 +117,7 @@ Format Text        & \texttt{changed\_text}  & File Explorer + Microsoft Word \\
 Copy and Paste     & \texttt{pasted}         & File Explorer \\
 \hline
 \end{tabular}
+}
 \caption{PDDL goal predicate and target application per task template.}
 \label{tab:task_templates_detail}
 \end{table}
@@ -159,7 +161,7 @@ The Deliberative Agents implement the deterministic part of the architecture. Th
 \begin{enumerate}
   \item \textbf{Planner Agent:} The Planner Agent receives three inputs: the final goal selected by the Intention Agent, the current desktop state previously observed by the Scout Agent, and the PDDL template associated with the selected task. The goal specifies what must become true, while the screen state specifies which relevant conditions are already true before execution begins. The Planner Agent combines both elements to instantiate the PDDL problem and then calls Fast Downward to compute the action sequence needed to reach the goal. As introduced earlier, A* search is discussed in Section~\ref{subsec:planning_search}, LM-cut is described in Section~\ref{subsec:planning_heuristics}, and Fast Downward is presented in Section~\ref{subsec:planners}; in this implementation, the Planner Agent uses Fast Downward configured with A* and LM-cut rather than a neural model. Further context about the PDDL domain structure and generated problem files is provided in Appendix~\ref{app:pddl_domain}.
 
-  Figure~\ref{fig:planner_problem_result} shows an example of the planning input and output. The relevant state comes from the Scout Agent, which inspects the desktop before planning, while the goal comes from the Intention Agent after it has interpreted the user's command and selected the corresponding template. Fast Downward then returns an ordered sequence of symbolic actions. This sequence represents the plan that the Manager will follow after translation: it indicates which high-level GUI operations must be executed, in which order, and which intermediate states must be reached before the final goal can be verified.
+  Figure~\ref{fig:planner_problem_result} shows an example of the planning input and output. The relevant state comes from the Scout Agent, which inspects the desktop before planning, while the goal comes from the Intention Agent after it has interpreted the user's command and selected the corresponding template. Fast Downward then returns an ordered sequence of actions. This sequence represents the plan that the Manager will follow after translation: it indicates which high-level GUI operations must be executed, in which order, and which intermediate states must be reached before the final goal can be verified.
 
   \begin{figure}[H]
   \centering
@@ -172,7 +174,7 @@ The Deliberative Agents implement the deterministic part of the architecture. Th
   \begin{minipage}{0.43\textwidth}
   \centering
   \includegraphics[width=\linewidth]{images/result_planner.png}
-  \caption*{Fast Downward plan.}
+  \caption*{Plan.}
   \end{minipage}
   \caption{Example of a PDDL planning problem and the resulting symbolic plan.}
   \label{fig:planner_problem_result}
@@ -199,8 +201,8 @@ Figure~\ref{fig:agent_execution_flow} shows the agent-level execution flow, incl
     >=Stealth,
     agent/.style={draw=blue!75, rounded corners=3pt, align=center, minimum width=3.1cm, minimum height=1.15cm, fill=autopilotFlowBlue, font=\small},
     repeatbox/.style={draw, dashed, rounded corners=4pt, inner sep=0.32cm},
-    arrow/.style={->, thick},
-    note/.style={font=\scriptsize, align=center, fill=white, inner sep=2pt},
+    arrow/.style={->, line width=1.6pt},
+    note/.style={font=\scriptsize, align=center, inner sep=2pt},
     mmarker/.style={circle, draw=blue!75, fill=autopilotFlowBlue, inner sep=1.2pt, font=\scriptsize\bfseries}
 ]
 
@@ -254,7 +256,7 @@ Figure~\ref{fig:agent_execution_flow} shows the agent-level execution flow, incl
 \label{fig:agent_execution_flow}
 \end{figure}
 
-The standard execution starts when Whisper transcribes the voice command and returns the text to the Manager. The Manager then calls the Intention Agent, receives the selected template and parameters, and continues by dispatching the next component. In the diagram, the circled \textbf{M} marks this repeated control step: even when the arrow connects two non-manager components, the output is first handled by the Manager before the following agent is invoked. This makes the execution modular while preserving central control over the run.
+The execution starts when Whisper transcribes the voice command and returns the text to the Manager. The Manager then calls the Intention Agent, receives the selected template and parameters, and continues by dispatching the next component. In the diagram, the circled \textbf{M} marks this repeated control step: even when the arrow connects two non-manager components, the output is first handled by the Manager before the following agent is invoked. This makes the execution modular while preserving central control over the run.
 
 After the Intention Agent has selected the task template, the Manager invokes the Scout Agent to obtain a task-specific view of the current desktop state. The Manager then passes the resulting state and goal to the Planner Agent, receives the symbolic plan, and sends it to the PDDL Translator Agent. The translated dictionary becomes the operational guide for the rest of the run, but it is still interpreted through the Manager rather than executed autonomously by the downstream agents.
 

@@ -1,37 +1,35 @@
 \begin{table}[H]
 \centering
-\scriptsize
-\renewcommand{\arraystretch}{1.8}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|p{0.8cm}|p{3.0cm}|p{5.9cm}|p{4.3cm}|}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.7cm}|p{2.6cm}|p{5.5cm}|p{3.9cm}|}
 \hline
 \textbf{ID} & \textbf{Name} & \textbf{Definition} & \textbf{Formula} \\
 \hline
-M-01 & Task Success Rate (TSR) & Proportion of evaluation runs completed successfully. & TSR = successful runs / total runs \\
+M-01 & Task Success Rate (TSR) & Proportion of evaluation runs completed successfully. & TSR = successful runs / total runs (see \eqref{eq:M-01}) \\
 \hline
-M-02 & Step Accuracy & Proportion of executed steps that were completed without errors. & error-free steps / total executed steps \\
+M-02 & Step Accuracy & Proportion of executed steps that were completed without errors. & error-free steps / total executed steps (see \eqref{eq:M-02}) \\
 \hline
-M-03 & End-to-End Latency & Time elapsed from the accepted voice prompt to task completion. Runs above 300 seconds are considered outside the usability threshold. & completion time - prompt time \\
+M-03 & End-to-End Latency & Time elapsed from the accepted voice prompt to task completion. Runs above 300 seconds are considered outside the usability threshold. & completion time - prompt time (see \eqref{eq:M-03}) \\
 \hline
-M-04 & Planning Error Rate & Proportion of planned actions that are wrong, missing, or redundant. & planning errors / total planned actions \\
+M-04 & Planning Error Rate & Proportion of planned actions that are wrong, missing, or redundant. & planning errors / total planned actions (see \eqref{eq:M-04}) \\
 \hline
-M-05 & Tool Hallucination Rate & Proportion of tool calls that invoke an incorrect or non-existent tool. & tool hallucinations / total tool calls \\
+M-05 & Tool Hallucination Rate & Proportion of tool calls that invoke an incorrect or non-existent tool. & tool hallucinations / total tool calls (see \eqref{eq:M-05}) \\
 \hline
-M-06 & Visual Hallucination Rate & Proportion of visual checks where the model misidentifies on-screen elements. & visual hallucinations / total visual checks \\
+M-06 & Visual Hallucination Rate & Proportion of visual checks where the model misidentifies on-screen elements. & visual hallucinations / total visual checks (see \eqref{eq:M-06}) \\
 \hline
-M-07 & Total Error Rate & Combined error rate across planning, tool, and visual failures. & M-04 + M-05 + M-06 \\
+M-07 & Total Error Rate & Combined error rate across planning, tool, and visual failures. & M-04 + M-05 + M-06 (see \eqref{eq:M-07}) \\
 \hline
-M-08 & Standard Deviation of Steps & Variability of the number of executed steps across repeated runs of the same task template. & standard deviation of steps \\
+M-08 & Standard Deviation of Steps & Variability of the number of executed steps across repeated runs of the same task template. & standard deviation of steps (see \eqref{eq:M-08}) \\
 \hline
-M-09 & Standard Deviation of Latency & Variability of end-to-end latency across repeated runs of the same task template. & standard deviation of latency \\
+M-09 & Standard Deviation of Latency & Variability of end-to-end latency across repeated runs of the same task template. & standard deviation of latency (see \eqref{eq:M-09}) \\
 \hline
 M-10 & Data Exposure Level & Ordinal privacy score representing how much user data leaves the device. & 0: no data leaves the device; 1: metadata or task text leaves the device; 2: sensitive data leaves the device; 3: sensitive data is used to train external models. \\
 \hline
 M-11 & Total Steps & Total number of actions executed to complete a run. & number of executed actions \\
 \hline
 \end{tabular}
-}
-\renewcommand{\arraystretch}{1}
 \caption{Validation metrics used to evaluate the specific objectives.}
 \label{tab:validation_metrics}
 \end{table}
