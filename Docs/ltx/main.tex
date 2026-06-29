@@ -16,8 +16,9 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc} % For spanish characters
 \usepackage[T1]{fontenc} % For special characters
-\usepackage{times} 
-\usepackage{emptypage} 
+\usepackage{times}
+\usepackage{microtype}
+\usepackage{emptypage}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \usepackage{booktabs}
@@ -199,6 +200,16 @@
 % bottom margin: leftover space goes to the page bottom instead of opening large
 % gaps above subsections. Standard for reports; keeps headings tight to their text.
 \raggedbottom
+
+% Forbid widows/orphans (a single stranded line at a page top/bottom): with
+% \raggedbottom the leftover slack falls to the bottom margin instead of opening
+% internal gaps. NOTE: this does not keep multi-line paragraph splits together
+% (e.g. 4 lines + 3 lines across a break) -- those are normal book typesetting
+% and no penalty controls them; microtype just smooths the surrounding spacing.
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\brokenpenalty=1000
 
 \begin{document}
 

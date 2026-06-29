@@ -170,8 +170,9 @@ The restriction is that all runs are executed on the same local machine and with
 
 \begin{table}[H]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|c|c|c|c|}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|}
 \hline
 \textbf{Template} & \textbf{CPU avg} & \textbf{RAM avg} & \textbf{GPU Util.} & \textbf{GPU Mem.} \\
  & \textbf{(\%)} & \textbf{(\%)} & \textbf{avg (\%)} & \textbf{avg (\%)} \\
@@ -192,8 +193,7 @@ Copy \& Paste    & 25.2 & 69.9 & 22.7 & 81.0 \\
 \hline
 Global            & 24.7 & 71.9 & 23.8 & 78.6 \\
 \hline
-\end{tabular}%
-}
+\end{tabularx}
 \caption{Autopilot average resource usage per task template, averaged across 3 runs.}
 \label{tab:resource_usage}
 \end{table}
