@@ -27,12 +27,12 @@ Autopilot takes a different route. From **one spoken sentence** it completes the
 
 It **combines deterministic and non-deterministic methods**: small local language and vision models understand the request and find things on screen, while a classical planner (PDDL with Fast Downward) decides the exact sequence of actions. The plan is deterministic and explainable, and a final check confirms the result.
 
-> Final Degree Project in Computer Engineering (Research Track), Universidad Francisco de Vitoria, Madrid, 2026. Graded **10/10**. A research paper is in preparation.
+> Final Degree Project in Computer Engineering (Research Track), Universidad Francisco de Vitoria, Madrid, 2026. Graded **10/10**.
 
 ## How it works
 
 <div align="center">
-<img src="Docs/ltx/images/Workflow_diagram.png" alt="Autopilot workflow: Whisper transcribes the voice command, a Manager Agent orchestrates the Intention, Planner, Translator, Executor, Scout, Vision and QA agents for each step" width="820">
+<img src="assets/workflow_diagram.png" alt="Autopilot workflow: Whisper transcribes the voice command, a Manager Agent orchestrates the Intention, Planner, Translator, Executor, Scout, Vision and QA agents for each step" width="820">
 </div>
 
 1. **Listen.** Whisper (`faster-whisper`, local GPU) transcribes the spoken command.
@@ -81,7 +81,7 @@ Evaluated on **7 task templates × 3 runs (21 runs)** against five alternatives:
 
 Among the systems that can finish a task **autonomously from a single command**, Autopilot is the only one that combines full task success with **zero data exposure**: the cloud agents send your screen to remote servers and made planning errors, and the open-source alternative completed none of the tasks. Voice Access also succeeds, but only when the user dictates every step one by one.
 
-The trade-off is speed (about 110 s per task on consumer hardware) and scope: reliability is guaranteed inside the seven PDDL task templates. Full tables, model selection experiments and resource usage are in the [report](Docs/Autopilot_Report.pdf), and the raw evidence (screenshots, logs and recordings for every run of every system) is in `Code/competitors/` and `Code/logs/`.
+The trade-off is speed (about 110 s per task on consumer hardware) and scope: reliability is guaranteed inside the seven PDDL task templates. Full tables, model selection experiments and resource usage are in the [report](Docs/Autopilot_Report.pdf), and the raw evidence (screenshots and logs for every run of every system) is in `Code/competitors/` and `Code/logs/`.
 
 ## Getting started
 
@@ -159,11 +159,11 @@ intention_model = model_dict['e4bk']      # Intention classifier
 │   ├── voice/              # Local speech-to-text (Whisper)
 │   ├── competitors/        # Evidence of every evaluated alternative, per task and run
 │   └── logs/               # Logs and screenshots of Autopilot's evaluation runs
+├── assets/                 # Images used in this README
 └── Docs/
     ├── Autopilot_Report.pdf        # Final thesis report
     ├── Autopilot_Presentation.pdf  # Defence presentation
-    ├── Tabla_Experimentos_FINAL.xlsx
-    └── ltx/                        # LaTeX sources of the report
+    └── Tabla_Experimentos_FINAL.xlsx   # Raw experiment data
 ```
 
 ## Tech stack
@@ -176,4 +176,4 @@ CrewAI · Ollama · Gemma 4 · Qwen3-VL · faster-whisper · Fast Downward (PDDL
 
 Final Degree Project supervised by **Moisés Martínez Muñoz**, Universidad Francisco de Vitoria (Madrid), 2026.
 
-If you use this work, please cite the thesis report in `Docs/`. A paper based on it is in preparation.
+If you use this work, please cite the thesis report in `Docs/`.
